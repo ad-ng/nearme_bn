@@ -27,6 +27,7 @@ model User {
   dob              DateTime?
   verificationCode String?
   phoneNumber      String?
+  role             RoleStatus      @default(user)
   userInterests    UserInterests[]
   createdAt        DateTime        @default(now())
 }
@@ -45,4 +46,10 @@ model UserInterests {
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId])
+}
+
+enum RoleStatus {
+  admin
+  moderator
+  user
 }
