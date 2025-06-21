@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "RoleStatus" AS ENUM ('admin', 'moderator', 'user');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -13,6 +16,7 @@ CREATE TABLE "User" (
     "dob" TIMESTAMP(3),
     "verificationCode" TEXT,
     "phoneNumber" TEXT,
+    "role" "RoleStatus" NOT NULL DEFAULT 'user',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id")
