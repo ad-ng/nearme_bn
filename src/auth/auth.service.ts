@@ -35,6 +35,7 @@ export class AuthService {
     }
 
     return {
+      message: 'user authenticated successfully',
       token: await this.jwt.signAsync(currentUser),
       data: currentUser,
     };
@@ -62,6 +63,7 @@ export class AuthService {
       return {
         message: 'the user registered successfully',
         token: this.jwt.sign(newUser),
+        data: newUser,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
