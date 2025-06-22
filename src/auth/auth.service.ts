@@ -62,6 +62,7 @@ export class AuthService {
           firstName,
           dob,
           lastName,
+          verificationCode,
         },
       });
       await this.mailService.sendMail(
