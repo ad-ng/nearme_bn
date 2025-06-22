@@ -9,7 +9,7 @@ CREATE TABLE "User" (
     "gender" TEXT,
     "email" TEXT NOT NULL,
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
-    "password" TEXT,
+    "password" TEXT NOT NULL,
     "country" TEXT,
     "Status" TEXT,
     "profileImg" TEXT,
