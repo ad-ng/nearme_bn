@@ -66,6 +66,66 @@ export class AuthController {
     return this.authService.signin(dto);
   }
 
+  @ApiOperation({ summary: 'registering a user' })
+  @ApiBadRequestResponse({
+    description: 'Bad request due to invalid input or duplicate email',
+    examples: {
+      EmailExists: {
+        summary: 'Email already exists',
+        value: {
+          message: 'email already exist',
+          error: 'Bad Request',
+          statusCode: 400,
+        },
+      },
+      MissingPassword: {
+        summary: 'Missing fields',
+        value: {
+          message: [
+            'firstName must be a string',
+            'firstName should not be empty',
+            'lastName must be a string',
+            'lastName should not be empty',
+            'email must be an email',
+            'email should not be empty',
+            'dob must be a Date instance',
+            'dob should not be empty',
+            'password must be a string',
+            'password should not be empty',
+          ],
+          error: 'Bad Request',
+          statusCode: 400,
+        },
+      },
+    },
+  })
+  @ApiCreatedResponse({
+    description: 'for success',
+    example: {
+      message: 'the user registered successfully',
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZmlyc3ROYW1lIjoiSk9ITiIsImxhc3ROYW1lIjoiRG9lIiwiZ2VuZGVyIjpudWxsLCJlbWFpbCI6ImpvaG5kb2UxQGdtYWlsLmNvbSIsImlzVmVyaWZpZWQiOmZhbHNlLCJwYXNzd29yZCI6IiRhcmdvbjJpZCR2PTE5JG09NjU1MzYsdD0zLHA9NCQ0U3p6REhJYUc2SnM2UGRkbHVIaVp3JEk5Tmg4TDJqSFk2K2k0VTFXc3ZUazM0eHNubFlKeXVlMmxxTHN3bHdEOTAiLCJjb3VudHJ5IjpudWxsLCJTdGF0dXMiOm51bGwsInByb2ZpbGVJbWciOm51bGwsImRvYiI6IjIwMjUtMDYtMTZUMTM6Mzc6MjMuNjI3WiIsInZlcmlmaWNhdGlvbkNvZGUiOm51bGwsInBob25lTnVtYmVyIjpudWxsLCJyb2xlIjoidXNlciIsImNyZWF0ZWRBdCI6IjIwMjUtMDYtMjJUMDU6MzM6MTQuNjUzWiIsImlhdCI6MTc1MDU3MDM5NH0.T-XfQWVWAJXmZ71fiMgUhzVNMyB59lJALR2aKoUoT0g',
+      data: {
+        id: 1,
+        firstName: 'JOHN',
+        lastName: 'Doe',
+        gender: null,
+        email: 'johndoe@gmail.com',
+        isVerified: false,
+        password:
+          '$argon2id$v=19$m=65536,t=3,p=4$BDx1Yi6P4ur/7Kij6aoxew$IAnrpGxpowrjlyGy2kY00Qpv8kw87VuO5ge0AaMrvKk',
+        country: null,
+        Status: null,
+        profileImg: null,
+        dob: '2025-06-16T13:37:23.627Z',
+        verificationCode: null,
+        phoneNumber: null,
+        role: 'user',
+        createdAt: '2025-06-22T05:10:08.095Z',
+      },
+    },
+  })
+  @ApiInternalServerErrorResponse({ description: 'error from server' })
   @Post('register')
   register(@Body() dto: RegisterDTO) {
     return this.authService.register(dto);
