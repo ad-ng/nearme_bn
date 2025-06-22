@@ -8,7 +8,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
-    .setTitle('Property Management System')
+    .setTitle('Everything Near Me')
     .setDescription(
       'Near Me is a location-based backend API that helps travelers and locals discover nearby services, attractions, and businesses. It offers features like location search, service filtering, user reviews, and real-time suggestions—similar to Google Maps or TripAdvisor. Built for speed, accuracy, and scalability.',
     )
