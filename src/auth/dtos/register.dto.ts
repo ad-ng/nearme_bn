@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDateString, IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsDate, IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 export class RegisterDTO {
   @ApiProperty({ example: 'JOHN' })
@@ -18,8 +19,9 @@ export class RegisterDTO {
   email: string;
 
   @ApiProperty({ example: '2025-06-16 15:37:23.627' })
+  @Type(() => Date)
   @IsNotEmpty()
-  @IsDateString()
+  @IsDate()
   dob: Date;
 
   @ApiProperty({ example: 'test@123' })
