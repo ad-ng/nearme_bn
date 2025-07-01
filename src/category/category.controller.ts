@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { CategoryDto } from './dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -12,5 +13,10 @@ export class CategoryController {
   @Get()
   fetchCategories() {
     return this.categoryService.fetchAllCategories();
+  }
+
+  @Post()
+  addCategory(@Body() dto: CategoryDto) {
+    return this.categoryService.createCategory(dto);
   }
 }
