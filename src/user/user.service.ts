@@ -1,16 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { NamesDto } from './dtos';
 
 @Injectable()
 export class UserService {
   constructor(private prisma: PrismaService) {}
 
   async getCurrentUser(user) {
-    const userId: number = user.id;
+    const { id } = user;
 
     const checkUser = await this.prisma.user.findUnique({
-      where: { id: userId },
+      where: { id },
     });
 
     if (!checkUser) throw new UnauthorizedException('Login to continue');
@@ -19,5 +24,28 @@ export class UserService {
       message: 'user found successfully',
       data: checkUser,
     };
+  }
+
+  async updateNames(dto: NamesDto, user) {
+    const { id } = user;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!checkUser) throw new UnauthorizedException('Login to continue');
+
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: dto,
+      });
+      return {
+        message: 'names updated successfully',
+        data: updatedUser,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }
