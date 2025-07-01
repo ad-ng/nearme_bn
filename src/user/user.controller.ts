@@ -3,8 +3,10 @@ import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { UserService } from './user.service';
 import { Request } from 'express';
 import { CountryDTO, NamesDto, TravelStatusDTO } from './dtos';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard, RolesGuard)
+@ApiBearerAuth()
 @Controller('user')
 export class UserController {
   constructor(private userService: UserService) {}
