@@ -5,7 +5,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { NamesDto } from './dtos';
+import { CountryDTO, NamesDto } from './dtos';
 
 @Injectable()
 export class UserService {
@@ -42,6 +42,29 @@ export class UserService {
       });
       return {
         message: 'names updated successfully',
+        data: updatedUser,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateCountry(dto: CountryDTO, user) {
+    const { id } = user;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id },
+    });
+
+    if (!checkUser) throw new UnauthorizedException('Login to continue');
+
+    try {
+      const updatedUser = await this.prisma.user.update({
+        where: { id },
+        data: dto,
+      });
+      return {
+        message: 'country updated successfully',
         data: updatedUser,
       };
     } catch (error) {
