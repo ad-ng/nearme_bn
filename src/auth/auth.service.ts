@@ -9,7 +9,7 @@ import * as argon from 'argon2';
 import { loginDTO, RegisterDTO } from './dtos';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
-import { optTemplate } from 'src/mail/templates/otp.template';
+//import { optTemplate } from 'src/mail/templates/otp.template';
 
 @Injectable()
 export class AuthService {
@@ -46,7 +46,7 @@ export class AuthService {
 
   async register(dto: RegisterDTO) {
     const { email, password, dob, firstName, lastName } = dto;
-    const verificationCode = crypto.randomUUID().split('-')[0];
+    //const verificationCode = crypto.randomUUID().split('-')[0];
 
     const checkEmail = await this.prisma.user.findUnique({ where: { email } });
 
@@ -62,14 +62,15 @@ export class AuthService {
           firstName,
           dob,
           lastName,
-          verificationCode,
         },
       });
-      await this.mailService.sendMail(
-        newUser.email,
-        'Reminder: Confirm your email address',
-        optTemplate(newUser.firstName, newUser.lastName, verificationCode),
-      );
+
+      // await this.mailService.sendMail(
+      //   newUser.email,
+      //   'Reminder: Confirm your email address',
+      //   optTemplate(newUser.firstName, newUser.lastName, verificationCode),
+      // );
+
       return {
         message: 'the user registered successfully',
         token: this.jwt.sign(newUser),
