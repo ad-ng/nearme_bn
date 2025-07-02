@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
@@ -5,7 +6,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CountryDTO, NamesDto, TravelStatusDTO } from './dtos';
+import { CountryDTO, NamesDto, TravelStatusDTO, UserInterestDTO } from './dtos';
 
 @Injectable()
 export class UserService {
@@ -89,6 +90,36 @@ export class UserService {
       return {
         message: 'Travel Status updated successfully',
         data: updatedUser,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async saveUserInterest(dto: UserInterestDTO, user) {
+    const { categoryId } = dto;
+
+    const userId: number = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!checkUser) throw new UnauthorizedException('Login to continue');
+    try {
+      const savedInterest = await this.prisma.userInterests.upsert({
+        where: {
+          userId_categoryId: {
+            userId: userId,
+            categoryId: dto.categoryId,
+          },
+        },
+        create: { categoryId, userId },
+        update: { categoryId, userId },
+      });
+      return {
+        message: 'category saved successfully',
+        data: savedInterest,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
