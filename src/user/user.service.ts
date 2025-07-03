@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
@@ -17,6 +18,7 @@ export class UserService {
 
     const checkUser = await this.prisma.user.findUnique({
       where: { id },
+      include: { userInterests: true },
     });
 
     if (!checkUser) throw new UnauthorizedException('Login to continue');
@@ -110,16 +112,58 @@ export class UserService {
       const savedInterest = await this.prisma.userInterests.upsert({
         where: {
           userId_categoryId: {
-            userId: userId,
-            categoryId: dto.categoryId,
+            userId,
+            categoryId,
           },
         },
         create: { categoryId, userId },
         update: { categoryId, userId },
       });
       return {
-        message: 'category saved successfully',
+        message: 'interest saved successfully',
         data: savedInterest,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async DeleteUserInterest(param, user) {
+    const categoryId: number = parseInt(param.categoryId, 10);
+
+    const userId: number = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!checkUser) throw new UnauthorizedException('Login to continue');
+
+    const checkInterest = await this.prisma.userInterests.findUnique({
+      where: {
+        userId_categoryId: {
+          userId,
+          categoryId,
+        },
+      },
+    });
+
+    if (!checkInterest) {
+      return {
+        message: 'interest deleted successfully',
+      };
+    }
+    try {
+      await this.prisma.userInterests.delete({
+        where: {
+          userId_categoryId: {
+            userId,
+            categoryId,
+          },
+        },
+      });
+      return {
+        message: 'interest deleted successfully',
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
