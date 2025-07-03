@@ -28,4 +28,9 @@ export class RegisterDTO {
   @IsNotEmpty()
   @IsString()
   password: string;
+
+  @ApiProperty({ example: '+250782755794' })
+  @IsNotEmpty()
+  @IsString()
+  phoneNumber: string;
 }

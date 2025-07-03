@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
@@ -5,7 +7,7 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CountryDTO, NamesDto, TravelStatusDTO } from './dtos';
+import { CountryDTO, NamesDto, TravelStatusDTO, UserInterestDTO } from './dtos';
 
 @Injectable()
 export class UserService {
@@ -16,6 +18,7 @@ export class UserService {
 
     const checkUser = await this.prisma.user.findUnique({
       where: { id },
+      include: { userInterests: true },
     });
 
     if (!checkUser) throw new UnauthorizedException('Login to continue');
@@ -89,6 +92,78 @@ export class UserService {
       return {
         message: 'Travel Status updated successfully',
         data: updatedUser,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async saveUserInterest(dto: UserInterestDTO, user) {
+    const { categoryId } = dto;
+
+    const userId: number = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!checkUser) throw new UnauthorizedException('Login to continue');
+    try {
+      const savedInterest = await this.prisma.userInterests.upsert({
+        where: {
+          userId_categoryId: {
+            userId,
+            categoryId,
+          },
+        },
+        create: { categoryId, userId },
+        update: { categoryId, userId },
+      });
+      return {
+        message: 'interest saved successfully',
+        data: savedInterest,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async DeleteUserInterest(param, user) {
+    const categoryId: number = parseInt(param.categoryId, 10);
+
+    const userId: number = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!checkUser) throw new UnauthorizedException('Login to continue');
+
+    const checkInterest = await this.prisma.userInterests.findUnique({
+      where: {
+        userId_categoryId: {
+          userId,
+          categoryId,
+        },
+      },
+    });
+
+    if (!checkInterest) {
+      return {
+        message: 'interest deleted successfully',
+      };
+    }
+    try {
+      await this.prisma.userInterests.delete({
+        where: {
+          userId_categoryId: {
+            userId,
+            categoryId,
+          },
+        },
+      });
+      return {
+        message: 'interest deleted successfully',
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
