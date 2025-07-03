@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  Param,
   Patch,
   Post,
   Req,
@@ -42,5 +44,10 @@ export class UserController {
   @Post('interest')
   addingUserInterest(@Body() dto: UserInterestDTO, @Req() req: Request) {
     return this.userService.saveUserInterest(dto, req.user);
+  }
+
+  @Delete('interest/:categoryId')
+  deletingUserInterest(@Param() Param: any, @Req() req: Request) {
+    return this.userService.DeleteUserInterest(Param, req.user);
   }
 }
