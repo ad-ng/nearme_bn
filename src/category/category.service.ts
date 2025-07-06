@@ -22,9 +22,9 @@ export class CategoryService {
   async createCategory(dto: CategoryDto) {
     try {
       const addCategory = await this.prisma.category.upsert({
-        where: { name: dto.name },
-        create: { name: dto.name },
-        update: { name: dto.name },
+        where: { name: dto.name, isDoc: dto.isDoc },
+        create: { name: dto.name, isDoc: dto.isDoc },
+        update: { name: dto.name, isDoc: dto.isDoc },
       });
 
       return {
