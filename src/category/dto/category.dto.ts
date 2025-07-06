@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsString } from 'class-validator';
 
 export class CategoryDto {
   @ApiProperty({ example: 'Hotels' })
@@ -11,4 +11,9 @@ export class CategoryDto {
   @IsString()
   @Transform(({ value }) => value?.toLowerCase().replace(/\s+/g, ''))
   name: string;
+
+  @ApiProperty({ example: false })
+  @IsNotEmpty()
+  @IsBoolean()
+  isDoc: boolean;
 }

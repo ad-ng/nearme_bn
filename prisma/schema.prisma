@@ -37,6 +37,7 @@ model Category {
   id              Int             @id @default(autoincrement())
   name            String          @unique
   subCategory     SubCategory[]
+  isDoc           Boolean
   interestedUsers UserInterests[]
   docItem         DocItem[]
 }
@@ -45,7 +46,6 @@ model UserInterests {
   id         Int      @id @default(autoincrement())
   userId     Int
   categoryId Int
-  isDoc      Boolean
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
