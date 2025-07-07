@@ -29,13 +29,17 @@ model User {
   phoneNumber      String?
   role             RoleStatus      @default(user)
   userInterests    UserInterests[]
+  docItem          DocItem[]
   createdAt        DateTime        @default(now())
 }
 
 model Category {
   id              Int             @id @default(autoincrement())
   name            String          @unique
+  subCategory     SubCategory[]
+  isDoc           Boolean
   interestedUsers UserInterests[]
+  docItem         DocItem[]
 }
 
 model UserInterests {
@@ -46,6 +50,39 @@ model UserInterests {
   category   Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId])
+}
+
+model SubCategory {
+  id         Int         @id @default(autoincrement())
+  name       String
+  categoryId Int
+  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  placeItems PlaceItem[]
+}
+
+model PlaceItem {
+  id            Int         @id @default(autoincrement())
+  title         String
+  description   String
+  workingHours  String
+  location      String
+  placeImg      String[]
+  businessEmail String
+  phoneNumber   String
+  subCategoryId Int
+  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+}
+
+model DocItem {
+  id          Int      @id @default(autoincrement())
+  title       String
+  authorId    Int
+  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId  Int
+  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  location    String?
+  featuredImg String
+  createdAt   DateTime @default(now())
 }
 
 enum RoleStatus {
