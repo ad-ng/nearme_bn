@@ -1,6 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryDto } from './dto';
+import { CategoryParamDTO } from './dto/categoryParam.dto';
 
 @Injectable()
 export class CategoryService {
@@ -30,6 +35,29 @@ export class CategoryService {
       return {
         message: 'category added successfully',
         data: addCategory,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchSubcategories(param: CategoryParamDTO) {
+    const { name } = param;
+
+    const checkName = await this.prisma.category.findFirst({ where: { name } });
+
+    if (!checkName) {
+      throw new NotFoundException(`no subCategory with name ${name} found`);
+    }
+
+    try {
+      const allSubCategories = await this.prisma.subCategory.findMany({
+        where: { categoryId: checkName.id },
+      });
+
+      return {
+        message: 'subCategories found successfully',
+        data: allSubCategories,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
