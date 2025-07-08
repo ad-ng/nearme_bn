@@ -1,13 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CategoryDto } from './dto';
+import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 
 @Injectable()
@@ -66,6 +64,44 @@ export class CategoryService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async createSubCategories(dto: SubCategoryDTO) {
+    const { categoryName, subCategoryName } = dto;
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: categoryName },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException(`no category with ${categoryName} found`);
+    }
+
+    const checkSubCategory = await this.prisma.subCategory.findFirst({
+      where: { name: subCategoryName },
+    });
+
+    if (checkSubCategory) {
+      throw new BadRequestException(
+        `${subCategoryName} subCategory already exist`,
+      );
+    }
+
+    try {
+      const newSubCategory = await this.prisma.subCategory.create({
+        data: {
+          name: subCategoryName,
+          categoryId: checkCategory.id,
+        },
+      });
+
+      return {
+        message: 'subcategory added successfully',
+        data: newSubCategory,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
     }
   }
 }
