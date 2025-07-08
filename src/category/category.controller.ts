@@ -2,8 +2,10 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CategoryDto } from './dto';
+import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { RoleStatus } from '@prisma/client';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -24,5 +26,11 @@ export class CategoryController {
   @Get(':name')
   fetchSubcategories(@Param() Param: CategoryParamDTO) {
     return this.categoryService.fetchSubcategories(Param);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Post('subcategory')
+  addSubCategory(@Body() dto: SubCategoryDTO) {
+    return this.categoryService.createSubCategories(dto);
   }
 }
