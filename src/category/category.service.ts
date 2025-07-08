@@ -56,6 +56,11 @@ export class CategoryService {
     try {
       const allSubCategories = await this.prisma.subCategory.findMany({
         where: { categoryId: checkName.id },
+        include: {
+          _count: {
+            select: { placeItems: true },
+          },
+        },
       });
 
       return {
