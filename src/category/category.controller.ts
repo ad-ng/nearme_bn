@@ -36,6 +36,6 @@ export class CategoryController {
 
   @Get('subcategory/:name')
   fetchAllPlaceItems(@Param() param: CategoryParamDTO) {
-    return this.categoryService.getAllPlaceItem(param);
+    return this.categoryService.getSubCategoryItems(param);
   }
 }

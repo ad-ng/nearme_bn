@@ -110,7 +110,7 @@ export class CategoryService {
     }
   }
 
-  async getAllPlaceItem(param: CategoryParamDTO) {
+  async getSubCategoryItems(param: CategoryParamDTO) {
     const checkSubCategory = await this.prisma.subCategory.findFirst({
       where: { name: param.name },
     });
@@ -120,11 +120,14 @@ export class CategoryService {
     }
 
     try {
-      const allPlaceItems = await this.prisma.placeItem.findMany({
+      const allSubcategoryItems = await this.prisma.placeItem.findMany({
         where: { subCategoryId: checkSubCategory.id },
       });
 
-      return { message: 'Place Items found successfully', data: allPlaceItems };
+      return {
+        message: 'Place Items found successfully',
+        data: allSubcategoryItems,
+      };
     } catch (error) {
       return new InternalServerErrorException(error);
     }
