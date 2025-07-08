@@ -33,4 +33,9 @@ export class CategoryController {
   addSubCategory(@Body() dto: SubCategoryDTO) {
     return this.categoryService.createSubCategories(dto);
   }
+
+  @Get('subcategory/:name')
+  fetchAllPlaceItems(@Param() param: CategoryParamDTO) {
+    return this.categoryService.getAllPlaceItem(param);
+  }
 }
