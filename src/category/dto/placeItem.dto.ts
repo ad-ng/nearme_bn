@@ -1,5 +1,11 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsArray, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsEmail,
+  IsNotEmpty,
+  IsPhoneNumber,
+  IsString,
+} from 'class-validator';
 
 export class PlaceItemDTO {
   @ApiProperty({ example: 'Safe Ride Car' })
@@ -29,12 +35,12 @@ export class PlaceItemDTO {
 
   @ApiProperty({ example: 'businessemail@gmail.com' })
   @IsNotEmpty()
-  @IsString()
+  @IsEmail()
   businessEmail: string;
 
   @ApiProperty({ example: '+250787377398' })
   @IsNotEmpty()
-  @IsString()
+  @IsPhoneNumber()
   phoneNumber: string;
 
   @ApiProperty({ example: 'Private Transport' })

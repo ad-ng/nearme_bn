@@ -2,7 +2,7 @@ import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CategoryDto, SubCategoryDTO } from './dto';
+import { CategoryDto, PlaceItemDTO, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
@@ -37,5 +37,10 @@ export class CategoryController {
   @Get('subcategory/:name')
   fetchAllPlaceItems(@Param() param: CategoryParamDTO) {
     return this.categoryService.getSubCategoryItems(param);
+  }
+
+  @Post('placeitem')
+  addPlaceItem(@Body() dto: PlaceItemDTO) {
+    return this.categoryService.createPlaceItem(dto);
   }
 }
