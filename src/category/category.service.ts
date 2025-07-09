@@ -175,4 +175,28 @@ export class CategoryService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async fetchDocItems(param: CategoryParamDTO) {
+    const { name } = param;
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException(` no ${name} category found`);
+    }
+
+    try {
+      const allDocItems = await this.prisma.docItem.findMany({
+        where: { categoryId: checkCategory.id },
+      });
+
+      return {
+        message: 'Documents Fetched Successfully',
+        data: allDocItems,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }

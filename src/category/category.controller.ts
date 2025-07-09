@@ -43,4 +43,9 @@ export class CategoryController {
   addPlaceItem(@Body() dto: PlaceItemDTO) {
     return this.categoryService.createPlaceItem(dto);
   }
+
+  @Get('docitem/:name')
+  fetchAllDocItem(@Param() param: CategoryParamDTO) {
+    return this.categoryService.fetchDocItems(param);
+  }
 }
