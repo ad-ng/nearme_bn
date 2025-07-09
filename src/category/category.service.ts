@@ -5,7 +5,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CategoryDto, SubCategoryDTO } from './dto';
+import { CategoryDto, PlaceItemDTO, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 
 @Injectable()
@@ -127,6 +127,49 @@ export class CategoryService {
       return {
         message: 'Place Items found successfully',
         data: allSubcategoryItems,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async createPlaceItem(dto: PlaceItemDTO) {
+    const {
+      businessEmail,
+      description,
+      location,
+      phoneNumber,
+      placeImg,
+      subCategoryName,
+      title,
+      workingHours,
+    } = dto;
+
+    const checkSubCategory = await this.prisma.subCategory.findFirst({
+      where: { name: subCategoryName },
+    });
+
+    if (!checkSubCategory) {
+      throw new NotFoundException(`no subcategory ${subCategoryName} found`);
+    }
+
+    try {
+      const newPlaceItem = await this.prisma.placeItem.create({
+        data: {
+          businessEmail,
+          description,
+          location,
+          phoneNumber,
+          placeImg,
+          title,
+          workingHours,
+          subCategoryId: checkSubCategory.id,
+        },
+      });
+
+      return {
+        message: 'New Place Item Added Successfully',
+        data: newPlaceItem,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
