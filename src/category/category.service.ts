@@ -192,6 +192,7 @@ export class CategoryService {
     try {
       const allDocItems = await this.prisma.docItem.findMany({
         where: { categoryId: checkCategory.id },
+        include: { author: true },
       });
 
       return {
