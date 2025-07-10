@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CategoryDto, PlaceItemDTO, SubCategoryDTO } from './dto';
+import { CategoryDto, DocItemDTO, PlaceItemDTO, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 
 @Injectable()
@@ -194,6 +197,46 @@ export class CategoryService {
       return {
         message: 'Documents Fetched Successfully',
         data: allDocItems,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async createDocItem(dto: DocItemDTO, user) {
+    const authorId: number = user.id;
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: authorId },
+    });
+
+    if (!checkUser || user.role == 'user') {
+      throw new UnauthorizedException();
+    }
+
+    const { categoryName, featuredImg, location, title } = dto;
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: categoryName },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException(` no ${categoryName} category found`);
+    }
+
+    try {
+      const newDocItem = await this.prisma.docItem.create({
+        data: {
+          authorId,
+          featuredImg,
+          location,
+          title,
+          categoryId: checkCategory.id,
+        },
+      });
+
+      return {
+        message: 'DocItem Created Successfully',
+        data: newDocItem,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
