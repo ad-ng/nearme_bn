@@ -17,6 +17,16 @@ export class DocItemDTO {
   @IsString()
   location: string;
 
+  @ApiProperty({ example: 'dhjbjbhjdbhfhbbfbc hfbhfbhbfhf' })
+  @IsNotEmpty()
+  @IsString()
+  description: string;
+
+  @ApiProperty({ example: 'dhjbjbhjdbhfhbbfbc hfbhfbhbfhf' })
+  @IsNotEmpty()
+  @IsString()
+  summary: string;
+
   @ApiProperty({ example: 'http://images.com' })
   @IsNotEmpty()
   @IsString()
