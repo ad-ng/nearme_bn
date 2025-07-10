@@ -214,7 +214,8 @@ export class CategoryService {
       throw new UnauthorizedException();
     }
 
-    const { categoryName, featuredImg, location, title } = dto;
+    const { categoryName, featuredImg, location, title, summary, description } =
+      dto;
 
     const checkCategory = await this.prisma.category.findFirst({
       where: { name: categoryName },
@@ -228,6 +229,8 @@ export class CategoryService {
       const newDocItem = await this.prisma.docItem.create({
         data: {
           authorId,
+          description,
+          summary,
           featuredImg,
           location,
           title,
