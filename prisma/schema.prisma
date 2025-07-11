@@ -53,11 +53,12 @@ model UserInterests {
 }
 
 model SubCategory {
-  id         Int         @id @default(autoincrement())
-  name       String
-  categoryId Int
-  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  placeItems PlaceItem[]
+  id            Int         @id @default(autoincrement())
+  name          String
+  categoryId    Int
+  featuredImage String
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  placeItems    PlaceItem[]
 }
 
 model PlaceItem {

@@ -76,7 +76,7 @@ export class CategoryService {
   }
 
   async createSubCategories(dto: SubCategoryDTO) {
-    const { categoryName, subCategoryName } = dto;
+    const { categoryName, subCategoryName, featuredImage } = dto;
 
     const checkCategory = await this.prisma.category.findFirst({
       where: { name: categoryName },
@@ -100,6 +100,7 @@ export class CategoryService {
       const newSubCategory = await this.prisma.subCategory.create({
         data: {
           name: subCategoryName,
+          featuredImage,
           categoryId: checkCategory.id,
         },
       });
