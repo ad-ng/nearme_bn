@@ -80,6 +80,15 @@ CREATE TABLE "DocItem" (
     CONSTRAINT "DocItem_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "Saved" (
+    "id" SERIAL NOT NULL,
+    "docItemId" INTEGER,
+    "placeItemId" INTEGER,
+
+    CONSTRAINT "Saved_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -106,3 +115,9 @@ ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_authorId_fkey" FOREIGN KEY ("autho
 
 -- AddForeignKey
 ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Saved" ADD CONSTRAINT "Saved_docItemId_fkey" FOREIGN KEY ("docItemId") REFERENCES "DocItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Saved" ADD CONSTRAINT "Saved_placeItemId_fkey" FOREIGN KEY ("placeItemId") REFERENCES "PlaceItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;

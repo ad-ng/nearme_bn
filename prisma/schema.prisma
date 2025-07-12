@@ -72,6 +72,7 @@ model PlaceItem {
   phoneNumber   String
   subCategoryId Int
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  savedItems    Saved[]
 }
 
 model DocItem {
@@ -85,7 +86,16 @@ model DocItem {
   category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   location    String?
   featuredImg String
+  savedItems  Saved[]
   createdAt   DateTime @default(now())
+}
+
+model Saved {
+  id          Int        @id @default(autoincrement())
+  docItemId   Int?
+  docItem     DocItem?   @relation(fields: [docItemId], references: [id], onDelete: Cascade)
+  placeItemId Int?
+  placeItem   PlaceItem? @relation(fields: [placeItemId], references: [id], onDelete: Cascade)
 }
 
 enum RoleStatus {
