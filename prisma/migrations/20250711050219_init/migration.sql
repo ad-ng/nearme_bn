@@ -1,5 +1,5 @@
 -- CreateEnum
-CREATE TYPE "RoleStatus" AS ENUM ('admin', 'moderator', 'user');
+CREATE TYPE "RoleStatus" AS ENUM ('admin', 'moderator', 'support', 'user');
 
 -- CreateTable
 CREATE TABLE "User" (
@@ -45,6 +45,7 @@ CREATE TABLE "SubCategory" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "categoryId" INTEGER NOT NULL,
+    "featuredImage" TEXT NOT NULL,
 
     CONSTRAINT "SubCategory_pkey" PRIMARY KEY ("id")
 );
@@ -68,6 +69,8 @@ CREATE TABLE "PlaceItem" (
 CREATE TABLE "DocItem" (
     "id" SERIAL NOT NULL,
     "title" TEXT NOT NULL,
+    "description" TEXT NOT NULL,
+    "summary" TEXT NOT NULL,
     "authorId" INTEGER NOT NULL,
     "categoryId" INTEGER NOT NULL,
     "location" TEXT,

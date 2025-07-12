@@ -53,11 +53,12 @@ model UserInterests {
 }
 
 model SubCategory {
-  id         Int         @id @default(autoincrement())
-  name       String
-  categoryId Int
-  category   Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  placeItems PlaceItem[]
+  id            Int         @id @default(autoincrement())
+  name          String
+  categoryId    Int
+  featuredImage String
+  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  placeItems    PlaceItem[]
 }
 
 model PlaceItem {
@@ -76,6 +77,8 @@ model PlaceItem {
 model DocItem {
   id          Int      @id @default(autoincrement())
   title       String
+  description String
+  summary     String
   authorId    Int
   author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
   categoryId  Int
@@ -88,5 +91,6 @@ model DocItem {
 enum RoleStatus {
   admin
   moderator
+  support
   user
 }
