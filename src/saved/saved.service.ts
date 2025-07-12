@@ -51,4 +51,6 @@ export class SavedService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async saveItem() {}
 }
