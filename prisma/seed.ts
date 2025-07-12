@@ -252,6 +252,25 @@ Receive Notification: After successful payment, you'll receive a notification ab
         summary: `To renew your resident permit in Rwanda, you need to apply through the IremboGov platform under the "Immigration and Emigration" section, selecting "Permits" and then "Renew permit". You'll need to provide your demographic details, request and travel information, and attach necessary documents like a copy of your passport. After successful application and payment (if required), you'll receive a notification about the pickup of your renewed permit at the DGIE office. `,
         location: `Kigali - Rwanda`,
       },
+      {
+        title: `What Is UMUGANDA and How Is It Done`,
+        authorId: 1,
+        categoryId: 9,
+        description: `Key aspects of Umuganda:
+Community Service:
+Umuganda involves various community improvement projects like cleaning streets, building infrastructure (like classrooms and latrines), and environmental conservation efforts. 
+National Unity:
+It promotes a sense of shared responsibility and national identity among Rwandans. 
+Dialogue and Communication:
+Umuganda serves as a platform for national leaders to interact with citizens and communicate public policies. 
+Decentralized Development:
+It encourages citizen participation in development planning and implementation. 
+Historical Roots:
+Umuganda has its origins in Rwandan culture and was reintroduced after the 1994 genocide to foster healing and rebuilding. `,
+        featuredImg: `https://live.staticflickr.com/5798/31026911786_21df9fef37.jpg`,
+        summary: `Umuganda is a mandatory community work program in Rwanda held on the last Saturday of every month. It translates to "coming together in common purpose to achieve an outcome". Rwandans aged 18-65 are required to participate, with those 65 and older participating optionally. The program aims to foster community development and national unity through collective action. `,
+        location: `Rwanda`,
+      },
     ],
   });
 }

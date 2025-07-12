@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -126,6 +127,15 @@ export class CategoryService {
     try {
       const allSubcategoryItems = await this.prisma.placeItem.findMany({
         where: { subCategoryId: checkSubCategory.id },
+        include: {
+          subCategory: {
+            include: {
+              _count: {
+                select: { placeItems: true },
+              },
+            },
+          },
+        },
       });
 
       return {
@@ -242,6 +252,60 @@ export class CategoryService {
       return {
         message: 'DocItem Created Successfully',
         data: newDocItem,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchAllArticle() {
+    try {
+      const allArticles = await this.prisma.docItem.findMany({
+        include: { author: true },
+        orderBy: [{ id: 'desc' }],
+      });
+
+      return {
+        message: 'Articles Are Fetched Successfully !',
+        data: allArticles,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchRecommendedPlaces(user) {
+    const userId = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) throw new ForbiddenException();
+
+    const userInterest = await this.prisma.userInterests.findMany({
+      where: { userId },
+    });
+
+    const interestIds = userInterest.map((interest) => interest.categoryId);
+
+    try {
+      const allRecommendations = await this.prisma.placeItem.findMany({
+        where: {
+          subCategory: { categoryId: { in: interestIds } },
+        },
+        include: {
+          subCategory: {
+            include: {
+              _count: {
+                select: { placeItems: true },
+              },
+            },
+          },
+        },
+      });
+      return {
+        message: 'Recommendations fetched successfully',
+        data: allRecommendations,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

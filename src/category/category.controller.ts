@@ -62,4 +62,14 @@ export class CategoryController {
   addDocItem(@Body() dto: DocItemDTO, @Req() req: Request) {
     return this.categoryService.createDocItem(dto, req.user);
   }
+
+  @Get('/articles/all')
+  fetchAllCategories() {
+    return this.categoryService.fetchAllArticle();
+  }
+
+  @Get('recommendation/all')
+  fetchRecommendation(@Req() req: Request) {
+    return this.categoryService.fetchRecommendedPlaces(req.user);
+  }
 }
