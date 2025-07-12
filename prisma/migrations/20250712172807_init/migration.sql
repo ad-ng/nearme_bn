@@ -83,6 +83,7 @@ CREATE TABLE "DocItem" (
 -- CreateTable
 CREATE TABLE "Saved" (
     "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
     "docItemId" INTEGER,
     "placeItemId" INTEGER,
 
@@ -115,6 +116,9 @@ ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_authorId_fkey" FOREIGN KEY ("autho
 
 -- AddForeignKey
 ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Saved" ADD CONSTRAINT "Saved_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Saved" ADD CONSTRAINT "Saved_docItemId_fkey" FOREIGN KEY ("docItemId") REFERENCES "DocItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
