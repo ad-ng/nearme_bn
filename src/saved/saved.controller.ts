@@ -1,4 +1,21 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
+import { SavedService } from './saved.service';
+import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
+import { Request } from 'express';
+import { AuthGuard } from 'src/auth/guards';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@UseGuards(AuthGuard)
+@ApiBearerAuth()
 @Controller('saved')
-export class SavedController {}
+export class SavedController {
+  constructor(private savedService: SavedService) {}
+
+  @Get(':name')
+  fetchSavedItemsInCategory(
+    @Param() param: CategoryParamDTO,
+    @Req() req: Request,
+  ) {
+    return this.savedService.fetchSavedInCategory(param, req.user);
+  }
+}
