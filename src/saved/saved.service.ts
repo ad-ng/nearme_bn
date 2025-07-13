@@ -10,6 +10,7 @@ import {
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { SavedDTO } from './dto';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class SavedService {
@@ -42,6 +43,7 @@ export class SavedService {
             { placeItem: { subCategory: { categoryId: checkCategory.id } } },
           ],
         },
+        include: { docItem: true, placeItem: true },
       });
 
       return {
@@ -60,52 +62,44 @@ export class SavedService {
       const checkDocItem = await this.prisma.docItem.findUnique({
         where: { id: docItemId },
       });
-
-      if (!checkDocItem) {
-        throw new NotFoundException(`no docItem with ${docItemId} found`);
-      }
+      if (!checkDocItem)
+        throw new NotFoundException(`No docItem with id ${docItemId}`);
     }
 
     if (placeItemId) {
       const checkPlaceItem = await this.prisma.placeItem.findUnique({
         where: { id: placeItemId },
       });
-
-      if (!checkPlaceItem) {
-        throw new NotFoundException(`no placeItem with ${placeItemId} found`);
-      }
+      if (!checkPlaceItem)
+        throw new NotFoundException(`No placeItem with id ${placeItemId}`);
     }
 
     const userId = user.id;
+
     const checkUser = await this.prisma.user.findUnique({
       where: { id: userId },
     });
-    if (!checkUser) {
-      throw new ForbiddenException();
-    }
+    if (!checkUser) throw new ForbiddenException();
+
+    const orConditions: Prisma.SavedWhereInput[] = [];
+
+    if (docItemId) orConditions.push({ docItemId, userId });
+    if (placeItemId) orConditions.push({ placeItemId, userId });
 
     const checkIfItemAlreadySaved = await this.prisma.saved.findFirst({
-      where: {
-        OR: [
-          { docItemId, userId },
-          { placeItemId, userId },
-        ],
-      },
+      where: { OR: orConditions },
     });
+
     if (checkIfItemAlreadySaved) {
       return {
-        message: 'Item saved successfully',
+        message: 'Item was already saved',
         data: checkIfItemAlreadySaved,
       };
     }
 
     try {
       const newSaved = await this.prisma.saved.create({
-        data: {
-          docItemId,
-          placeItemId,
-          userId,
-        },
+        data: { docItemId, placeItemId, userId },
       });
 
       return {
@@ -113,7 +107,7 @@ export class SavedService {
         data: newSaved,
       };
     } catch (error) {
-      return new InternalServerErrorException(error);
+      throw new InternalServerErrorException(error);
     }
   }
 }
