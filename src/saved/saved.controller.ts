@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Post,
@@ -31,5 +32,10 @@ export class SavedController {
   @Post()
   saveAnItem(@Body() dto: SavedDTO, @Req() req: Request) {
     return this.savedService.saveItem(dto, req.user);
+  }
+
+  @Delete()
+  unsaveItem(@Body() dto: SavedDTO, @Req() req: Request) {
+    return this.savedService.unsaveItem(dto, req.user);
   }
 }

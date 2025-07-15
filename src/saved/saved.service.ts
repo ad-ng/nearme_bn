@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -43,7 +44,32 @@ export class SavedService {
             { placeItem: { subCategory: { categoryId: checkCategory.id } } },
           ],
         },
-        include: { docItem: true, placeItem: true },
+        include: {
+          docItem: {
+            include: {
+              author: true,
+              savedItems: {
+                where: { userId },
+              },
+            },
+          },
+          placeItem: {
+            include: {
+              savedItems: {
+                where: {
+                  userId,
+                },
+              },
+              subCategory: {
+                include: {
+                  _count: {
+                    select: { placeItems: true },
+                  },
+                },
+              },
+            },
+          },
+        },
       });
 
       return {
@@ -57,39 +83,37 @@ export class SavedService {
 
   async saveItem(dto: SavedDTO, user) {
     const { docItemId, placeItemId } = dto;
+    const userId: number = user.id;
+    const orConditions: Prisma.SavedWhereInput[] = [];
 
     if (docItemId) {
       const checkDocItem = await this.prisma.docItem.findUnique({
         where: { id: docItemId },
       });
-      if (!checkDocItem)
+      if (!checkDocItem) {
         throw new NotFoundException(`No docItem with id ${docItemId}`);
+      }
+      orConditions.push({ docItemId, userId });
     }
 
     if (placeItemId) {
       const checkPlaceItem = await this.prisma.placeItem.findUnique({
         where: { id: placeItemId },
       });
-      if (!checkPlaceItem)
+      if (!checkPlaceItem) {
         throw new NotFoundException(`No placeItem with id ${placeItemId}`);
+      }
+      orConditions.push({ placeItemId, userId });
     }
-
-    const userId = user.id;
 
     const checkUser = await this.prisma.user.findUnique({
       where: { id: userId },
     });
     if (!checkUser) throw new ForbiddenException();
 
-    const orConditions: Prisma.SavedWhereInput[] = [];
-
-    if (docItemId) orConditions.push({ docItemId, userId });
-    if (placeItemId) orConditions.push({ placeItemId, userId });
-
     const checkIfItemAlreadySaved = await this.prisma.saved.findFirst({
       where: { OR: orConditions },
     });
-
     if (checkIfItemAlreadySaved) {
       return {
         message: 'Item was already saved',
@@ -105,6 +129,55 @@ export class SavedService {
       return {
         message: 'Item saved successfully',
         data: newSaved,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async unsaveItem(dto: SavedDTO, user) {
+    const { docItemId, placeItemId } = dto;
+    const userId = user.id;
+    const orConditions: Prisma.SavedWhereInput[] = [];
+
+    if (docItemId) {
+      const checkDocItem = await this.prisma.docItem.findUnique({
+        where: { id: docItemId },
+      });
+      if (!checkDocItem) {
+        throw new NotFoundException(`No docItem with id ${docItemId}`);
+      }
+      orConditions.push({ docItemId, userId });
+    }
+
+    if (placeItemId) {
+      const checkPlaceItem = await this.prisma.placeItem.findUnique({
+        where: { id: placeItemId },
+      });
+      if (!checkPlaceItem) {
+        throw new NotFoundException(`No placeItem with id ${placeItemId}`);
+      }
+      orConditions.push({ placeItemId, userId });
+    }
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) throw new ForbiddenException();
+
+    if (orConditions.length === 0) {
+      throw new BadRequestException('Provide either docItemId or placeItemId');
+    }
+
+    try {
+      await this.prisma.saved.deleteMany({
+        where: {
+          OR: orConditions,
+        },
+      });
+
+      return {
+        message: 'Unsave operation completed successfully',
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
