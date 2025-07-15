@@ -115,7 +115,8 @@ export class CategoryService {
     }
   }
 
-  async getSubCategoryItems(param: CategoryParamDTO) {
+  async getSubCategoryItems(param: CategoryParamDTO, user) {
+    const userId = user.id;
     const checkSubCategory = await this.prisma.subCategory.findFirst({
       where: { name: param.name },
     });
@@ -128,6 +129,11 @@ export class CategoryService {
       const allSubcategoryItems = await this.prisma.placeItem.findMany({
         where: { subCategoryId: checkSubCategory.id },
         include: {
+          savedItems: {
+            where: {
+              userId,
+            },
+          },
           subCategory: {
             include: {
               _count: {
@@ -190,8 +196,9 @@ export class CategoryService {
     }
   }
 
-  async fetchDocItems(param: CategoryParamDTO) {
+  async fetchDocItems(param: CategoryParamDTO, user) {
     const { name } = param;
+    const userId = user.id;
     const checkCategory = await this.prisma.category.findFirst({
       where: { name },
     });
@@ -203,7 +210,12 @@ export class CategoryService {
     try {
       const allDocItems = await this.prisma.docItem.findMany({
         where: { categoryId: checkCategory.id },
-        include: { author: true },
+        include: {
+          author: true,
+          savedItems: {
+            where: { userId },
+          },
+        },
       });
 
       return {
@@ -258,10 +270,16 @@ export class CategoryService {
     }
   }
 
-  async fetchAllArticle() {
+  async fetchAllArticle(user) {
+    const userId = user.id;
     try {
       const allArticles = await this.prisma.docItem.findMany({
-        include: { author: true },
+        include: {
+          author: true,
+          savedItems: {
+            where: { userId },
+          },
+        },
         orderBy: [{ id: 'desc' }],
       });
 
@@ -294,6 +312,11 @@ export class CategoryService {
           subCategory: { categoryId: { in: interestIds } },
         },
         include: {
+          savedItems: {
+            where: {
+              userId,
+            },
+          },
           subCategory: {
             include: {
               _count: {
