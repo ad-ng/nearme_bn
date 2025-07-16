@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
@@ -181,6 +180,44 @@ export class SavedService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchTotalSavedInCategory(param: CategoryParamDTO, user) {
+    const { name } = param;
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name },
+    });
+    if (!checkCategory) {
+      throw new NotFoundException(`no category with ${name} found !`);
+    }
+
+    const userId = user.id;
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!checkUser) {
+      throw new ForbiddenException();
+    }
+
+    try {
+      const allTotalSavedPlaceItems = await this.prisma.saved.count({
+        where: {
+          OR: [
+            { docItem: { categoryId: checkCategory.id } },
+            { placeItem: { subCategory: { categoryId: checkCategory.id } } },
+          ],
+        },
+      });
+
+      return {
+        message: 'place items saved fetched successfully',
+        data: allTotalSavedPlaceItems,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
     }
   }
 }

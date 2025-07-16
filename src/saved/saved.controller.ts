@@ -38,4 +38,12 @@ export class SavedController {
   unsaveItem(@Body() dto: SavedDTO, @Req() req: Request) {
     return this.savedService.unsaveItem(dto, req.user);
   }
+
+  @Get('/count/:name')
+  fetchTotalSavedItemsInCategory(
+    @Param() param: CategoryParamDTO,
+    @Req() req: Request,
+  ) {
+    return this.savedService.fetchTotalSavedInCategory(param, req.user);
+  }
 }
