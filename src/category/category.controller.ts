@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -71,5 +72,10 @@ export class CategoryController {
   @Get('recommendation/all')
   fetchRecommendation(@Req() req: Request) {
     return this.categoryService.fetchRecommendedPlaces(req.user);
+  }
+
+  @Get('search/all')
+  searchEveryThing(@Query('query') query: string, @Req() req: Request) {
+    return this.categoryService.search(query, req.user);
   }
 }

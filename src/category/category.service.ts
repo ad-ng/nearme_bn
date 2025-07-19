@@ -334,4 +334,55 @@ export class CategoryService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async search(keyword: string, user) {
+    const userId = user.id;
+    const docItems = await this.prisma.docItem.findMany({
+      where: {
+        OR: [
+          { title: { contains: keyword, mode: 'insensitive' } },
+          //  { description: { contains: keyword, mode: 'insensitive' } },
+          //   { summary: { contains: keyword, mode: 'insensitive' } },
+        ],
+      },
+      take: 3,
+      include: {
+        author: true,
+        savedItems: {
+          where: { userId },
+        },
+      },
+    });
+
+    const placeItems = await this.prisma.placeItem.findMany({
+      where: {
+        OR: [
+          { title: { contains: keyword, mode: 'insensitive' } },
+          //  { description: { contains: keyword, mode: 'insensitive' } },
+          //   { location: { contains: keyword, mode: 'insensitive' } },
+        ],
+      },
+      take: 3,
+      include: {
+        savedItems: {
+          where: {
+            userId,
+          },
+        },
+        subCategory: {
+          include: {
+            _count: {
+              select: { placeItems: true },
+            },
+          },
+        },
+      },
+    });
+    return {
+      data: [
+        ...docItems.map((item) => ({ type: 'doc', data: item })),
+        ...placeItems.map((item) => ({ type: 'place', data: item })),
+      ],
+    };
+  }
 }
