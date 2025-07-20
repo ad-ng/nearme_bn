@@ -7,6 +7,7 @@ import { AuthModule } from './auth/auth.module';
 import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
+import { SavedModule } from './saved/saved.module';
 
 @Module({
   imports: [
@@ -16,6 +17,7 @@ import { CategoryModule } from './category/category.module';
     MailModule,
     UserModule,
     CategoryModule,
+    SavedModule,
   ],
   controllers: [AppController],
   providers: [AppService],
