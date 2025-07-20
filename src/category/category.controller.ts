@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -44,8 +45,8 @@ export class CategoryController {
   }
 
   @Get('subcategory/:name')
-  fetchAllPlaceItems(@Param() param: CategoryParamDTO) {
-    return this.categoryService.getSubCategoryItems(param);
+  fetchAllPlaceItems(@Param() param: CategoryParamDTO, @Req() req: Request) {
+    return this.categoryService.getSubCategoryItems(param, req);
   }
 
   @Post('placeitem')
@@ -54,8 +55,8 @@ export class CategoryController {
   }
 
   @Get('docitem/:name')
-  fetchAllDocItem(@Param() param: CategoryParamDTO) {
-    return this.categoryService.fetchDocItems(param);
+  fetchAllDocItem(@Param() param: CategoryParamDTO, @Req() req: Request) {
+    return this.categoryService.fetchDocItems(param, req.user);
   }
 
   @Post('docitem')
@@ -64,12 +65,17 @@ export class CategoryController {
   }
 
   @Get('/articles/all')
-  fetchAllCategories() {
-    return this.categoryService.fetchAllArticle();
+  fetchAllCategories(@Req() req: Request) {
+    return this.categoryService.fetchAllArticle(req.user);
   }
 
   @Get('recommendation/all')
   fetchRecommendation(@Req() req: Request) {
     return this.categoryService.fetchRecommendedPlaces(req.user);
+  }
+
+  @Get('search/all')
+  searchEveryThing(@Query('query') query: string, @Req() req: Request) {
+    return this.categoryService.search(query, req.user);
   }
 }
