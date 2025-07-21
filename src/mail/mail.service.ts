@@ -30,7 +30,6 @@ export class MailService {
       html,
     });
 
-    console.log('Message sent: %s', info.messageId);
     return info;
   }
 }

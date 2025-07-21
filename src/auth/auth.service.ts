@@ -3,12 +3,14 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { loginDTO, RegisterDTO } from './dtos';
+import { EmailDTO, loginDTO, RegisterDTO } from './dtos';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
+import { pwResetTemplate } from 'src/mail/templates/pw_reset.template';
 //import { optTemplate } from 'src/mail/templates/otp.template';
 
 @Injectable()
@@ -80,5 +82,29 @@ export class AuthService {
     } catch (error) {
       return new InternalServerErrorException(error);
     }
+  }
+
+  async sendEmailPasswordResetCode(dto: EmailDTO) {
+    const { email } = dto;
+
+    const checkUser = await this.prisma.user.findUnique({ where: { email } });
+    if (!checkUser) {
+      throw new NotFoundException(`no user with ${email} found`);
+    }
+
+    const verificationCode = crypto.randomUUID().split('-')[0].substring(0, 5);
+
+    await this.mailService.sendMail(
+      email,
+      'NearMe Password Reset',
+      pwResetTemplate(verificationCode),
+    );
+    await this.prisma.user.update({
+      where: { email },
+      data: { verificationCode },
+    });
+    return {
+      message: `otp sent to your ${email}`,
+    };
   }
 }
