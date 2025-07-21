@@ -7,7 +7,13 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { EmailDTO, loginDTO, OtpVerification, RegisterDTO } from './dtos';
+import {
+  EmailDTO,
+  loginDTO,
+  OtpVerification,
+  RegisterDTO,
+  ResetPasswordDTO,
+} from './dtos';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
 import { pwResetTemplate } from 'src/mail/templates/pw_reset.template';
@@ -123,5 +129,32 @@ export class AuthService {
     return {
       message: 'otp has been verified successfully',
     };
+  }
+
+  async resetPassword(dto: ResetPasswordDTO) {
+    const { otp, email, password } = dto;
+
+    const checkUser = await this.prisma.user.findUnique({ where: { email } });
+    if (!checkUser) {
+      throw new NotFoundException(`no user with ${email}`);
+    }
+
+    if (otp != checkUser.verificationCode) {
+      throw new BadRequestException(`incorrect otp`);
+    }
+
+    try {
+      const hashedPassword: string = await argon.hash(password);
+      await this.prisma.user.update({
+        where: { email },
+        data: { password: hashedPassword, verificationCode: '' },
+      });
+
+      return {
+        message: 'password reset successfully',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }
