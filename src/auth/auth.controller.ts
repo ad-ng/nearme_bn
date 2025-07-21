@@ -1,6 +1,12 @@
 import { Body, Controller, Post } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { EmailDTO, loginDTO, OtpVerification, RegisterDTO } from './dtos';
+import {
+  EmailDTO,
+  loginDTO,
+  OtpVerification,
+  RegisterDTO,
+  ResetPasswordDTO,
+} from './dtos';
 import {
   ApiBadRequestResponse,
   ApiCreatedResponse,
@@ -135,8 +141,14 @@ export class AuthController {
   emailVerification(@Body() dto: EmailDTO) {
     return this.authService.sendEmailPasswordResetCode(dto);
   }
+
   @Post('otp/verification')
   otpVerification(@Body() dto: OtpVerification) {
     return this.authService.verifyOtp(dto);
+  }
+
+  @Post('password/reset')
+  resetPassword(@Body() dto: ResetPasswordDTO) {
+    return this.authService.resetPassword(dto);
   }
 }
