@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
-import { EmailDTO, loginDTO, RegisterDTO } from './dtos';
+import { EmailDTO, loginDTO, OtpVerification, RegisterDTO } from './dtos';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
 import { pwResetTemplate } from 'src/mail/templates/pw_reset.template';
@@ -105,6 +105,23 @@ export class AuthService {
     });
     return {
       message: `otp sent to your ${email}`,
+    };
+  }
+
+  async verifyOtp(dto: OtpVerification) {
+    const { otp, email } = dto;
+
+    const checkUser = await this.prisma.user.findUnique({ where: { email } });
+    if (!checkUser) {
+      throw new NotFoundException(`no user with ${email}`);
+    }
+
+    if (otp != checkUser.verificationCode) {
+      throw new BadRequestException(`incorrect otp`);
+    }
+
+    return {
+      message: 'otp has been verified successfully',
     };
   }
 }
