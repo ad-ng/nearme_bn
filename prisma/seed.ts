@@ -18,7 +18,6 @@ async function main() {
       role: 'admin',
       isVerified: true,
       country: 'Rwanda',
-      Status: 'Local',
     },
   });
 
