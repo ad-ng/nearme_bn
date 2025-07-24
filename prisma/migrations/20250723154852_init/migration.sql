@@ -11,7 +11,6 @@ CREATE TABLE "User" (
     "isVerified" BOOLEAN NOT NULL DEFAULT false,
     "password" TEXT NOT NULL,
     "country" TEXT,
-    "Status" TEXT,
     "profileImg" TEXT,
     "dob" TIMESTAMP(3),
     "verificationCode" TEXT,

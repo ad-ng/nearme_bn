@@ -22,7 +22,6 @@ model User {
   isVerified       Boolean         @default(false)
   password         String
   country          String?
-  Status           String?
   profileImg       String?
   dob              DateTime?
   verificationCode String?
