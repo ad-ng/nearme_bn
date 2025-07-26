@@ -15,7 +15,7 @@ export class UpdateUserDTO {
 
   @ApiProperty({ example: '2025-06-16 15:37:23.627' })
   @Type(() => Date)
-  @IsNotEmpty()
+  @IsOptional()
   @IsDate()
   dob: Date;
 

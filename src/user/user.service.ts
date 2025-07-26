@@ -2,12 +2,13 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CountryDTO, NamesDto, UserInterestDTO } from './dtos';
+import { CountryDTO, NamesDto, UpdateUserDTO, UserInterestDTO } from './dtos';
 
 @Injectable()
 export class UserService {
@@ -141,6 +142,31 @@ export class UserService {
       });
       return {
         message: 'interest deleted successfully',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateCurrentUser(dto: UpdateUserDTO, user) {
+    const userId = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) {
+      throw new ForbiddenException('unregistered user');
+    }
+
+    try {
+      const newUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: dto,
+      });
+
+      return {
+        message: 'user updated successfully',
+        data: newUser,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
