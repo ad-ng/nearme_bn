@@ -146,7 +146,7 @@ async function main() {
       {
         address: 'Huye, Butare',
         provinceId: 4,
-        title: 'Rwanda Ruseum',
+        title: 'Rwanda Museum',
         image:
           'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
       },
@@ -187,6 +187,9 @@ async function main() {
       { name: 'Health & Wellness', isDoc: false }, // 7
       { name: 'Government Services', isDoc: true }, // 8
       { name: 'Local Culture', isDoc: true }, // 9
+      { name: 'Communication & Connectivity', isDoc: true }, //10
+      { name: 'Money & Payment', isDoc: true }, //11
+      { name: 'Entertainment & Sports', isDoc: true }, //12
     ],
   });
   console.log(' categories seeds added successfully');
@@ -415,6 +418,122 @@ Umuganda has its origins in Rwandan culture and was reintroduced after the 1994 
         featuredImg: `https://live.staticflickr.com/5798/31026911786_21df9fef37.jpg`,
         summary: `Umuganda is a mandatory community work program in Rwanda held on the last Saturday of every month. It translates to "coming together in common purpose to achieve an outcome". Rwandans aged 18-65 are required to participate, with those 65 and older participating optionally. The program aims to foster community development and national unity through collective action. `,
         location: `Rwanda`,
+      },
+      {
+        title: 'Best Hotels in Karongi District',
+        authorId: 1,
+        categoryId: 1,
+        summary:
+          'Top Picks by Travel Style For upscale lake views & unique lodging: Cormoran Lodge, Golf Eden Rock, Ruzizi Lodge For business or mid-range comfort: Delta Resort, Rebero Kivu, Romantic Hotel For eco or pet-friendly stays: Rwiza Village, Umutuzo Lodge',
+        description:
+          ' A charming wooden‑cabin lodge with about seven rooms perched right on Lake Kivu. From the VIP cabin, you can view Nyiragongo volcano in Congo. It’s often regarded as one of the older high‑end places in the region. Golf Eden Rock Hotel \n Located directly on a sandy beach in Kibuye, this hotel offers peaceful lakeside dining (including an upscale beach bar and VIP bar) and good value for both leisure and business travelers. \n Rwiza Village\n A cozy 3-star lodge ideal for families and pet owners. Set in a tranquil location, guests enjoy warm service and easy access to boat trips and outdoor excursions. \nDelta Resort Hotel \n Classified around 3.5 stars, this hotel combines beachfront leisure with business‑friendly meeting rooms. It’s convenient for both relaxation and professional gatherings.\n Rebero Kivu Resort \n A lakeside property with multiple conference facilities, perfect for corporate travelers seeking comfortable rooms and work‑ready amenities by the water.',
+        featuredImg:
+          'https://www.shutterstock.com/shutterstock/photos/1424011988/display_1500/stock-photo-city-kibuye-karongi-district-rwanda-january-cormoran-lodge-hotel-scenic-spectacular-1424011988.jpg',
+        location: 'Karongi',
+        provinceId: 3,
+      },
+      {
+        title: `Best Places To Do Sport In Musanze`,
+        authorId: 1,
+        categoryId: 12,
+        summary: `
+        People living or traveling around Musanze often recommend biking the Twin Lakes route independently or renting motorcycles to visit local trails. Although guided tours are safer for longer volcano hikes like Bisoke, many day-level excursions can be done solo or with small groups`,
+        description: `
+        🚣‍♀️ Water Sports
+Kingfisher Journeys – Canoeing & Kayaking
+Group or family-friendly paddling sessions on the Mukungwa River—Canadian canoes or stand-up paddle boarding available with stunning riverside landscapes and sustainability focus 
+
+Lake Ruhondo (near Musanze)
+While formal operators are limited, local boat rentals and informal canoe access exist. Combine paddling with scenic views around volcanic lakes; ask locally for rentals or guided short rides 
+
+⚽ Football & Team Sports
+Musanze (Ubworoherane) Football Stadium
+Home stadium of Musanze FC, this community-level stadium holds around 4,000 spectators and hosts regional football matches. Open for community use and match events 
+
+Musanze Youth Sports Training Center
+A multi-purpose facility near the town center offering field sports, likely used by youth clubs, schools, and local teams. Suitable for recreational football, athletic training, and community sports gatherings`,
+        location: `Musanze`,
+        provinceId: 2,
+        featuredImg: `https://www.ktpress.rw/wp-content/uploads/2022/01/Musanze-2.jpg`,
+      },
+      {
+        title: `Why You Should Visit Nyamirambo`,
+        authorId: 1,
+        categoryId: 9,
+        location: 'Kigali',
+        provinceId: 1,
+        featuredImg: `https://c8.alamy.com/comp/EBX0P8/biggest-mosque-of-nyamirambo-an-area-of-kigali-where-a-larger-number-EBX0P8.jpg`,
+        summary: `Nyamirambo, a vibrant neighborhood in Kigali, Rwanda, is one of the most culturally rich and dynamic places in the country. Here’s why you should absolutely visit Nyamirambo—whether you’re a local exploring new corners of the city or a tourist looking for authentic Rwandan experiences:`,
+        description: `
+        🌍 1. Cultural Melting Pot
+Nyamirambo is often called "the most lively and multicultural neighborhood in Kigali." It blends Rwandan, Muslim, Congolese, and East African influences in its:
+
+Music and fashion
+Street food and local cafés
+Architecture and daily life
+It’s one of the few neighborhoods in Kigali where mosques sit beside churches, and traditional culture lives side-by-side with urban youth energy.
+
+🧕 2. Nyamirambo Women’s Center (NWC)
+One of the main attractions in Nyamirambo is the Nyamirambo Women’s Center, a social enterprise that supports local women with skills and job opportunities. They offer:
+
+Walking tours of the neighborhood with local guides
+Traditional cooking classes in a Rwandan home
+Tailored clothing and crafts from their shop
+Hair-braiding or basket-weaving workshops
+It’s a unique way to support the community while experiencing daily Rwandan life authentically.
+
+🍛 3. Incredible Local Food
+Nyamirambo is a food lover’s paradise. You’ll find:
+
+Brochettes (meat skewers), samosas, chapatis
+Authentic East African street food
+Muslim-influenced dishes, like pilau and spiced tea
+Local juice vendors and fruit markets
+Restaurants like Kigali Curry House, Sakae Korean, and Meze Fresh are not far away if you're craving something different too.
+
+`,
+      },
+      {
+        authorId: 1,
+        categoryId: 10,
+        title: 'Best telecom to use in Southern Rwanda',
+        location: 'Butare',
+        provinceId: 4,
+        featuredImg: `https://www.itnewsafrica.com/wp-content/uploads/2014/09/telecommunication-tower-720.jpg`,
+        summary: `Rwanda’s telecom landscape is dominated by three operators:
+
+MTN Rwanda – hold the largest market share
+
+Airtel Rwanda – strong competitor, especially on price
+
+KTRN (KT Rwanda Networks) – infrastructure provider powering the 4G/LTE network used by MTN and Airtel 
+Both MTN and Airtel provide 2G and 3G, while 4G speeds are delivered via the KT Rwanda network to both providers 
+Phone Travel Wiz
+`,
+        description: `
+        🌍 Coverage in Southern Province
+Southern Province includes districts such as Huye, Nyanza, Muhanga, Nyamagabe, Gisagara, Ruhango, Nyaruguru, and Kamonyi 
+. Mobile coverage is extensive:
+
+MTN built out its LTE network nationwide, covering over 99% of the population by end of 2023 and targets 99.9% coverage by end of 2025 
+ktrn
+Developing Telecoms
+.
+
+Airtel also uses the KT Rwanda network to deliver 4G services across almost the entire country.
+
+Vanu Rwanda, in partnership with Airtel, has deployed solar-powered sites to extend coverage into more rural and mountainous zones in collaboration with mobile operators 
+
+🚀 Network Performance & Speed
+A benchmarking performed during MWC Kigali 2023 showed:
+
+MTN delivered average LTE download speeds of ~38 Mbps and upload speeds ~18 Mbps
+
+Airtel averaged ~20 Mbps download and ~13 Mbps upload
+
+Signal quality was also better on MTN with a stronger measured signal (~–77.8 dBm vs Airtel ~–94.6 dBm) 
+
+Reddit and traveler feedback generally praise MTN for coverage and speed, though Airtel is noted as more affordable and still solid elsewhere`,
       },
     ],
   });
