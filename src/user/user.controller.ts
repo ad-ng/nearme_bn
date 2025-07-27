@@ -12,7 +12,13 @@ import {
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { UserService } from './user.service';
 import { Request } from 'express';
-import { CountryDTO, NamesDto, UpdateUserDTO, UserInterestDTO } from './dtos';
+import {
+  ChangePasswordDTO,
+  CountryDTO,
+  NamesDto,
+  UpdateUserDTO,
+  UserInterestDTO,
+} from './dtos';
 import { ApiBearerAuth } from '@nestjs/swagger';
 
 @UseGuards(AuthGuard, RolesGuard)
@@ -29,6 +35,11 @@ export class UserController {
   @Patch()
   updateCurrentUser(@Req() req: Request, @Body() dto: UpdateUserDTO) {
     return this.userService.updateCurrentUser(dto, req.user);
+  }
+
+  @Patch('/password')
+  changePassword(@Req() req: Request, @Body() dto: ChangePasswordDTO) {
+    return this.userService.changePassword(dto, req.user);
   }
 
   @Patch('names')
