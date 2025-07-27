@@ -8,7 +8,14 @@ import {
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CountryDTO, NamesDto, UpdateUserDTO, UserInterestDTO } from './dtos';
+import * as argon from 'argon2';
+import {
+  ChangePasswordDTO,
+  CountryDTO,
+  NamesDto,
+  UpdateUserDTO,
+  UserInterestDTO,
+} from './dtos';
 
 @Injectable()
 export class UserService {
@@ -168,6 +175,40 @@ export class UserService {
         message: 'user updated successfully',
         data: newUser,
       };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async changePassword(dto: ChangePasswordDTO, user) {
+    const { currentPassword, newPassword } = dto;
+    const userId = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) {
+      throw new ForbiddenException('unregistered user');
+    }
+
+    const checkPassword: boolean = await argon.verify(
+      checkUser.password,
+      currentPassword,
+    );
+
+    if (!checkPassword) {
+      throw new ForbiddenException('current password incorrect');
+    }
+
+    const hashedPassword: string = await argon.hash(newPassword);
+
+    try {
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: {
+          password: hashedPassword,
+        },
+      });
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
