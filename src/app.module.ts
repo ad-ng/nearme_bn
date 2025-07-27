@@ -8,6 +8,7 @@ import { MailModule } from './mail/mail.module';
 import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
 import { SavedModule } from './saved/saved.module';
+import { LocationModule } from './location/location.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { SavedModule } from './saved/saved.module';
     UserModule,
     CategoryModule,
     SavedModule,
+    LocationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
