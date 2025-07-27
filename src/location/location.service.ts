@@ -32,4 +32,32 @@ export class LocationService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async fetchDocItemsInProvince(provinceName: string, user) {
+    const userId = user.id;
+    const checkProvince = await this.prisma.provinces.findFirst({
+      where: { name: provinceName },
+    });
+    if (!checkProvince) {
+      return new NotFoundException(`no ${provinceName} Province found`);
+    }
+
+    try {
+      const allDocItems = await this.prisma.docItem.findMany({
+        where: { provinceId: checkProvince.id },
+        include: {
+          author: true,
+          savedItems: {
+            where: { userId },
+          },
+        },
+      });
+      return {
+        message: 'Doc Items found successfully',
+        data: allDocItems,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
