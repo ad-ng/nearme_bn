@@ -76,18 +76,38 @@ model PlaceItem {
 }
 
 model DocItem {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   title       String
   description String
   summary     String
   authorId    Int
-  author      User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  author      User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
   categoryId  Int
-  category    Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category    Category  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   location    String?
   featuredImg String
   savedItems  Saved[]
-  createdAt   DateTime @default(now())
+  provinceId  Int?
+  province    Provinces? @relation(fields: [provinceId], references: [id])
+  createdAt   DateTime  @default(now())
+}
+
+model Locations {
+  id          Int       @id @default(autoincrement())
+  address     String
+  title       String
+  image       String
+  coordinates String?
+  provinceId  Int
+  province    Provinces @relation(fields: [provinceId], references: [id])
+}
+
+model Provinces {
+  id        Int         @id @default(autoincrement())
+  name      String
+  image     String
+  locations Locations[]
+  docItems  DocItem[]
 }
 
 model Saved {

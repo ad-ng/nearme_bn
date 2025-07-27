@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
@@ -20,9 +22,158 @@ async function main() {
       country: 'Rwanda',
     },
   });
-
-  console.log('###########################################################');
   console.log(' user seed added successfully');
+  console.log('###########################################################');
+
+  await prisma.provinces.createMany({
+    data: [
+      {
+        name: 'Kigali City',
+        image:
+          'https://www.kcc.rw/uploads/9/8/2/4/98249186/kigali-convention-centre-exterior_orig.jpg',
+      },
+      {
+        name: 'North Province',
+        image:
+          'https://www.newtimes.co.rw/thenewtimes/uploads/images/2023/03/17/thumbs/1200x700/14341.jpg',
+      },
+      {
+        name: 'West Province',
+        image:
+          'https://pantheradventures.com/wp-content/uploads/2024/01/lake_kivu_serena_hotel_beach.jpg',
+      },
+      {
+        name: 'South Province',
+        image:
+          'https://www.ugandarwanda-safaris.com/wp-content/uploads/2024/12/Kings-Palace-Nyanza-1024x675.jpg',
+      },
+      {
+        name: 'East Province',
+        image:
+          'https://www.rwandacarrentalservices.com/wp-content/uploads/2020/07/game-drive-rwanda.gif',
+      },
+    ],
+  });
+  console.log(' Provinces seeds added successfully');
+  console.log('###########################################################');
+
+  await prisma.locations.createMany({
+    data: [
+      {
+        address: 'Kigali, Nyamirambo',
+        title: 'Fazenda',
+        image:
+          'https://tarama.ai/catalog/venues/66b333c12e2de_Fazenda-Sengha-horse-ride.jpg',
+        provinceId: 1,
+      },
+      {
+        address: 'Kigali, Nyandungu',
+        title: 'Nyandungu Park',
+        image:
+          'https://gggi.org/wp-content/uploads/2022/02/Nyandungi-IMAGE-5.jpg',
+        provinceId: 1,
+      },
+      {
+        address: 'Kigali, Biryogo',
+        provinceId: 1,
+        title: 'Biryogo',
+        image:
+          'https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2022/06/20/52158390613_6505a8875f_k.jpg',
+      },
+      {
+        address: 'Kigali, Gisozi',
+        provinceId: 1,
+        title: 'Kigali Memorial',
+        image:
+          'https://www.ahnasa.com/wp-content/uploads/2024/10/Kigali-Genocide-Memorial-800x600-1.jpg',
+      },
+      {
+        address: 'Musanze, Cyuve',
+        provinceId: 2,
+        title: 'Musanze Caves',
+        image:
+          'https://www.explorerwandatours.com/wp-content/uploads/2024/10/Musanze_caves_tour-750x450.png',
+      },
+      {
+        address: 'Musanze, Kinigi',
+        provinceId: 2,
+        title: 'Hiking',
+        image:
+          'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/05/ed/4c/caption.jpg?w=500&h=400&s=1',
+      },
+      {
+        address: 'Burera',
+        provinceId: 2,
+        title: 'Twin Lakes: Burera & Ruhondo',
+        image:
+          'https://ecoadventuresafaris.com/wp-content/uploads/2024/05/Visiting-the-Twin-Lakes-of-Ruhondo-and-Burera-in-Rwanda-1200x675.jpeg',
+      },
+      {
+        address: 'Rusizi, Nyungwe',
+        provinceId: 3,
+        title: 'Nyungwe Forest National Park',
+        image:
+          'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
+      },
+      {
+        address: 'Nyabihu, Gishwati',
+        provinceId: 3,
+        title: 'Gishwati‑Mukura, National Park',
+        image:
+          'https://www.arcadiasafaris.com/wp-content/uploads/2025/01/Gishwati-Makura-National-Park.jpg',
+      },
+      {
+        address: 'Kibuye, Bisesero',
+        provinceId: 3,
+        title: 'Bisesero Genocide Memorial Centre',
+        image:
+          'https://www.nyungweforestnationalpark.org/wp-content/uploads/2019/06/Bisesero-Genocide-Memorial-Centre-750x450.jpg',
+      },
+      {
+        address: 'Ruhango, Kibeho',
+        provinceId: 4,
+        title: 'Kibeho Holy Land',
+        image:
+          'https://ikazerwandatours.com/wp-content/uploads/2023/03/Pilgrimage_to_Kibeho3-870x555.jpg',
+      },
+      {
+        address: 'Rusizi, Nyungwe',
+        provinceId: 4,
+        title: 'Nyungwe Forest National Park',
+        image:
+          'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
+      },
+      {
+        address: 'Huye, Butare',
+        provinceId: 4,
+        title: 'Rwanda Ruseum',
+        image:
+          'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
+      },
+      {
+        address: 'Nyagatare, Akagera',
+        provinceId: 5,
+        title: 'Akagera National Park',
+        image:
+          'https://livinginkigali.com/wp-content/uploads/2016/08/Akagera-Hippos.jpg',
+      },
+      {
+        address: 'Rwamagana, Muhazi',
+        provinceId: 5,
+        title: 'Muhazi Lake',
+        image:
+          'https://ugandarwandagorillatours.com/wp-content/uploads/2023/10/Lake-Muhazi-6.jpg',
+      },
+      {
+        address: 'Rwamagana, Rusumo',
+        provinceId: 5,
+        title: 'Rusumo Falls',
+        image:
+          'https://www.explorerwandatours.com/wp-content/uploads/2022/09/rusumo-falls.jpg',
+      },
+    ],
+  });
+  console.log(' Provinces seeds added successfully');
   console.log('###########################################################');
 
   await prisma.category.createMany({
@@ -38,8 +189,6 @@ async function main() {
       { name: 'Local Culture', isDoc: true }, // 9
     ],
   });
-
-  console.log('###########################################################');
   console.log(' categories seeds added successfully');
   console.log('###########################################################');
 
@@ -137,8 +286,6 @@ async function main() {
       }, // 18
     ],
   });
-
-  console.log('###########################################################');
   console.log(' subcategories seed added successfully');
   console.log('###########################################################');
 
@@ -211,7 +358,6 @@ async function main() {
       },
     ],
   });
-  console.log('###########################################################');
   console.log(' place items seed added successfully');
   console.log('###########################################################');
 
@@ -272,6 +418,8 @@ Umuganda has its origins in Rwandan culture and was reintroduced after the 1994 
       },
     ],
   });
+  console.log(' doc items seed added successfully');
+  console.log('###########################################################');
 }
 
 main()
