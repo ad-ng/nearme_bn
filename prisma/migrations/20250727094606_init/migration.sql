@@ -74,9 +74,31 @@ CREATE TABLE "DocItem" (
     "categoryId" INTEGER NOT NULL,
     "location" TEXT,
     "featuredImg" TEXT NOT NULL,
+    "provinceId" INTEGER,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "DocItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Locations" (
+    "id" SERIAL NOT NULL,
+    "address" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+    "coordinates" TEXT,
+    "provinceId" INTEGER NOT NULL,
+
+    CONSTRAINT "Locations_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Provinces" (
+    "id" SERIAL NOT NULL,
+    "name" TEXT NOT NULL,
+    "image" TEXT NOT NULL,
+
+    CONSTRAINT "Provinces_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -115,6 +137,12 @@ ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_authorId_fkey" FOREIGN KEY ("autho
 
 -- AddForeignKey
 ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Provinces"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Locations" ADD CONSTRAINT "Locations_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Provinces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Saved" ADD CONSTRAINT "Saved_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
