@@ -46,4 +46,9 @@ export class SavedController {
   ) {
     return this.savedService.fetchTotalSavedInCategory(param, req.user);
   }
+
+  @Get('categories/all')
+  fetchCategories(@Req() req: Request) {
+    return this.savedService.getCategoriesWithSavedCounts(req.user);
+  }
 }

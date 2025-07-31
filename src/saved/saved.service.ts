@@ -220,4 +220,67 @@ export class SavedService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async getCategoriesWithSavedCounts(user) {
+    const categories = await this.prisma.category.findMany({
+      include: {
+        docItem: {
+          include: {
+            savedItems: {
+              where: {
+                userId: user.id,
+              },
+            },
+          },
+        },
+        subCategory: {
+          include: {
+            placeItems: {
+              include: {
+                savedItems: {
+                  where: {
+                    userId: user.id,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return {
+      data: categories
+        .map((category) => {
+          const docItemSavedCount = category.docItem.reduce(
+            (sum, item) => sum + item.savedItems.length,
+            0,
+          );
+
+          const placeItemSavedCount = category.subCategory.reduce(
+            (sum, sub) => {
+              return (
+                sum +
+                sub.placeItems.reduce(
+                  (placeSum, placeItem) =>
+                    placeSum + placeItem.savedItems.length,
+                  0,
+                )
+              );
+            },
+            0,
+          );
+
+          const totalSavedItems = docItemSavedCount + placeItemSavedCount;
+
+          return {
+            categoryId: category.id,
+            categoryName: category.name,
+            isDoc: category.isDoc,
+            totalSavedItems,
+          };
+        })
+        .filter((category) => category.totalSavedItems > 0),
+    };
+  }
 }
