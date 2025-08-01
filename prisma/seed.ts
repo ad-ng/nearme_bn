@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
@@ -178,18 +176,23 @@ async function main() {
 
   await prisma.category.createMany({
     data: [
-      { name: 'Travel Info', isDoc: true }, // 1
-      { name: 'Transport Services', isDoc: false }, // 2
-      { name: 'Accommodation & Booking', isDoc: false }, // 3
-      { name: 'Activities & Things To Do', isDoc: true }, // 4
-      { name: 'Food & Dinning', isDoc: false }, // 5
-      { name: 'Shopping', isDoc: false }, // 6
-      { name: 'Health & Wellness', isDoc: false }, // 7
-      { name: 'Government Services', isDoc: true }, // 8
-      { name: 'Local Culture', isDoc: true }, // 9
-      { name: 'Communication & Connectivity', isDoc: true }, //10
-      { name: 'Money & Payment', isDoc: true }, //11
-      { name: 'Entertainment & Sports', isDoc: true }, //12
+      { name: 'Travel & Emergency Info', isDoc: true }, // 1
+      { name: 'Transportation Services', isDoc: false }, // 2
+      { name: 'Accommodation & Booking Services', isDoc: false }, // 3
+      { name: 'Communication & Connectivity', isDoc: true }, // 4
+      { name: 'Money & Payments', isDoc: true }, // 5
+      { name: 'Health & Wellness', isDoc: false }, // 6
+      { name: 'Food & Dining', isDoc: false }, // 7
+      { name: 'Local Events, Attractions & Tours', isDoc: true }, // 8
+      { name: 'Shopping', isDoc: true }, // 9
+      { name: 'Local Government Contacts', isDoc: true }, //10
+      { name: 'Utility Services', isDoc: true }, //11
+      { name: 'Cultural & Legal Norms', isDoc: true }, //12
+      { name: 'Schools and Childcare', isDoc: true }, //13
+      { name: 'Housing and Property Info', isDoc: true }, //14
+      { name: 'Job Opportunities/Tenders', isDoc: true }, //15
+      { name: 'Cultural and Religious Centers', isDoc: true }, //16
+      { name: 'Pet Services', isDoc: false }, //17
     ],
   });
   console.log(' categories seeds added successfully');
@@ -238,53 +241,53 @@ async function main() {
         featuredImage: `https://lirp.cdn-website.com/396dd29d/dms3rep/multi/opt/Luxury+Lodges+in+Rwanda.jpg-1920w.webp`,
       }, // 8
       {
-        name: 'Restaurants',
-        categoryId: 5,
+        name: 'Restaurants & reservation systems',
+        categoryId: 7,
         featuredImage: `https://ultimatewildsafaris.com/images/rwanda_Restaurants.jpg`,
       }, // 9
       {
-        name: 'Coffee Shops',
-        categoryId: 5,
+        name: 'Popular local food apps',
+        categoryId: 7,
         featuredImage: `https://sprudge.com/wp-content/uploads/2019/07/Question-Coffee-Gishushu-Kigali-Rwanda-6.jpg`,
       }, // 10
       {
         name: 'Supermarkets',
-        categoryId: 6,
+        categoryId: 9,
         featuredImage: `https://www.simbaonlineshopping.com/Images/EdableOils.jpg`,
       }, // 11
       {
         name: 'Local Markets',
-        categoryId: 6,
+        categoryId: 9,
         featuredImage: `https://dynamic-media-cdn.tripadvisor.com/media/photo-o/18/87/67/68/20190602-112015-largejpg.jpg`,
       }, // 12
       {
         name: 'Mini Markets',
-        categoryId: 6,
+        categoryId: 9,
         featuredImage: `https://c8.alamy.com/comp/ETF0A9/street-scene-with-brightly-painted-shops-nyamirambo-kigali-rwanda-ETF0A9.jpg`,
       }, // 13
       {
         name: 'Hospitals',
-        categoryId: 7,
+        categoryId: 6,
         featuredImage: `https://api.brusselstimes.com/wp-content/uploads/2021/02/rwanda-hospital-c-city-of-kigali.jpg`,
       }, // 14
       {
         name: 'Clinics',
-        categoryId: 7,
+        categoryId: 6,
         featuredImage: `https://www.entandaudiologynews.com/media/35440/ent-ma-24-reception-area-of-clinic.jpg`,
       }, // 15
       {
         name: 'Pharmacy',
-        categoryId: 7,
+        categoryId: 6,
         featuredImage: `https://www.wearetech.africa/media/k2/items/cache/38252c55502a1b07ebc1bd14c44c1fcb_XL.jpg`,
       }, // 16
       {
         name: 'Massage & Sauna',
-        categoryId: 7,
+        categoryId: 6,
         featuredImage: `https://www.newtimes.co.rw/thenewtimes/uploads/images/2025/01/24/thumbs/1200x700/68989.jpg`,
       }, // 17
       {
         name: 'Gym',
-        categoryId: 7,
+        categoryId: 6,
         featuredImage: `https://livinginkigali.com/wp-content/uploads/2023/03/Gym-life2.jpg`,
       }, // 18
     ],
@@ -403,7 +406,7 @@ Receive Notification: After successful payment, you'll receive a notification ab
       {
         title: `What Is UMUGANDA and How Is It Done`,
         authorId: 1,
-        categoryId: 9,
+        categoryId: 8,
         description: `Key aspects of Umuganda:
 Community Service:
 Umuganda involves various community improvement projects like cleaning streets, building infrastructure (like classrooms and latrines), and environmental conservation efforts. 
@@ -433,69 +436,8 @@ Umuganda has its origins in Rwandan culture and was reintroduced after the 1994 
         provinceId: 3,
       },
       {
-        title: `Best Places To Do Sport In Musanze`,
         authorId: 1,
-        categoryId: 12,
-        summary: `
-        People living or traveling around Musanze often recommend biking the Twin Lakes route independently or renting motorcycles to visit local trails. Although guided tours are safer for longer volcano hikes like Bisoke, many day-level excursions can be done solo or with small groups`,
-        description: `
-        🚣‍♀️ Water Sports
-Kingfisher Journeys – Canoeing & Kayaking
-Group or family-friendly paddling sessions on the Mukungwa River—Canadian canoes or stand-up paddle boarding available with stunning riverside landscapes and sustainability focus 
-
-Lake Ruhondo (near Musanze)
-While formal operators are limited, local boat rentals and informal canoe access exist. Combine paddling with scenic views around volcanic lakes; ask locally for rentals or guided short rides 
-
-⚽ Football & Team Sports
-Musanze (Ubworoherane) Football Stadium
-Home stadium of Musanze FC, this community-level stadium holds around 4,000 spectators and hosts regional football matches. Open for community use and match events 
-
-Musanze Youth Sports Training Center
-A multi-purpose facility near the town center offering field sports, likely used by youth clubs, schools, and local teams. Suitable for recreational football, athletic training, and community sports gatherings`,
-        location: `Musanze`,
-        provinceId: 2,
-        featuredImg: `https://www.ktpress.rw/wp-content/uploads/2022/01/Musanze-2.jpg`,
-      },
-      {
-        title: `Why You Should Visit Nyamirambo`,
-        authorId: 1,
-        categoryId: 9,
-        location: 'Kigali',
-        provinceId: 1,
-        featuredImg: `https://c8.alamy.com/comp/EBX0P8/biggest-mosque-of-nyamirambo-an-area-of-kigali-where-a-larger-number-EBX0P8.jpg`,
-        summary: `Nyamirambo, a vibrant neighborhood in Kigali, Rwanda, is one of the most culturally rich and dynamic places in the country. Here’s why you should absolutely visit Nyamirambo—whether you’re a local exploring new corners of the city or a tourist looking for authentic Rwandan experiences:`,
-        description: `
-        🌍 1. Cultural Melting Pot
-Nyamirambo is often called "the most lively and multicultural neighborhood in Kigali." It blends Rwandan, Muslim, Congolese, and East African influences in its:
-
-Music and fashion
-Street food and local cafés
-Architecture and daily life
-It’s one of the few neighborhoods in Kigali where mosques sit beside churches, and traditional culture lives side-by-side with urban youth energy.
-
-🧕 2. Nyamirambo Women’s Center (NWC)
-One of the main attractions in Nyamirambo is the Nyamirambo Women’s Center, a social enterprise that supports local women with skills and job opportunities. They offer:
-
-Walking tours of the neighborhood with local guides
-Traditional cooking classes in a Rwandan home
-Tailored clothing and crafts from their shop
-Hair-braiding or basket-weaving workshops
-It’s a unique way to support the community while experiencing daily Rwandan life authentically.
-
-🍛 3. Incredible Local Food
-Nyamirambo is a food lover’s paradise. You’ll find:
-
-Brochettes (meat skewers), samosas, chapatis
-Authentic East African street food
-Muslim-influenced dishes, like pilau and spiced tea
-Local juice vendors and fruit markets
-Restaurants like Kigali Curry House, Sakae Korean, and Meze Fresh are not far away if you're craving something different too.
-
-`,
-      },
-      {
-        authorId: 1,
-        categoryId: 10,
+        categoryId: 4,
         title: 'Best telecom to use in Southern Rwanda',
         location: 'Butare',
         provinceId: 4,
