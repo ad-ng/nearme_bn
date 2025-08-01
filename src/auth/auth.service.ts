@@ -54,7 +54,6 @@ export class AuthService {
 
   async register(dto: RegisterDTO) {
     const { email, password, dob, firstName, lastName, phoneNumber } = dto;
-    //const verificationCode = crypto.randomUUID().split('-')[0];
 
     const checkEmail = await this.prisma.user.findUnique({ where: { email } });
 
@@ -74,11 +73,19 @@ export class AuthService {
         },
       });
 
-      // await this.mailService.sendMail(
-      //   newUser.email,
-      //   'Reminder: Confirm your email address',
-      //   optTemplate(newUser.firstName, newUser.lastName, verificationCode),
-      // );
+      await this.prisma.userInterests.createMany({
+        data: [
+          { categoryId: 1, userId: newUser.id },
+          { categoryId: 2, userId: newUser.id },
+          { categoryId: 3, userId: newUser.id },
+          { categoryId: 4, userId: newUser.id },
+          { categoryId: 5, userId: newUser.id },
+          { categoryId: 6, userId: newUser.id },
+          { categoryId: 7, userId: newUser.id },
+          { categoryId: 8, userId: newUser.id },
+          { categoryId: 9, userId: newUser.id },
+        ],
+      });
 
       return {
         message: 'the user registered successfully',
