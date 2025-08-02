@@ -16,10 +16,15 @@ import { CategoryParamDTO } from './dto/categoryParam.dto';
 export class CategoryService {
   constructor(private prisma: PrismaService) {}
 
-  async fetchAllCategories() {
+  async fetchAllCategories(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 9;
+    const order = query.order || 'asc';
     try {
       const allCategories = await this.prisma.category.findMany({
-        orderBy: { id: 'desc' },
+        orderBy: { id: order },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
