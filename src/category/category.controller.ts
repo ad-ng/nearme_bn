@@ -24,8 +24,8 @@ export class CategoryController {
   constructor(private categoryService: CategoryService) {}
 
   @Get()
-  fetchCategories() {
-    return this.categoryService.fetchAllCategories();
+  fetchCategories(@Query() query: any) {
+    return this.categoryService.fetchAllCategories(query);
   }
 
   @Post()
