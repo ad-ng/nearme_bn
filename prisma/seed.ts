@@ -63,6 +63,7 @@ async function main() {
         image:
           'https://tarama.ai/catalog/venues/66b333c12e2de_Fazenda-Sengha-horse-ride.jpg',
         provinceId: 1,
+        coords: [-1.98553, 30.029214],
       },
       {
         address: 'Kigali, Nyandungu',
@@ -70,6 +71,7 @@ async function main() {
         image:
           'https://gggi.org/wp-content/uploads/2022/02/Nyandungi-IMAGE-5.jpg',
         provinceId: 1,
+        coords: [-1.955418, 30.145282],
       },
       {
         address: 'Kigali, Biryogo',
@@ -77,6 +79,7 @@ async function main() {
         title: 'Biryogo',
         image:
           'https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2022/06/20/52158390613_6505a8875f_k.jpg',
+        coords: [-1.964788, 30.060237],
       },
       {
         address: 'Kigali, Gisozi',
@@ -84,6 +87,7 @@ async function main() {
         title: 'Kigali Memorial',
         image:
           'https://www.ahnasa.com/wp-content/uploads/2024/10/Kigali-Genocide-Memorial-800x600-1.jpg',
+        coords: [-1.930092, 30.061456],
       },
       {
         address: 'Musanze, Cyuve',
@@ -91,6 +95,7 @@ async function main() {
         title: 'Musanze Caves',
         image:
           'https://www.explorerwandatours.com/wp-content/uploads/2024/10/Musanze_caves_tour-750x450.png',
+        coords: [-1.53481, 29.517136],
       },
       {
         address: 'Musanze, Kinigi',
@@ -98,6 +103,7 @@ async function main() {
         title: 'Hiking',
         image:
           'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/05/ed/4c/caption.jpg?w=500&h=400&s=1',
+        coords: [-1.452547, 29.586159],
       },
       {
         address: 'Burera',
@@ -105,6 +111,7 @@ async function main() {
         title: 'Twin Lakes: Burera & Ruhondo',
         image:
           'https://ecoadventuresafaris.com/wp-content/uploads/2024/05/Visiting-the-Twin-Lakes-of-Ruhondo-and-Burera-in-Rwanda-1200x675.jpeg',
+        coords: [-1.495164, 29.717561],
       },
       {
         address: 'Rusizi, Nyungwe',
@@ -112,6 +119,7 @@ async function main() {
         title: 'Nyungwe Forest National Park',
         image:
           'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
+        coords: [-2.522194, 29.437211],
       },
       {
         address: 'Nyabihu, Gishwati',
@@ -119,6 +127,7 @@ async function main() {
         title: 'Gishwati‑Mukura, National Park',
         image:
           'https://www.arcadiasafaris.com/wp-content/uploads/2025/01/Gishwati-Makura-National-Park.jpg',
+        coords: [-1.83188, 29.346321],
       },
       {
         address: 'Kibuye, Bisesero',
@@ -126,6 +135,7 @@ async function main() {
         title: 'Bisesero Genocide Memorial Centre',
         image:
           'https://www.nyungweforestnationalpark.org/wp-content/uploads/2019/06/Bisesero-Genocide-Memorial-Centre-750x450.jpg',
+        coords: [-2.193085, 29.344883],
       },
       {
         address: 'Ruhango, Kibeho',
@@ -133,6 +143,7 @@ async function main() {
         title: 'Kibeho Holy Land',
         image:
           'https://ikazerwandatours.com/wp-content/uploads/2023/03/Pilgrimage_to_Kibeho3-870x555.jpg',
+        coords: [-2.647632, 29.55404],
       },
       {
         address: 'Rusizi, Nyungwe',
@@ -140,6 +151,7 @@ async function main() {
         title: 'Nyungwe Forest National Park',
         image:
           'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
+        coords: [-2.523566, 29.435838],
       },
       {
         address: 'Huye, Butare',
@@ -147,6 +159,7 @@ async function main() {
         title: 'Rwanda Museum',
         image:
           'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
+        coords: [-2.587995, 29.744196],
       },
       {
         address: 'Nyagatare, Akagera',
@@ -154,6 +167,7 @@ async function main() {
         title: 'Akagera National Park',
         image:
           'https://livinginkigali.com/wp-content/uploads/2016/08/Akagera-Hippos.jpg',
+        coords: [-1.897049, 30.685408],
       },
       {
         address: 'Rwamagana, Muhazi',
@@ -161,6 +175,7 @@ async function main() {
         title: 'Muhazi Lake',
         image:
           'https://ugandarwandagorillatours.com/wp-content/uploads/2023/10/Lake-Muhazi-6.jpg',
+        coords: [-1.874847, 30.372324],
       },
       {
         address: 'Rwamagana, Rusumo',
@@ -168,6 +183,7 @@ async function main() {
         title: 'Rusumo Falls',
         image:
           'https://www.explorerwandatours.com/wp-content/uploads/2022/09/rusumo-falls.jpg',
+        coords: [-2.382219, 30.782931],
       },
     ],
   });
@@ -305,6 +321,7 @@ async function main() {
         phoneNumber: `+250780000000`,
         subCategoryId: 2,
         workingHours: `24 Hours`,
+        coords: [-1.955762, 30.160187],
         placeImg: [
           'https://assets.volkswagen.com/is/image/volkswagenag/price-and-optionshb?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTE5MjAmaGVpPTEwODAmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmM2E1Nw==',
           'https://assets.volkswagen.com/is/image/volkswagenag/Amarok_SSA_Mofa?Zml0PWNyb3AsMSZmbXQ9d2VicC1hbHBoYSZxbHQ9Nzkmd2lkPTEyODAmYmZjPW9mZiY4YTNi',
@@ -319,6 +336,7 @@ async function main() {
         phoneNumber: `+250783919191`,
         subCategoryId: 2,
         workingHours: `24 Hours`,
+        coords: [-1.957277, 30.104758],
         placeImg: [
           'https://rba.co.rw/admin/media_data/cover_photo/IKORA29775.jpg',
           'https://www.yegomoto.com/videos/vid_3.jpg',
@@ -334,6 +352,7 @@ async function main() {
         phoneNumber: `+250783698911`,
         subCategoryId: 3,
         workingHours: `24 Hours`,
+        coords: [-1.944904, 30.058402],
         placeImg: [
           'https://kigaliairporttaxitransfers.com/wp-content/uploads/2025/02/IMG_20231208_111107_972-scaled.jpg',
         ],
@@ -346,6 +365,7 @@ async function main() {
         phoneNumber: `+250780870670`,
         subCategoryId: 4,
         workingHours: `24 Hours`,
+        coords: [-1.959584, 30.081771],
         placeImg: [
           'https://kigaliairporttaxitransfers.com/wp-content/uploads/2025/02/IMG_20231208_111107_972-scaled.jpg',
         ],
@@ -358,6 +378,7 @@ async function main() {
         phoneNumber: `+250788508228`,
         subCategoryId: 4,
         workingHours: `24 Hours`,
+        coords: [-1.945182, 30.061229],
         placeImg: [
           'https://rwandaecocompany.com/wp-content/uploads/2022/09/akagera.jpg',
         ],
