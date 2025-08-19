@@ -56,12 +56,24 @@ CREATE TABLE "PlaceItem" (
     "description" TEXT NOT NULL,
     "workingHours" TEXT NOT NULL,
     "location" TEXT NOT NULL,
+    "coords" DECIMAL(65,30)[],
     "placeImg" TEXT[],
     "businessEmail" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
     "subCategoryId" INTEGER NOT NULL,
 
     CONSTRAINT "PlaceItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Review" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "placeItemId" INTEGER NOT NULL,
+    "content" TEXT NOT NULL,
+    "rates" INTEGER[],
+
+    CONSTRAINT "Review_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -86,7 +98,7 @@ CREATE TABLE "Locations" (
     "address" TEXT NOT NULL,
     "title" TEXT NOT NULL,
     "image" TEXT NOT NULL,
-    "coordinates" TEXT,
+    "coords" DECIMAL(65,30)[],
     "provinceId" INTEGER NOT NULL,
 
     CONSTRAINT "Locations_pkey" PRIMARY KEY ("id")
@@ -131,6 +143,12 @@ ALTER TABLE "SubCategory" ADD CONSTRAINT "SubCategory_categoryId_fkey" FOREIGN K
 
 -- AddForeignKey
 ALTER TABLE "PlaceItem" ADD CONSTRAINT "PlaceItem_subCategoryId_fkey" FOREIGN KEY ("subCategoryId") REFERENCES "SubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Review" ADD CONSTRAINT "Review_placeItemId_fkey" FOREIGN KEY ("placeItemId") REFERENCES "PlaceItem"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_authorId_fkey" FOREIGN KEY ("authorId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
