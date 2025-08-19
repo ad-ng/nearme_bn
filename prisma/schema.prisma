@@ -31,6 +31,7 @@ model User {
   docItems         DocItem[]
   savedItems       Saved[]
   createdAt        DateTime        @default(now())
+  Review           Review[]
 }
 
 model Category {
@@ -74,6 +75,17 @@ model PlaceItem {
   subCategoryId Int
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   savedItems    Saved[]
+  Review        Review[]
+}
+
+model Review {
+  id          Int       @id @default(autoincrement())
+  userId      Int
+  user        User      @relation(references: [id], fields: [userId])
+  placeItemId Int
+  placeItem   PlaceItem @relation(references: [id], fields: [placeItemId])
+  content     String
+  rates       Int[]
 }
 
 model DocItem {
