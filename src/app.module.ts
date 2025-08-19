@@ -9,6 +9,7 @@ import { UserModule } from './user/user.module';
 import { CategoryModule } from './category/category.module';
 import { SavedModule } from './saved/saved.module';
 import { LocationModule } from './location/location.module';
+import { ReviewModule } from './review/review.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { LocationModule } from './location/location.module';
     CategoryModule,
     SavedModule,
     LocationModule,
+    ReviewModule,
   ],
   controllers: [AppController],
   providers: [AppService],
