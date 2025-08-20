@@ -71,7 +71,7 @@ CREATE TABLE "Review" (
     "userId" INTEGER NOT NULL,
     "placeItemId" INTEGER NOT NULL,
     "content" TEXT NOT NULL,
-    "rates" INTEGER[],
+    "rates" INTEGER NOT NULL,
 
     CONSTRAINT "Review_pkey" PRIMARY KEY ("id")
 );
@@ -131,6 +131,9 @@ CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserInterests_userId_categoryId_key" ON "UserInterests"("userId", "categoryId");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Review_userId_placeItemId_key" ON "Review"("userId", "placeItemId");
 
 -- AddForeignKey
 ALTER TABLE "UserInterests" ADD CONSTRAINT "UserInterests_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
