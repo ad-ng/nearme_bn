@@ -10,4 +10,9 @@ export class ReviewController {
   getTotalReviews(@Param() Param: any) {
     return this.reviewService.getTotalReviews(Param['placeItemId']);
   }
+
+  @Get(':placeItemId')
+  getAllReviews(@Param() Param: any) {
+    return this.reviewService.getAllReview(Param['placeItemId']);
+  }
 }
