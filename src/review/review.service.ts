@@ -23,9 +23,15 @@ export class ReviewService {
       const totalReviews = await this.prisma.review.count({
         where: { placeItemId },
       });
+      const avgRates = await this.prisma.review.aggregate({
+        _avg: {
+          rates: true,
+        },
+      });
       return {
         message: 'Total Reviews found successfully',
         totalReviews,
+        avgRates: avgRates._avg.rates,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
