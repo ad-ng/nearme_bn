@@ -1,7 +1,21 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Controller, Get, Param } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ReviewService } from './review.service';
+import { Request } from 'express';
+import { addReviewDTO } from './dto';
+import { AuthGuard, RolesGuard } from 'src/auth/guards';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@UseGuards(AuthGuard, RolesGuard)
+@ApiBearerAuth()
 @Controller('review')
 export class ReviewController {
   constructor(private reviewService: ReviewService) {}
@@ -14,5 +28,10 @@ export class ReviewController {
   @Get(':placeItemId')
   getAllReviews(@Param() Param: any) {
     return this.reviewService.getAllReview(Param['placeItemId']);
+  }
+
+  @Post()
+  addReview(@Req() req: Request, @Body() dto: addReviewDTO) {
+    return this.reviewService.addReview(dto, req.user);
   }
 }

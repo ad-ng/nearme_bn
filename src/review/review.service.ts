@@ -7,6 +7,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { addReviewDTO } from './dto';
 
 @Injectable()
 export class ReviewService {
@@ -52,6 +53,34 @@ export class ReviewService {
       return {
         message: 'reviews found successfully',
         data: allReviews,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async addReview(dto: addReviewDTO, user) {
+    const { placeItemId, content, rates } = dto;
+    const userId = user.id;
+    const checkPlaceItem = await this.prisma.placeItem.findUnique({
+      where: { id: placeItemId },
+    });
+    if (!checkPlaceItem) throw new NotFoundException('no place item found');
+
+    try {
+      const newReview = await this.prisma.review.upsert({
+        create: { content, rates, placeItemId, userId },
+        update: { content, rates },
+        where: {
+          userId_placeItemId: {
+            placeItemId,
+            userId,
+          },
+        },
+      });
+      return {
+        message: 'a review created successfully',
+        data: newReview,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
