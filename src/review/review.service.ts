@@ -37,4 +37,24 @@ export class ReviewService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async getAllReview(placeItemIdParam) {
+    const placeItemId = parseInt(`${placeItemIdParam}`, 10);
+    const checkPlaceItem = await this.prisma.placeItem.findUnique({
+      where: { id: placeItemId },
+    });
+    if (!checkPlaceItem) throw new NotFoundException('no place item found');
+
+    try {
+      const allReviews = await this.prisma.review.findMany({
+        where: { placeItemId },
+      });
+      return {
+        message: 'reviews found successfully',
+        data: allReviews,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
