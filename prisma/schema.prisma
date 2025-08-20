@@ -85,7 +85,9 @@ model Review {
   placeItemId Int
   placeItem   PlaceItem @relation(references: [id], fields: [placeItemId])
   content     String
-  rates       Int[]
+  rates       Int
+
+  @@unique([userId, placeItemId])
 }
 
 model DocItem {
