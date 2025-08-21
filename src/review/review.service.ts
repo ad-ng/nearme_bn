@@ -49,6 +49,7 @@ export class ReviewService {
     try {
       const allReviews = await this.prisma.review.findMany({
         where: { placeItemId },
+        include: { user: true },
       });
       return {
         message: 'reviews found successfully',
