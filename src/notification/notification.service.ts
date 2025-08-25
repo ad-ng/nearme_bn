@@ -34,17 +34,42 @@ export class NotificationService {
     }
   }
 
-  async sendPush() {
+  async fetchAllNNotifications(user) {
+    const userId: number = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) throw new UnauthorizedException();
+
+    try {
+      const allNotifications = await this.prisma.userNotification.findMany({
+        where: { userId },
+      });
+      return {
+        message: 'notifications fetched successfully',
+        data: allNotifications,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async sendPush(
+    notificationTitle: string,
+    notificationBody: string,
+    firebaseDeviceId: string,
+  ) {
     try {
       await firebase
         .messaging()
         .send({
           notification: {
-            title: 'new added article',
-            body: 'tough time never last, only tough people last !',
+            title: notificationTitle,
+            body: notificationBody,
           },
-          token:
-            'e3DFERl8RqqeSOE5MYvRsM:APA91bHud0AosSzua6S53J4uFsBA72ahKV2HbL1sy12LwybXy24DmAChb7EbJmihK2Q02kkYRYYxtJedBGTOYizyyfZwSLXG3B0vtO0rPqgWdWWidM_-3N4',
+          token: firebaseDeviceId,
+          //  'e3DFERl8RqqeSOE5MYvRsM:APA91bHud0AosSzua6S53J4uFsBA72ahKV2HbL1sy12LwybXy24DmAChb7EbJmihK2Q02kkYRYYxtJedBGTOYizyyfZwSLXG3B0vtO0rPqgWdWWidM_-3N4',
           data: {},
           android: {
             priority: 'high',

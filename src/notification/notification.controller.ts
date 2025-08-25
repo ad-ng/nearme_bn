@@ -15,4 +15,9 @@ export class NotificationController {
   allNotificationCount(@Req() req: Request) {
     return this.notificationService.getNotificationCount(req.user);
   }
+
+  @Get('all')
+  getAllNotifications(@Req() req: Request) {
+    return this.notificationService.fetchAllNNotifications(req.user);
+  }
 }
