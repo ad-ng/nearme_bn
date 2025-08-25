@@ -1,4 +1,4 @@
-import { Controller, Get, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { RolesGuard } from 'src/auth/guards';
@@ -19,5 +19,10 @@ export class NotificationController {
   @Get('all')
   getAllNotifications(@Req() req: Request) {
     return this.notificationService.fetchAllNNotifications(req.user);
+  }
+
+  @Patch('read/:notificationId')
+  readNotification(@Req() req: Request, @Param() param: any) {
+    return this.notificationService.readNotification(req.user, param);
   }
 }
