@@ -10,6 +10,7 @@ import { CategoryModule } from './category/category.module';
 import { SavedModule } from './saved/saved.module';
 import { LocationModule } from './location/location.module';
 import { ReviewModule } from './review/review.module';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { ReviewModule } from './review/review.module';
     SavedModule,
     LocationModule,
     ReviewModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
