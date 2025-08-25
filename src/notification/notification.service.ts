@@ -1,10 +1,38 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+import {
+  Injectable,
+  InternalServerErrorException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as firebase from 'firebase-admin';
 
 @Injectable()
 export class NotificationService {
   constructor(private prisma: PrismaService) {}
+
+  async getNotificationCount(user) {
+    const userId: number = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) throw new UnauthorizedException();
+
+    try {
+      const allNotificationsCount = await this.prisma.userNotification.count({
+        where: { userId },
+      });
+      return {
+        message: 'notification count fetched successfully',
+        notificationCount: allNotificationsCount,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 
   async sendPush() {
     try {
