@@ -14,24 +14,28 @@ datasource db {
 }
 
 model User {
-  id               Int             @id @default(autoincrement())
+  id               Int                @id @default(autoincrement())
   firstName        String
   lastName         String
   gender           String?
-  email            String          @unique
-  isVerified       Boolean         @default(false)
+  email            String             @unique
+  isVerified       Boolean            @default(false)
   password         String
   country          String?
   profileImg       String?
   dob              DateTime?
   verificationCode String?
   phoneNumber      String?
-  role             RoleStatus      @default(user)
+  firebaseDeviceId String?
+  role             RoleStatus         @default(user)
   userInterests    UserInterests[]
   docItems         DocItem[]
   savedItems       Saved[]
-  createdAt        DateTime        @default(now())
+  createdAt        DateTime           @default(now())
   Review           Review[]
+  UserNotification UserNotification[]
+
+  @@index([email])
 }
 
 model Category {
@@ -41,6 +45,7 @@ model Category {
   isDoc           Boolean
   interestedUsers UserInterests[]
   docItem         DocItem[]
+  Notification    Notification[]
 }
 
 model UserInterests {
@@ -76,6 +81,8 @@ model PlaceItem {
   subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   savedItems    Saved[]
   Review        Review[]
+
+  @@index([subCategoryId])
 }
 
 model Review {
@@ -88,6 +95,7 @@ model Review {
   rates       Int
 
   @@unique([userId, placeItemId])
+  @@index([userId, placeItemId])
 }
 
 model DocItem {
@@ -125,6 +133,31 @@ model Provinces {
   docItems  DocItem[]
 }
 
+model Notification {
+  id                Int                @id @default(autoincrement())
+  categoryId        Int?
+  category          Category?          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  type              NotificationType   @default(SYSTEM)
+  title             String
+  body              String
+  data              Json?
+  userNotifications UserNotification[]
+  createdAt         DateTime           @default(now())
+}
+
+model UserNotification {
+  id             Int          @id @default(autoincrement())
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId         Int
+  notification   Notification @relation(fields: [notificationId], references: [id], onDelete: Cascade)
+  notificationId Int
+  isRead         Boolean      @default(false)
+  createdAt      DateTime     @default(now())
+
+  @@unique([userId, notificationId])
+  @@index([userId, isRead])
+}
+
 model Saved {
   id          Int        @id @default(autoincrement())
   userId      Int
@@ -140,4 +173,11 @@ enum RoleStatus {
   moderator
   support
   user
+}
+
+enum NotificationType {
+  SYSTEM
+  ALERT
+  REMINDER
+  PROMOTION
 }

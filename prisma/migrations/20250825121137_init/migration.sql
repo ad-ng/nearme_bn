@@ -1,6 +1,9 @@
 -- CreateEnum
 CREATE TYPE "RoleStatus" AS ENUM ('admin', 'moderator', 'support', 'user');
 
+-- CreateEnum
+CREATE TYPE "NotificationType" AS ENUM ('SYSTEM', 'ALERT', 'REMINDER', 'PROMOTION');
+
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
@@ -15,6 +18,7 @@ CREATE TABLE "User" (
     "dob" TIMESTAMP(3),
     "verificationCode" TEXT,
     "phoneNumber" TEXT,
+    "firebaseDeviceId" TEXT,
     "role" "RoleStatus" NOT NULL DEFAULT 'user',
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
@@ -114,6 +118,30 @@ CREATE TABLE "Provinces" (
 );
 
 -- CreateTable
+CREATE TABLE "Notification" (
+    "id" SERIAL NOT NULL,
+    "categoryId" INTEGER,
+    "type" "NotificationType" NOT NULL DEFAULT 'SYSTEM',
+    "title" TEXT NOT NULL,
+    "body" TEXT NOT NULL,
+    "data" JSONB,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Notification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "UserNotification" (
+    "id" SERIAL NOT NULL,
+    "userId" INTEGER NOT NULL,
+    "notificationId" INTEGER NOT NULL,
+    "isRead" BOOLEAN NOT NULL DEFAULT false,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "UserNotification_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "Saved" (
     "id" SERIAL NOT NULL,
     "userId" INTEGER NOT NULL,
@@ -127,13 +155,28 @@ CREATE TABLE "Saved" (
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
+CREATE INDEX "User_email_idx" ON "User"("email");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Category_name_key" ON "Category"("name");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserInterests_userId_categoryId_key" ON "UserInterests"("userId", "categoryId");
 
 -- CreateIndex
+CREATE INDEX "PlaceItem_subCategoryId_idx" ON "PlaceItem"("subCategoryId");
+
+-- CreateIndex
+CREATE INDEX "Review_userId_placeItemId_idx" ON "Review"("userId", "placeItemId");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "Review_userId_placeItemId_key" ON "Review"("userId", "placeItemId");
+
+-- CreateIndex
+CREATE INDEX "UserNotification_userId_isRead_idx" ON "UserNotification"("userId", "isRead");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "UserNotification_userId_notificationId_key" ON "UserNotification"("userId", "notificationId");
 
 -- AddForeignKey
 ALTER TABLE "UserInterests" ADD CONSTRAINT "UserInterests_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -164,6 +207,15 @@ ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_provinceId_fkey" FOREIGN KEY ("pro
 
 -- AddForeignKey
 ALTER TABLE "Locations" ADD CONSTRAINT "Locations_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Provinces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Notification" ADD CONSTRAINT "Notification_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserNotification" ADD CONSTRAINT "UserNotification_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "UserNotification" ADD CONSTRAINT "UserNotification_notificationId_fkey" FOREIGN KEY ("notificationId") REFERENCES "Notification"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Saved" ADD CONSTRAINT "Saved_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
