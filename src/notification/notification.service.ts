@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -9,6 +10,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as firebase from 'firebase-admin';
+import { NotificationDTO } from './dto';
 
 @Injectable()
 export class NotificationService {
@@ -83,47 +85,98 @@ export class NotificationService {
     }
   }
 
-  async sendPush(
+  async createNotification(dto: NotificationDTO) {
+    if (dto.categoryId) {
+      const checkCategory = await this.prisma.category.findUnique({
+        where: { id: dto.categoryId },
+      });
+      if (!checkCategory) throw new NotFoundException('incorrect categoryId');
+    }
+
+    try {
+      const newNotification = await this.prisma.notification.create({
+        data: dto,
+      });
+
+      // fire-and-forget user notifications + push
+      void (async () => {
+        try {
+          const interestedUsers = await this.prisma.user.findMany({
+            where: {
+              userInterests: {
+                some: { categoryId: dto.categoryId },
+              },
+            },
+          });
+
+          const notificationData = interestedUsers.map((user) => ({
+            isRead: false,
+            notificationId: newNotification.id,
+            userId: user.id,
+          }));
+
+          await this.prisma.userNotification.createMany({
+            data: notificationData,
+            skipDuplicates: true,
+          });
+
+          // fire-and-forget push notifications
+          interestedUsers.forEach((user) => {
+            if (user.firebaseDeviceId) {
+              void this.sendFirebasePushNotification(
+                dto.title,
+                dto.body,
+                user.firebaseDeviceId,
+              );
+            }
+          });
+        } catch (err) {
+          console.error('Error while creating user notifications', err);
+        }
+      })();
+
+      return {
+        message: 'notification created successfully',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async sendFirebasePushNotification(
     notificationTitle: string,
     notificationBody: string,
     firebaseDeviceId: string,
   ) {
     try {
-      await firebase
-        .messaging()
-        .send({
+      await firebase.messaging().send({
+        notification: {
+          title: notificationTitle,
+          body: notificationBody,
+        },
+        token: firebaseDeviceId,
+        data: {},
+        android: {
+          priority: 'high',
           notification: {
-            title: notificationTitle,
-            body: notificationBody,
+            sound: 'default',
+            channelId: 'default',
           },
-          token: firebaseDeviceId,
-          //  'e3DFERl8RqqeSOE5MYvRsM:APA91bHud0AosSzua6S53J4uFsBA72ahKV2HbL1sy12LwybXy24DmAChb7EbJmihK2Q02kkYRYYxtJedBGTOYizyyfZwSLXG3B0vtO0rPqgWdWWidM_-3N4',
-          data: {},
-          android: {
-            priority: 'high',
-            notification: {
+        },
+        apns: {
+          headers: {
+            'apns-priority': '10',
+          },
+          payload: {
+            aps: {
+              contentAvailable: true,
               sound: 'default',
-              channelId: 'default',
             },
           },
-          apns: {
-            headers: {
-              'apns-priority': '10',
-            },
-            payload: {
-              aps: {
-                contentAvailable: true,
-                sound: 'default',
-              },
-            },
-          },
-        })
-        .catch((error: any) => {
-          console.error(error);
-        });
+        },
+      });
     } catch (error) {
-      console.log(error);
-      return new InternalServerErrorException(error);
+      console.error('Error sending push notification:', error);
     }
   }
 }

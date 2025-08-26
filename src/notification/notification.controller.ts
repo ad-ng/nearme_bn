@@ -1,9 +1,21 @@
-import { Controller, Get, Param, Patch, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { NotificationService } from './notification.service';
 import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Request } from 'express';
+import { NotificationDTO } from './dto';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { RoleStatus } from '@prisma/client';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -19,6 +31,12 @@ export class NotificationController {
   @Get('all')
   getAllNotifications(@Req() req: Request) {
     return this.notificationService.fetchAllNNotifications(req.user);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Post('add')
+  addNotification(@Body() dto: NotificationDTO) {
+    return this.notificationService.createNotification(dto);
   }
 
   @Patch('read/:notificationId')
