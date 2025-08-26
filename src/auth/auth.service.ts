@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 import {
   BadRequestException,
   ForbiddenException,
@@ -85,6 +87,10 @@ export class AuthService {
           { categoryId: 8, userId: newUser.id },
           { categoryId: 9, userId: newUser.id },
         ],
+      });
+
+      await this.prisma.userNotification.create({
+        data: { isRead: false, notificationId: 1, userId: newUser.id },
       });
 
       return {

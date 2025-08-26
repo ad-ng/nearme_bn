@@ -24,7 +24,7 @@ export class NotificationService {
 
     try {
       const allNotificationsCount = await this.prisma.userNotification.count({
-        where: { userId },
+        where: { userId, isRead: false },
       });
       return {
         message: 'notification count fetched successfully',
@@ -46,6 +46,7 @@ export class NotificationService {
     try {
       const allNotifications = await this.prisma.userNotification.findMany({
         where: { userId },
+        include: { notification: true },
       });
       return {
         message: 'notifications fetched successfully',

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
@@ -501,6 +503,17 @@ Reddit and traveler feedback generally praise MTN for coverage and speed, though
     ],
   });
   console.log(' doc items seed added successfully');
+  console.log('###########################################################');
+
+  await prisma.notification.create({
+    data: {
+      body: `Explore nearby spots, reviews & hidden gems — start your journey now!`,
+      title: '🎉 Welcome to NearMe!',
+      type: 'SYSTEM',
+    },
+  });
+
+  console.log(' welcome nnotification');
   console.log('###########################################################');
 }
 
