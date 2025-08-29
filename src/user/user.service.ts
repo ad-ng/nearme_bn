@@ -12,6 +12,7 @@ import * as argon from 'argon2';
 import {
   ChangePasswordDTO,
   CountryDTO,
+  firebaseDeviceIdDTO,
   NamesDto,
   UpdateUserDTO,
   UserInterestDTO,
@@ -209,6 +210,31 @@ export class UserService {
           password: hashedPassword,
         },
       });
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateFirebaseDeviceId(dto: firebaseDeviceIdDTO, user) {
+    const userId = user.id;
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+
+    if (!checkUser) {
+      throw new ForbiddenException('unregistered user');
+    }
+
+    try {
+      const newUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: { firebaseDeviceId: dto.firebaseDeviceId },
+      });
+
+      return {
+        message: 'firebaseDeviceId updated successfully',
+        data: newUser,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }

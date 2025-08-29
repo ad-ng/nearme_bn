@@ -15,6 +15,7 @@ import { Request } from 'express';
 import {
   ChangePasswordDTO,
   CountryDTO,
+  firebaseDeviceIdDTO,
   NamesDto,
   UpdateUserDTO,
   UserInterestDTO,
@@ -35,6 +36,14 @@ export class UserController {
   @Patch()
   updateCurrentUser(@Req() req: Request, @Body() dto: UpdateUserDTO) {
     return this.userService.updateCurrentUser(dto, req.user);
+  }
+
+  @Patch('firebase')
+  changeFirebaseDeviceId(
+    @Req() req: Request,
+    @Body() dto: firebaseDeviceIdDTO,
+  ) {
+    return this.userService.updateFirebaseDeviceId(dto, req.user);
   }
 
   @Patch('/password')
