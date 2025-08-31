@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
   ForbiddenException,
+  Inject,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as argon from 'argon2';
@@ -19,6 +22,8 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { MailService } from 'src/mail/mail.service';
 import { pwResetTemplate } from 'src/mail/templates/pw_reset.template';
+import * as admin from 'firebase-admin';
+
 //import { optTemplate } from 'src/mail/templates/otp.template';
 
 @Injectable()
@@ -27,6 +32,7 @@ export class AuthService {
     private jwt: JwtService,
     private prisma: PrismaService,
     private mailService: MailService,
+    @Inject('FIREBASE_ADMIN') private readonly firebaseAdmin: typeof admin,
   ) {}
 
   async signin(dto: loginDTO) {
@@ -168,6 +174,73 @@ export class AuthService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async loginWithGoogle(idToken: string) {
+    try {
+      // Verify Firebase token
+      const decodedToken = await this.firebaseAdmin
+        .auth()
+        .verifyIdToken(idToken.trim());
+
+      const { uid, email, name, picture, phone_number, aud, exp } =
+        decodedToken;
+
+      if (!email) {
+        throw new UnauthorizedException('Firebase account has no email');
+      }
+
+      // Check if user exists in your database
+      let currentUser = await this.prisma.user.findUnique({
+        where: { email },
+      });
+
+      const firstName: string = name?.split(' ')[0] || '';
+      const lastName: string = name?.split(' ').slice(1).join(' ') || '';
+      const password = `${uid}${aud}${exp}`;
+      const hashedPassword: string = await argon.hash(password);
+
+      if (!currentUser) {
+        currentUser = await this.prisma.user.create({
+          data: {
+            password: hashedPassword,
+            email,
+            firstName,
+            lastName,
+            phoneNumber: phone_number,
+            profileImg: picture,
+          },
+        });
+
+        await this.prisma.userInterests.createMany({
+          data: [
+            { categoryId: 1, userId: currentUser.id },
+            { categoryId: 2, userId: currentUser.id },
+            { categoryId: 3, userId: currentUser.id },
+            { categoryId: 4, userId: currentUser.id },
+            { categoryId: 5, userId: currentUser.id },
+            { categoryId: 6, userId: currentUser.id },
+            { categoryId: 7, userId: currentUser.id },
+            { categoryId: 8, userId: currentUser.id },
+            { categoryId: 9, userId: currentUser.id },
+          ],
+        });
+
+        await this.prisma.userNotification.create({
+          data: { isRead: false, notificationId: 1, userId: currentUser.id },
+        });
+      }
+
+      return {
+        message: 'user authenticated successfully',
+        token: await this.jwt.signAsync(currentUser),
+        data: currentUser,
+      };
+    } catch (error) {
+      throw new UnauthorizedException(
+        `Invalid or expired Firebase ID token: ${error}`,
+      );
     }
   }
 }
