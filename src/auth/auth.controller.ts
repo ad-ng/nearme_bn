@@ -151,4 +151,9 @@ export class AuthController {
   resetPassword(@Body() dto: ResetPasswordDTO) {
     return this.authService.resetPassword(dto);
   }
+
+  @Post('google')
+  async googleLogin(@Body('idToken') idToken: string) {
+    return this.authService.loginWithGoogle(idToken);
+  }
 }

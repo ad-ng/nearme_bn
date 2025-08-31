@@ -11,6 +11,7 @@ import { SavedModule } from './saved/saved.module';
 import { LocationModule } from './location/location.module';
 import { ReviewModule } from './review/review.module';
 import { NotificationModule } from './notification/notification.module';
+import { FirebaseModule } from './firebase/firebase.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { NotificationModule } from './notification/notification.module';
     LocationModule,
     ReviewModule,
     NotificationModule,
+    FirebaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
