@@ -239,4 +239,33 @@ export class UserService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async fetchAllUser(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+    const order = query.order || 'asc';
+    const role = query.role;
+
+    try {
+      const [allUsers, totalCount] = await Promise.all([
+        this.prisma.user.findMany({
+          where: { role },
+          orderBy: { id: order },
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.user.count(),
+      ]);
+
+      return {
+        message: 'user fetched successfully',
+        data: allUsers,
+        total: totalCount,
+        page,
+        limit,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
