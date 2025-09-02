@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -21,6 +22,8 @@ import {
   UserInterestDTO,
 } from './dtos';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { RoleStatus } from '@prisma/client';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -69,5 +72,11 @@ export class UserController {
   @Delete('interest/:categoryId')
   deletingUserInterest(@Param() Param: any, @Req() req: Request) {
     return this.userService.DeleteUserInterest(Param, req.user);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('all')
+  fetchAllUsers(@Query() query: any) {
+    return this.userService.fetchAllUser(query);
   }
 }

@@ -21,15 +21,21 @@ export class CategoryService {
     const limit = parseInt(`${query.limit}`) || 9;
     const order = query.order || 'asc';
     try {
-      const allCategories = await this.prisma.category.findMany({
-        orderBy: { id: order },
-        take: limit,
-        skip: (page - 1) * limit,
-      });
+      const [allCategories, totalCount] = await Promise.all([
+        this.prisma.category.findMany({
+          orderBy: { id: order },
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.category.count(),
+      ]);
 
       return {
         message: 'categories fetched successfully',
         data: allCategories,
+        total: totalCount,
+        page,
+        limit,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
@@ -389,5 +395,34 @@ export class CategoryService {
         ...placeItems.map((item) => ({ type: 'place', data: item })),
       ],
     };
+  }
+
+  async adminFetchAllArticle(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const [allArticles, totalCount] = await Promise.all([
+        this.prisma.docItem.findMany({
+          include: {
+            author: true,
+          },
+          orderBy: [{ id: 'desc' }],
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.docItem.count(),
+      ]);
+
+      return {
+        message: 'Articles Are Fetched Successfully !',
+        data: allArticles,
+        total: totalCount,
+        page,
+        limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
   }
 }
