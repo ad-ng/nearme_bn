@@ -59,4 +59,31 @@ export class LocationService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async adminFetchAllLocations(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const [allLocations, totalCount] = await Promise.all([
+        this.prisma.placeItem.findMany({
+          orderBy: [{ id: 'desc' }],
+          include: { subCategory: true },
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.placeItem.count(),
+      ]);
+
+      return {
+        message: 'Locations Are Fetched Successfully !',
+        data: allLocations,
+        total: totalCount,
+        page,
+        limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }

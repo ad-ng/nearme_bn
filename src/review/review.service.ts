@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   Injectable,
@@ -85,6 +84,32 @@ export class ReviewService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async adminFetchAllReviews(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const [allReviews, totalCount] = await Promise.all([
+        this.prisma.review.findMany({
+          orderBy: [{ id: 'desc' }],
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.review.count(),
+      ]);
+
+      return {
+        message: 'Reviews Are Fetched Successfully !',
+        data: allReviews,
+        total: totalCount,
+        page,
+        limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
     }
   }
 }
