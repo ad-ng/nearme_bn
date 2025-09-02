@@ -84,4 +84,10 @@ export class CategoryController {
   gettingAllDocuments(@Query() query: any) {
     return this.categoryService.adminFetchAllArticle(query);
   }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('/adminfetchbuz/all')
+  gettingAllBuz(@Query() query: any) {
+    return this.categoryService.adminFetchAllBusiness(query);
+  }
 }

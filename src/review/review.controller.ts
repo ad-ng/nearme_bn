@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -13,6 +14,8 @@ import { Request } from 'express';
 import { addReviewDTO } from './dto';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
+import { Roles } from 'src/auth/decorators/role.decorator';
+import { RoleStatus } from '@prisma/client';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -33,5 +36,11 @@ export class ReviewController {
   @Post()
   addReview(@Req() req: Request, @Body() dto: addReviewDTO) {
     return this.reviewService.addReview(dto, req.user);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('/admin/all')
+  gettingAllBuz(@Query() query: any) {
+    return this.reviewService.adminFetchAllReviews(query);
   }
 }
