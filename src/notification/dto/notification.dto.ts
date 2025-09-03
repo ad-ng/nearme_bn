@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { ApiProperty } from '@nestjs/swagger';
 import { NotificationType } from '@prisma/client';
 import {
