@@ -9,10 +9,21 @@ import { AnalyticsDTO } from './dto';
 export class AnalyticsService {
   constructor(private prisma: PrismaService) {}
 
-  async saveEvent(dto: AnalyticsDTO) {
+  async saveEvent(dto: AnalyticsDTO, user) {
+    const userId = user.id;
+    const { categoryId, docItemId, locationId, placeItemId, provinceId, type } =
+      dto;
     try {
       const newRegisteredEvent = await this.prisma.interactionEvent.create({
-        data: dto,
+        data: {
+          categoryId,
+          docItemId,
+          locationId,
+          placeItemId,
+          provinceId,
+          type,
+          userId,
+        },
       });
       return {
         message: 'Interaction Event Saved Successfully',

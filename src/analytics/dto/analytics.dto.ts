@@ -12,11 +12,6 @@ export class AnalyticsDTO {
   @ApiProperty({ example: 1 })
   @IsOptional()
   @IsNumber()
-  userId: number;
-
-  @ApiProperty({ example: 1 })
-  @IsOptional()
-  @IsNumber()
   categoryId: number;
 
   @ApiProperty({ example: 1 })
