@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -86,6 +87,44 @@ export class AnalyticsService {
       return {
         message: 'country analytics fetched successfully',
         data: distribution,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async mostVisitedPlaceItem() {
+    try {
+      const mostVisitedPlaces = await this.prisma.interactionEvent.groupBy({
+        by: ['placeItemId'],
+        _count: { placeItemId: true },
+        where: { type: 'CLICK', placeItemId: { not: null } },
+        orderBy: { _count: { placeItemId: 'desc' } },
+        take: 10,
+      });
+
+      const placeItemIds = mostVisitedPlaces
+        .map((p) => p.placeItemId)
+        .filter((id): id is number => id !== null);
+
+      const placeItems = await this.prisma.placeItem.findMany({
+        where: { id: { in: placeItemIds } },
+        include: {
+          subCategory: true,
+        },
+      });
+
+      const result = mostVisitedPlaces.map((p) => {
+        const place = placeItems.find((pi) => pi.id === p.placeItemId);
+        return {
+          ...p,
+          placeItem: place,
+        };
+      });
+
+      return {
+        message: 'PlaceItem analytics fetched successfully',
+        data: result,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

@@ -17,4 +17,9 @@ export class AnalyticsController {
   fetchCountryData() {
     return this.analyticsService.countryAnalytics();
   }
+
+  @Get('placeItem')
+  fetchPlaceItemData() {
+    return this.analyticsService.mostVisitedPlaceItem();
+  }
 }
