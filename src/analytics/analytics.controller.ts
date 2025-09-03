@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Req, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { AnalyticsDTO } from './dto';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
@@ -11,5 +11,10 @@ export class AnalyticsController {
   @Post()
   addingAnInteractionEvent(@Body() dto: AnalyticsDTO, @Req() req: Request) {
     return this.analyticsService.saveEvent(dto, req.user);
+  }
+
+  @Get('countries')
+  fetchCountryData() {
+    return this.analyticsService.countryAnalytics();
   }
 }
