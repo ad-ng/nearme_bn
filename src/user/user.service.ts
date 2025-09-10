@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  BadRequestException,
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
@@ -13,6 +14,7 @@ import * as argon from 'argon2';
 import {
   ChangePasswordDTO,
   CountryDTO,
+  EmailConfirmationDTO,
   firebaseDeviceIdDTO,
   NamesDto,
   UpdateUserDTO,
@@ -307,5 +309,30 @@ export class UserService {
     return {
       message: `otp sent to your ${email}`,
     };
+  }
+
+  async verifyOtp(dto: EmailConfirmationDTO, user) {
+    const { email } = user;
+    const { otp } = dto;
+
+    const checkUser = await this.prisma.user.findUnique({ where: { email } });
+    if (!checkUser) {
+      throw new NotFoundException(`no user with ${email}`);
+    }
+
+    if (otp != checkUser.verificationCode) {
+      throw new BadRequestException(`incorrect otp`);
+    }
+    try {
+      await this.prisma.user.update({
+        where: { email },
+        data: { isVerified: true, verificationCode: '' },
+      });
+      return {
+        message: 'email has been verified successfully',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
   }
 }
