@@ -324,12 +324,13 @@ export class UserService {
       throw new BadRequestException(`incorrect otp`);
     }
     try {
-      await this.prisma.user.update({
+      const newUser = await this.prisma.user.update({
         where: { email },
         data: { isVerified: true, verificationCode: '' },
       });
       return {
         message: 'email has been verified successfully',
+        data: newUser,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
