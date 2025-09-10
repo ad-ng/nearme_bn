@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,10 +18,15 @@ import {
   UpdateUserDTO,
   UserInterestDTO,
 } from './dtos';
+import { MailService } from 'src/mail/mail.service';
+import { sendEmailConfirmationCode } from 'src/mail/templates/email_confirmation_template';
 
 @Injectable()
 export class UserService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private mailService: MailService,
+  ) {}
 
   async getCurrentUser(user) {
     const { id } = user;
@@ -267,5 +273,39 @@ export class UserService {
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
+  }
+
+  async sendEmailConfirmationCode(user) {
+    const { email } = user;
+
+    const checkUser = await this.prisma.user.findUnique({ where: { email } });
+    if (!checkUser) {
+      throw new NotFoundException(`no user with ${email} found`);
+    }
+
+    if (checkUser.isVerified) {
+      return {
+        message: 'you are already verified',
+      };
+    }
+
+    const verificationCode = crypto.randomUUID().split('-')[0].substring(0, 5);
+
+    await this.mailService.sendMail(
+      email,
+      'NearMe Password Reset',
+      sendEmailConfirmationCode(
+        verificationCode,
+        checkUser.firstName,
+        checkUser.lastName,
+      ),
+    );
+    await this.prisma.user.update({
+      where: { email },
+      data: { verificationCode },
+    });
+    return {
+      message: `otp sent to your ${email}`,
+    };
   }
 }

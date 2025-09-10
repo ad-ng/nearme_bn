@@ -79,4 +79,9 @@ export class UserController {
   fetchAllUsers(@Query() query: any) {
     return this.userService.fetchAllUser(query);
   }
+
+  @Get('email/confirmation')
+  emailConfirmation(@Req() req: Request) {
+    return this.userService.sendEmailConfirmationCode(req.user);
+  }
 }
