@@ -1,4 +1,7 @@
 -- CreateEnum
+CREATE TYPE "EventType" AS ENUM ('CLICK', 'BOOK', 'REVIEW');
+
+-- CreateEnum
 CREATE TYPE "RoleStatus" AS ENUM ('admin', 'moderator', 'support', 'user');
 
 -- CreateEnum
@@ -151,6 +154,21 @@ CREATE TABLE "Saved" (
     CONSTRAINT "Saved_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "InteractionEvent" (
+    "id" SERIAL NOT NULL,
+    "type" "EventType" NOT NULL,
+    "userId" INTEGER,
+    "categoryId" INTEGER,
+    "placeItemId" INTEGER,
+    "locationId" INTEGER,
+    "docItemId" INTEGER,
+    "provinceId" INTEGER,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "InteractionEvent_pkey" PRIMARY KEY ("id")
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
@@ -177,6 +195,12 @@ CREATE INDEX "UserNotification_userId_isRead_idx" ON "UserNotification"("userId"
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserNotification_userId_notificationId_key" ON "UserNotification"("userId", "notificationId");
+
+-- CreateIndex
+CREATE INDEX "InteractionEvent_type_idx" ON "InteractionEvent"("type");
+
+-- CreateIndex
+CREATE INDEX "InteractionEvent_createdAt_idx" ON "InteractionEvent"("createdAt");
 
 -- AddForeignKey
 ALTER TABLE "UserInterests" ADD CONSTRAINT "UserInterests_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
@@ -225,3 +249,21 @@ ALTER TABLE "Saved" ADD CONSTRAINT "Saved_docItemId_fkey" FOREIGN KEY ("docItemI
 
 -- AddForeignKey
 ALTER TABLE "Saved" ADD CONSTRAINT "Saved_placeItemId_fkey" FOREIGN KEY ("placeItemId") REFERENCES "PlaceItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_placeItemId_fkey" FOREIGN KEY ("placeItemId") REFERENCES "PlaceItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Locations"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_docItemId_fkey" FOREIGN KEY ("docItemId") REFERENCES "DocItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Provinces"("id") ON DELETE SET NULL ON UPDATE CASCADE;

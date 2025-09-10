@@ -16,6 +16,7 @@ import { Request } from 'express';
 import {
   ChangePasswordDTO,
   CountryDTO,
+  EmailConfirmationDTO,
   firebaseDeviceIdDTO,
   NamesDto,
   UpdateUserDTO,
@@ -78,5 +79,18 @@ export class UserController {
   @Get('all')
   fetchAllUsers(@Query() query: any) {
     return this.userService.fetchAllUser(query);
+  }
+
+  @Get('email/confirmation')
+  emailConfirmation(@Req() req: Request) {
+    return this.userService.sendEmailConfirmationCode(req.user);
+  }
+
+  @Post('otp/verify')
+  verifyEmailConfirmationOtp(
+    @Body() dto: EmailConfirmationDTO,
+    @Req() req: Request,
+  ) {
+    return this.userService.verifyOtp(dto, req.user);
   }
 }

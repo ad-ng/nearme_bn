@@ -34,18 +34,20 @@ model User {
   createdAt        DateTime           @default(now())
   Review           Review[]
   UserNotification UserNotification[]
+  InteractionEvent InteractionEvent[]
 
   @@index([email])
 }
 
 model Category {
-  id              Int             @id @default(autoincrement())
-  name            String          @unique
-  subCategory     SubCategory[]
-  isDoc           Boolean
-  interestedUsers UserInterests[]
-  docItem         DocItem[]
-  Notification    Notification[]
+  id               Int                @id @default(autoincrement())
+  name             String             @unique
+  subCategory      SubCategory[]
+  isDoc            Boolean
+  interestedUsers  UserInterests[]
+  docItem          DocItem[]
+  Notification     Notification[]
+  InteractionEvent InteractionEvent[]
 }
 
 model UserInterests {
@@ -68,19 +70,20 @@ model SubCategory {
 }
 
 model PlaceItem {
-  id            Int         @id @default(autoincrement())
-  title         String
-  description   String
-  workingHours  String
-  location      String
-  coords        Decimal[]
-  placeImg      String[]
-  businessEmail String
-  phoneNumber   String
-  subCategoryId Int
-  subCategory   SubCategory @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
-  savedItems    Saved[]
-  Review        Review[]
+  id               Int                @id @default(autoincrement())
+  title            String
+  description      String
+  workingHours     String
+  location         String
+  coords           Decimal[]
+  placeImg         String[]
+  businessEmail    String
+  phoneNumber      String
+  subCategoryId    Int
+  subCategory      SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  savedItems       Saved[]
+  Review           Review[]
+  InteractionEvent InteractionEvent[]
 
   @@index([subCategoryId])
 }
@@ -99,38 +102,41 @@ model Review {
 }
 
 model DocItem {
-  id          Int        @id @default(autoincrement())
-  title       String
-  description String
-  summary     String
-  authorId    Int
-  author      User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  categoryId  Int
-  category    Category   @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  location    String?
-  featuredImg String
-  savedItems  Saved[]
-  provinceId  Int?
-  province    Provinces? @relation(fields: [provinceId], references: [id])
-  createdAt   DateTime   @default(now())
+  id               Int                @id @default(autoincrement())
+  title            String
+  description      String
+  summary          String
+  authorId         Int
+  author           User               @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  categoryId       Int
+  category         Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  location         String?
+  featuredImg      String
+  savedItems       Saved[]
+  provinceId       Int?
+  province         Provinces?         @relation(fields: [provinceId], references: [id])
+  createdAt        DateTime           @default(now())
+  InteractionEvent InteractionEvent[]
 }
 
 model Locations {
-  id         Int       @id @default(autoincrement())
-  address    String
-  title      String
-  image      String
-  coords     Decimal[]
-  provinceId Int
-  province   Provinces @relation(fields: [provinceId], references: [id])
+  id               Int                @id @default(autoincrement())
+  address          String
+  title            String
+  image            String
+  coords           Decimal[]
+  provinceId       Int
+  province         Provinces          @relation(fields: [provinceId], references: [id])
+  InteractionEvent InteractionEvent[]
 }
 
 model Provinces {
-  id        Int         @id @default(autoincrement())
-  name      String
-  image     String
-  locations Locations[]
-  docItems  DocItem[]
+  id               Int                @id @default(autoincrement())
+  name             String
+  image            String
+  locations        Locations[]
+  docItems         DocItem[]
+  InteractionEvent InteractionEvent[]
 }
 
 model Notification {
@@ -166,6 +172,33 @@ model Saved {
   docItem     DocItem?   @relation(fields: [docItemId], references: [id], onDelete: Cascade)
   placeItemId Int?
   placeItem   PlaceItem? @relation(fields: [placeItemId], references: [id], onDelete: Cascade)
+}
+
+model InteractionEvent {
+  id          Int        @id @default(autoincrement())
+  type        EventType
+  userId      Int?
+  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId  Int?
+  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  placeItemId Int?
+  placeItem   PlaceItem? @relation(fields: [placeItemId], references: [id], onDelete: Cascade)
+  locationId  Int?
+  location    Locations? @relation(fields: [locationId], references: [id])
+  docItemId   Int?
+  docItem     DocItem?   @relation(fields: [docItemId], references: [id], onDelete: Cascade)
+  provinceId  Int?
+  province    Provinces? @relation(fields: [provinceId], references: [id])
+  createdAt   DateTime   @default(now())
+
+  @@index([type])
+  @@index([createdAt])
+}
+
+enum EventType {
+  CLICK
+  BOOK
+  REVIEW
 }
 
 enum RoleStatus {

@@ -12,6 +12,7 @@ import { LocationModule } from './location/location.module';
 import { ReviewModule } from './review/review.module';
 import { NotificationModule } from './notification/notification.module';
 import { FirebaseModule } from './firebase/firebase.module';
+import { AnalyticsModule } from './analytics/analytics.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { FirebaseModule } from './firebase/firebase.module';
     ReviewModule,
     NotificationModule,
     FirebaseModule,
+    AnalyticsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
