@@ -44,11 +44,6 @@ export class CategoryController {
     return this.categoryService.createSubCategories(dto);
   }
 
-  @Get('docitem/:name')
-  fetchAllDocItem(@Param() param: CategoryParamDTO, @Req() req: Request) {
-    return this.categoryService.fetchDocItems(param, req.user);
-  }
-
   @Post('docitem')
   addDocItem(@Body() dto: DocItemDTO, @Req() req: Request) {
     return this.categoryService.createDocItem(dto, req.user);

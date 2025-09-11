@@ -14,6 +14,7 @@ import { NotificationModule } from './notification/notification.module';
 import { FirebaseModule } from './firebase/firebase.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { PlaceItemModule } from './place-item/place-item.module';
+import { DocItemModule } from './doc-item/doc-item.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { PlaceItemModule } from './place-item/place-item.module';
     FirebaseModule,
     AnalyticsModule,
     PlaceItemModule,
+    DocItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],

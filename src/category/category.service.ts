@@ -126,37 +126,6 @@ export class CategoryService {
     }
   }
 
-  async fetchDocItems(param: CategoryParamDTO, user) {
-    const { name } = param;
-    const userId = user.id;
-    const checkCategory = await this.prisma.category.findFirst({
-      where: { name },
-    });
-
-    if (!checkCategory) {
-      throw new NotFoundException(` no ${name} category found`);
-    }
-
-    try {
-      const allDocItems = await this.prisma.docItem.findMany({
-        where: { categoryId: checkCategory.id },
-        include: {
-          author: true,
-          savedItems: {
-            where: { userId },
-          },
-        },
-      });
-
-      return {
-        message: 'Documents Fetched Successfully',
-        data: allDocItems,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
-    }
-  }
-
   async createDocItem(dto: DocItemDTO, user) {
     const authorId: number = user.id;
     const checkUser = await this.prisma.user.findUnique({
