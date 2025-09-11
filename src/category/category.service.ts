@@ -41,11 +41,17 @@ export class CategoryService {
   }
 
   async createCategory(dto: CategoryDto) {
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: dto.name },
+    });
+
+    if (checkCategory) {
+      throw new BadRequestException(`category already ${dto.name}`);
+    }
+
     try {
-      const addCategory = await this.prisma.category.upsert({
-        where: { name: dto.name, isDoc: dto.isDoc },
-        create: { name: dto.name, isDoc: dto.isDoc },
-        update: { name: dto.name, isDoc: dto.isDoc },
+      const addCategory = await this.prisma.category.create({
+        data: { name: dto.name, isDoc: dto.isDoc },
       });
 
       return {
