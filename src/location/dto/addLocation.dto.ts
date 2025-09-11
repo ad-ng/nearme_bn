@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class AddLocationDTO {
   @ApiProperty({ example: 'Kigali - Rwanda' })
@@ -14,8 +14,8 @@ export class AddLocationDTO {
 
   @ApiProperty()
   @IsNotEmpty()
-  @IsString()
-  image: string;
+  @IsArray()
+  image: string[];
 
   @ApiProperty({ example: 'a nice place in kigali' })
   @IsNotEmpty()

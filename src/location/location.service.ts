@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AddLocationDTO } from './dto';
 
 @Injectable()
 export class LocationService {
@@ -80,6 +81,44 @@ export class LocationService {
         total: totalCount,
         page,
         limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async addingLocation(dto: AddLocationDTO) {
+    const {
+      provinceName,
+      address,
+      description,
+      image,
+      latitude,
+      longitude,
+      title,
+    } = dto;
+
+    const checkProvince = await this.prisma.provinces.findFirst({
+      where: { name: provinceName },
+    });
+    if (!checkProvince) {
+      throw new NotFoundException('invalid province');
+    }
+    try {
+      const newLocation = await this.prisma.locations.create({
+        data: {
+          address,
+          description,
+          image,
+          latitude,
+          longitude,
+          title,
+          provinceId: checkProvince.id,
+        },
+      });
+      return {
+        message: 'location added successfully',
+        data: newLocation,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

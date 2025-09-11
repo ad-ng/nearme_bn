@@ -1,5 +1,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-import { Controller, Get, Param, Query, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { LocationService } from './location.service';
 import { Request } from 'express';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -7,6 +16,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
+import { AddLocationDTO } from './dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -31,5 +41,11 @@ export class LocationController {
   @Get('/admin/all')
   gettingAllBuz(@Query() query: any) {
     return this.locationService.adminFetchAllLocations(query);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Post()
+  addLocation(@Body() dto: AddLocationDTO) {
+    return this.locationService.addingLocation(dto);
   }
 }
