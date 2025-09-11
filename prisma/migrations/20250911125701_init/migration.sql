@@ -63,7 +63,8 @@ CREATE TABLE "PlaceItem" (
     "description" TEXT NOT NULL,
     "workingHours" TEXT NOT NULL,
     "location" TEXT NOT NULL,
-    "coords" DECIMAL(65,30)[],
+    "latitude" DOUBLE PRECISION NOT NULL,
+    "longitude" DOUBLE PRECISION NOT NULL,
     "placeImg" TEXT[],
     "businessEmail" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
@@ -105,9 +106,10 @@ CREATE TABLE "Locations" (
     "id" SERIAL NOT NULL,
     "address" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "image" TEXT NOT NULL,
+    "image" TEXT[],
     "description" TEXT,
-    "coords" DECIMAL(65,30)[],
+    "latitude" DOUBLE PRECISION NOT NULL,
+    "longitude" DOUBLE PRECISION NOT NULL,
     "provinceId" INTEGER NOT NULL,
 
     CONSTRAINT "Locations_pkey" PRIMARY KEY ("id")

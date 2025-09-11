@@ -75,7 +75,8 @@ model PlaceItem {
   description      String
   workingHours     String
   location         String
-  coords           Decimal[]
+  latitude         Float
+  longitude        Float
   placeImg         String[]
   businessEmail    String
   phoneNumber      String
@@ -124,9 +125,10 @@ model Locations {
   id               Int                @id @default(autoincrement())
   address          String
   title            String
-  image            String
+  image            String[]
   description      String?
-  coords           Decimal[]
+  latitude         Float
+  longitude        Float
   provinceId       Int
   province         Provinces          @relation(fields: [provinceId], references: [id])
   InteractionEvent InteractionEvent[]

@@ -174,6 +174,8 @@ export class CategoryService {
       subCategoryName,
       title,
       workingHours,
+      latitude,
+      longitude,
     } = dto;
 
     const checkSubCategory = await this.prisma.subCategory.findFirst({
@@ -193,6 +195,8 @@ export class CategoryService {
           phoneNumber,
           placeImg,
           title,
+          latitude,
+          longitude,
           workingHours,
           subCategoryId: checkSubCategory.id,
         },

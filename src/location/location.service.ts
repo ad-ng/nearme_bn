@@ -66,13 +66,12 @@ export class LocationService {
 
     try {
       const [allLocations, totalCount] = await Promise.all([
-        this.prisma.placeItem.findMany({
+        this.prisma.locations.findMany({
           orderBy: [{ id: 'desc' }],
-          include: { subCategory: true },
           take: limit,
           skip: (page - 1) * limit,
         }),
-        this.prisma.placeItem.count(),
+        this.prisma.locations.count(),
       ]);
 
       return {
