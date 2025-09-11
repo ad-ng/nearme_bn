@@ -167,8 +167,31 @@ export class LocationService {
       });
 
       return {
-        message: 'location added successfully',
+        message: 'location edited successfully',
         data: newLocation,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async deleteLocation(param: IdParamDTO) {
+    const locationId = param.id;
+    const CheckLocation = await this.prisma.locations.findUnique({
+      where: { id: locationId },
+    });
+
+    if (!CheckLocation) {
+      throw new NotFoundException('invalid location');
+    }
+
+    try {
+      await this.prisma.locations.delete({
+        where: { id: locationId },
+      });
+
+      return {
+        message: 'location deleted successfully',
       };
     } catch (error) {
       return new InternalServerErrorException(error);

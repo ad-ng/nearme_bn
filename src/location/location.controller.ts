@@ -2,6 +2,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -54,5 +55,11 @@ export class LocationController {
   @Patch(':id')
   updateLocation(@Body() dto: AddLocationDTO, @Param() param: IdParamDTO) {
     return this.locationService.updateLocation(dto, param);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Delete(':id')
+  deleteLocation(@Param() param: IdParamDTO) {
+    return this.locationService.deleteLocation(param);
   }
 }
