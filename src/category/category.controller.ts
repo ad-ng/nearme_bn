@@ -49,11 +49,6 @@ export class CategoryController {
     return this.categoryService.createDocItem(dto, req.user);
   }
 
-  @Get('/articles/all')
-  fetchAllCategories(@Req() req: Request) {
-    return this.categoryService.fetchAllArticle(req.user);
-  }
-
   @Get('search/all')
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);

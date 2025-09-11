@@ -23,4 +23,9 @@ export class DocItemController {
   gettingAllDocuments(@Query() query: any) {
     return this.docItemService.adminFetchAllArticle(query);
   }
+
+  @Get('user/all')
+  fetchAllCategories(@Req() req: Request) {
+    return this.docItemService.fetchAllArticle(req.user);
+  }
 }

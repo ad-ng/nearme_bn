@@ -71,4 +71,26 @@ export class DocItemService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async fetchAllArticle(user) {
+    const userId = user.id;
+    try {
+      const allArticles = await this.prisma.docItem.findMany({
+        include: {
+          author: true,
+          savedItems: {
+            where: { userId },
+          },
+        },
+        orderBy: [{ id: 'desc' }],
+      });
+
+      return {
+        message: 'Articles Are Fetched Successfully !',
+        data: allArticles,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }
