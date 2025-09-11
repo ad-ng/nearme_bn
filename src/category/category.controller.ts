@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -16,6 +17,7 @@ import { CategoryParamDTO } from './dto/categoryParam.dto';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { Request } from 'express';
+import { IdParamDTO } from 'src/location/dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -31,6 +33,11 @@ export class CategoryController {
   @Post()
   addCategory(@Body() dto: CategoryDto) {
     return this.categoryService.createCategory(dto);
+  }
+
+  @Patch(':id')
+  updateCategory(@Body() dto: CategoryDto, @Param() param: IdParamDTO) {
+    return this.categoryService.updateCategory(dto, param);
   }
 
   @Get(':name')

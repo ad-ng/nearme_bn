@@ -9,6 +9,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
+import { IdParamDTO } from 'src/location/dto';
 
 @Injectable()
 export class CategoryService {
@@ -56,6 +57,39 @@ export class CategoryService {
 
       return {
         message: 'category added successfully',
+        data: addCategory,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateCategory(dto: CategoryDto, param: IdParamDTO) {
+    const categoryId = param.id;
+    const checkCategoryId = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!checkCategoryId) {
+      throw new NotFoundException('invalid category');
+    }
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: dto.name, isDoc: dto.isDoc },
+    });
+
+    if (checkCategory) {
+      throw new BadRequestException(`no change made`);
+    }
+
+    try {
+      const addCategory = await this.prisma.category.update({
+        where: { id: categoryId },
+        data: { name: dto.name, isDoc: dto.isDoc },
+      });
+
+      return {
+        message: 'category updated successfully',
         data: addCategory,
       };
     } catch (error) {
