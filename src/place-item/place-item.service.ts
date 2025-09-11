@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
+  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
@@ -200,6 +201,49 @@ export class PlaceItemService {
 
       return {
         message: 'business deleted successfully',
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async fetchRecommendedPlaces(user) {
+    const userId = user.id;
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) throw new ForbiddenException();
+
+    const userInterest = await this.prisma.userInterests.findMany({
+      where: { userId },
+    });
+
+    const interestIds = userInterest.map((interest) => interest.categoryId);
+
+    try {
+      const allRecommendations = await this.prisma.placeItem.findMany({
+        where: {
+          subCategory: { categoryId: { in: interestIds } },
+        },
+        include: {
+          savedItems: {
+            where: {
+              userId,
+            },
+          },
+          subCategory: {
+            include: {
+              _count: {
+                select: { placeItems: true },
+              },
+            },
+          },
+        },
+      });
+      return {
+        message: 'Recommendations fetched successfully',
+        data: allRecommendations,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

@@ -18,6 +18,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { IdParamDTO } from 'src/location/dto';
+import { Request } from 'express';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -52,5 +53,10 @@ export class PlaceItemController {
   @Delete(':id')
   deletePlaceItem(@Param() param: IdParamDTO) {
     return this.placeItemService.deletePlaceItem(param);
+  }
+
+  @Get('recommended/all')
+  fetchRecommendation(@Req() req: Request) {
+    return this.placeItemService.fetchRecommendedPlaces(req.user);
   }
 }

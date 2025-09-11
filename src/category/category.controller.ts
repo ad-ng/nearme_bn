@@ -54,11 +54,6 @@ export class CategoryController {
     return this.categoryService.fetchAllArticle(req.user);
   }
 
-  @Get('recommendation/all')
-  fetchRecommendation(@Req() req: Request) {
-    return this.categoryService.fetchRecommendedPlaces(req.user);
-  }
-
   @Get('search/all')
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);
