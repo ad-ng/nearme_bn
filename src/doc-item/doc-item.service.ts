@@ -181,4 +181,27 @@ export class DocItemService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async deleteDocItem(param: IdParamDTO) {
+    const docItemId = param.id;
+    const CheckDocItem = await this.prisma.docItem.findUnique({
+      where: { id: docItemId },
+    });
+
+    if (!CheckDocItem) {
+      throw new NotFoundException('doc item not found');
+    }
+
+    try {
+      await this.prisma.docItem.delete({
+        where: { id: docItemId },
+      });
+
+      return {
+        message: 'Doc item deleted successfully',
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }

@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -47,8 +48,15 @@ export class DocItemController {
     return this.docItemService.createDocItem(dto, req.user);
   }
 
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Patch(':id')
   updateDocItem(@Body() dto: DocItemDTO, @Param() param: IdParamDTO) {
     return this.docItemService.updateDocItem(dto, param);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Delete(':id')
+  deleteDocItem(@Param() param: IdParamDTO) {
+    return this.docItemService.deleteDocItem(param);
   }
 }
