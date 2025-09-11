@@ -97,6 +97,29 @@ export class CategoryService {
     }
   }
 
+  async deleteCategory(param: IdParamDTO) {
+    const categoryId = param.id;
+    const checkCategory = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException('category not found');
+    }
+
+    try {
+      await this.prisma.category.delete({
+        where: { id: categoryId },
+      });
+
+      return {
+        message: 'category deleted successfully',
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
   async fetchSubcategories(param: CategoryParamDTO) {
     const { name } = param;
 
