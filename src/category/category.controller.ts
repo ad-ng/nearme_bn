@@ -63,10 +63,4 @@ export class CategoryController {
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);
   }
-
-  @Roles(RoleStatus.admin, RoleStatus.moderator)
-  @Get('/adminfetchdocs/all')
-  gettingAllDocuments(@Query() query: any) {
-    return this.categoryService.adminFetchAllArticle(query);
-  }
 }

@@ -42,4 +42,33 @@ export class DocItemService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async adminFetchAllArticle(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const [allArticles, totalCount] = await Promise.all([
+        this.prisma.docItem.findMany({
+          include: {
+            author: true,
+          },
+          orderBy: [{ id: 'desc' }],
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.docItem.count(),
+      ]);
+
+      return {
+        message: 'Articles Are Fetched Successfully !',
+        data: allArticles,
+        total: totalCount,
+        page,
+        limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }
