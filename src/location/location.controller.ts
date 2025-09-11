@@ -4,6 +4,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -16,7 +17,7 @@ import { AuthGuard } from 'src/auth/guards/auth.guards';
 import { RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
-import { AddLocationDTO } from './dto';
+import { AddLocationDTO, IdParamDTO } from './dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -47,5 +48,11 @@ export class LocationController {
   @Post()
   addLocation(@Body() dto: AddLocationDTO) {
     return this.locationService.addingLocation(dto);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Patch(':id')
+  updateLocation(@Body() dto: AddLocationDTO, @Param() param: IdParamDTO) {
+    return this.locationService.updateLocation(dto, param);
   }
 }

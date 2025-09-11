@@ -6,7 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { AddLocationDTO } from './dto';
+import { AddLocationDTO, IdParamDTO } from './dto';
 
 @Injectable()
 export class LocationService {
@@ -116,6 +116,56 @@ export class LocationService {
           provinceId: checkProvince.id,
         },
       });
+      return {
+        message: 'location added successfully',
+        data: newLocation,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async updateLocation(dto: AddLocationDTO, param: IdParamDTO) {
+    const {
+      provinceName,
+      address,
+      description,
+      image,
+      latitude,
+      longitude,
+      title,
+    } = dto;
+
+    const locationId = param.id;
+    const CheckLocation = await this.prisma.locations.findUnique({
+      where: { id: locationId },
+    });
+
+    if (!CheckLocation) {
+      throw new NotFoundException('invalid location');
+    }
+
+    const checkProvince = await this.prisma.provinces.findFirst({
+      where: { name: provinceName },
+    });
+    if (!checkProvince) {
+      throw new NotFoundException('invalid province');
+    }
+
+    try {
+      const newLocation = await this.prisma.locations.update({
+        where: { id: locationId },
+        data: {
+          address,
+          description,
+          image,
+          latitude,
+          longitude,
+          title,
+          provinceId: checkProvince.id,
+        },
+      });
+
       return {
         message: 'location added successfully',
         data: newLocation,
