@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import { faker } from '@faker-js/faker';
 import { PrismaClient } from '@prisma/client';
@@ -9,19 +7,33 @@ const prisma = new PrismaClient();
 
 async function main() {
   console.log('###########################################################');
-  await prisma.user.create({
-    data: {
-      email: 'johndoe@gmail.com',
-      password: await argon.hash('test@123'),
-      firstName: 'John',
-      lastName: 'Doe',
-      gender: 'male',
-      dob: faker.date.birthdate(),
-      role: 'admin',
-      isVerified: true,
-      country: 'Rwanda',
-    },
+  await prisma.user.createMany({
+    data: [
+      {
+        email: 'johndoe@gmail.com',
+        password: await argon.hash('test@123'),
+        firstName: 'John',
+        lastName: 'Doe',
+        gender: 'male',
+        dob: faker.date.birthdate(),
+        role: 'admin',
+        isVerified: true,
+        country: 'Rwanda',
+      },
+      {
+        email: 'mbonimpaclaude27@gmail.com',
+        password: await argon.hash('test@123'),
+        firstName: 'MBONIMPA',
+        lastName: 'Claude',
+        gender: 'male',
+        dob: faker.date.birthdate(),
+        role: 'moderator',
+        isVerified: true,
+        country: 'Rwanda',
+      },
+    ],
   });
+
   console.log(' user seed added successfully');
   console.log('###########################################################');
 
@@ -65,6 +77,33 @@ async function main() {
         image:
           'https://tarama.ai/catalog/venues/66b333c12e2de_Fazenda-Sengha-horse-ride.jpg',
         provinceId: 1,
+        description: `Horse Ride in the Arena
+Try your horse riding skills on a horse in a safe and secure environment. Our monitors stay with you all the time.
+
+ 
+Trail Ride
+Trail Ride
+Discover the beauty of Mont Kigali and views of Kigali from a horse. This nature trail ride is unique in Rwanda.
+
+ 
+Slide and Scream!
+Slide and Scream!
+The zip-lines give you the adrenaline not matter the age!
+
+ 
+Who is the hunter in the family?
+Who is the hunter in the family?
+Show your family that you have what it takes to shoot the arrow in the bull's eye. This is modern Archery though...
+
+ 
+Ever jumped so high?
+Ever jumped so high?
+The bungee lifts you several meters high. Feel like a bird and try the back flips and the front flips.
+
+ 
+Quad Bikes
+Quad Bikes
+Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         coords: [-1.98553, 30.029214],
       },
       {
@@ -73,6 +112,13 @@ async function main() {
         image:
           'https://gggi.org/wp-content/uploads/2022/02/Nyandungi-IMAGE-5.jpg',
         provinceId: 1,
+        description: `
+        Nyandungu Urban Wetland Ecotourism park is a 120-hectare Rwandan tourism park located between Gasabo 
+        and Kicukiro Districts which allows sustainable travel of people to enjoy natural areas and wild animals 
+        in Nyandungu Valley. The park included ornamental ponds, eastern gallery forests, medicinal plant gardens,
+         paved walk ways, restaurants, information centers and other recreational services with the intention of 
+         conserving the environment, educating visitors and improving the well-being of the local community. 
+         It was implemented by Rwanda Environment Management Authority[3] (REMA) in 2020`,
         coords: [-1.955418, 30.145282],
       },
       {

@@ -79,6 +79,7 @@ model PlaceItem {
   placeImg         String[]
   businessEmail    String
   phoneNumber      String
+  bookLink         String?
   subCategoryId    Int
   subCategory      SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   savedItems       Saved[]
@@ -124,6 +125,7 @@ model Locations {
   address          String
   title            String
   image            String
+  description      String?
   coords           Decimal[]
   provinceId       Int
   province         Provinces          @relation(fields: [provinceId], references: [id])
