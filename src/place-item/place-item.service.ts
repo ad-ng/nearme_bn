@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Injectable,
   InternalServerErrorException,
@@ -51,6 +52,33 @@ export class PlaceItemService {
       return {
         message: 'New Place Item Added Successfully',
         data: newPlaceItem,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async adminFetchAllBusiness(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const [allBusinesses, totalCount] = await Promise.all([
+        this.prisma.placeItem.findMany({
+          orderBy: [{ id: 'desc' }],
+          include: { subCategory: true },
+          take: limit,
+          skip: (page - 1) * limit,
+        }),
+        this.prisma.placeItem.count(),
+      ]);
+
+      return {
+        message: 'Articles Are Fetched Successfully !',
+        data: allBusinesses,
+        total: totalCount,
+        page,
+        limit,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

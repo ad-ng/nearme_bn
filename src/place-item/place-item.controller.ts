@@ -1,4 +1,4 @@
-import { Body, Controller, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
 import { PlaceItemService } from './place-item.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -16,5 +16,11 @@ export class PlaceItemController {
   @Post()
   addPlaceItem(@Body() dto: PlaceItemDTO) {
     return this.placeItemService.createPlaceItem(dto);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('all')
+  gettingAllBuz(@Query() query: any) {
+    return this.placeItemService.adminFetchAllBusiness(query);
   }
 }
