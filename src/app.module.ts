@@ -13,6 +13,7 @@ import { ReviewModule } from './review/review.module';
 import { NotificationModule } from './notification/notification.module';
 import { FirebaseModule } from './firebase/firebase.module';
 import { AnalyticsModule } from './analytics/analytics.module';
+import { PlaceItemModule } from './place-item/place-item.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AnalyticsModule } from './analytics/analytics.module';
     NotificationModule,
     FirebaseModule,
     AnalyticsModule,
+    PlaceItemModule,
   ],
   controllers: [AppController],
   providers: [AppService],
