@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
@@ -45,5 +46,11 @@ export class PlaceItemController {
   @Patch(':id')
   updatePlaceItem(@Body() dto: PlaceItemDTO, @Param() param: IdParamDTO) {
     return this.placeItemService.updatePlaceItem(dto, param);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Delete(':id')
+  deletePlaceItem(@Param() param: IdParamDTO) {
+    return this.placeItemService.deletePlaceItem(param);
   }
 }

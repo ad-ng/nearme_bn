@@ -182,4 +182,27 @@ export class PlaceItemService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async deletePlaceItem(param: IdParamDTO) {
+    const placeItemId = param.id;
+    const CheckPlaceItem = await this.prisma.locations.findUnique({
+      where: { id: placeItemId },
+    });
+
+    if (!CheckPlaceItem) {
+      throw new NotFoundException('business not found');
+    }
+
+    try {
+      await this.prisma.placeItem.delete({
+        where: { id: placeItemId },
+      });
+
+      return {
+        message: 'business deleted successfully',
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }
