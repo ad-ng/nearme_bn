@@ -4,9 +4,11 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { DocItemDTO } from './dto';
 
 @Injectable()
 export class DocItemService {
@@ -88,6 +90,49 @@ export class DocItemService {
       return {
         message: 'Articles Are Fetched Successfully !',
         data: allArticles,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async createDocItem(dto: DocItemDTO, user) {
+    const authorId: number = user.id;
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: authorId },
+    });
+
+    if (!checkUser || user.role == 'user') {
+      throw new UnauthorizedException();
+    }
+
+    const { categoryName, featuredImg, location, title, summary, description } =
+      dto;
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: categoryName },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException(` no ${categoryName} category found`);
+    }
+
+    try {
+      const newDocItem = await this.prisma.docItem.create({
+        data: {
+          authorId,
+          description,
+          summary,
+          featuredImg,
+          location,
+          title,
+          categoryId: checkCategory.id,
+        },
+      });
+
+      return {
+        message: 'DocItem Created Successfully',
+        data: newDocItem,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

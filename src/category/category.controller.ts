@@ -11,7 +11,7 @@ import {
 import { CategoryService } from './category.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CategoryDto, DocItemDTO, SubCategoryDTO } from './dto';
+import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
@@ -42,11 +42,6 @@ export class CategoryController {
   @Post('subcategory')
   addSubCategory(@Body() dto: SubCategoryDTO) {
     return this.categoryService.createSubCategories(dto);
-  }
-
-  @Post('docitem')
-  addDocItem(@Body() dto: DocItemDTO, @Req() req: Request) {
-    return this.categoryService.createDocItem(dto, req.user);
   }
 
   @Get('search/all')
