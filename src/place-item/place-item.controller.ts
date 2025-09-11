@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -15,6 +16,7 @@ import { PlaceItemDTO } from './dtos';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
+import { IdParamDTO } from 'src/location/dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -37,5 +39,11 @@ export class PlaceItemController {
   @Get('subcategory/:name')
   fetchAllPlaceItems(@Param() param: CategoryParamDTO, @Req() req: Request) {
     return this.placeItemService.getSubCategoryItems(param, req);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Patch(':id')
+  updatePlaceItem(@Body() dto: PlaceItemDTO, @Param() param: IdParamDTO) {
+    return this.placeItemService.updatePlaceItem(dto, param);
   }
 }

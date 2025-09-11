@@ -8,6 +8,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PlaceItemDTO } from './dtos';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
+import { IdParamDTO } from 'src/location/dto';
 
 @Injectable()
 export class PlaceItemService {
@@ -119,6 +120,63 @@ export class PlaceItemService {
       return {
         message: 'Place Items found successfully',
         data: allSubcategoryItems,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async updatePlaceItem(dto: PlaceItemDTO, param: IdParamDTO) {
+    const {
+      businessEmail,
+      description,
+      location,
+      phoneNumber,
+      placeImg,
+      subCategoryName,
+      title,
+      workingHours,
+      latitude,
+      longitude,
+    } = dto;
+
+    const placeItemId = param.id;
+    const CheckPlaceItem = await this.prisma.placeItem.findUnique({
+      where: { id: placeItemId },
+    });
+
+    if (!CheckPlaceItem) {
+      throw new NotFoundException('business not found');
+    }
+
+    const checkSubCategory = await this.prisma.subCategory.findFirst({
+      where: { name: subCategoryName },
+    });
+
+    if (!checkSubCategory) {
+      throw new NotFoundException(`no subcategory ${subCategoryName} found`);
+    }
+
+    try {
+      const newPlaceItem = await this.prisma.placeItem.update({
+        where: { id: placeItemId },
+        data: {
+          businessEmail,
+          description,
+          location,
+          phoneNumber,
+          placeImg,
+          title,
+          latitude,
+          longitude,
+          workingHours,
+          subCategoryId: checkSubCategory.id,
+        },
+      });
+
+      return {
+        message: 'New Place Item Updated Successfully',
+        data: newPlaceItem,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
