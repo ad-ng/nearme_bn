@@ -44,11 +44,6 @@ export class CategoryController {
     return this.categoryService.createSubCategories(dto);
   }
 
-  @Get('subcategory/:name')
-  fetchAllPlaceItems(@Param() param: CategoryParamDTO, @Req() req: Request) {
-    return this.categoryService.getSubCategoryItems(param, req);
-  }
-
   @Get('docitem/:name')
   fetchAllDocItem(@Param() param: CategoryParamDTO, @Req() req: Request) {
     return this.categoryService.fetchDocItems(param, req.user);

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   Injectable,
@@ -6,6 +7,7 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { PlaceItemDTO } from './dtos';
+import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 
 @Injectable()
 export class PlaceItemService {
@@ -79,6 +81,44 @@ export class PlaceItemService {
         total: totalCount,
         page,
         limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async getSubCategoryItems(param: CategoryParamDTO, user) {
+    const userId = user.id;
+    const checkSubCategory = await this.prisma.subCategory.findFirst({
+      where: { name: param.name },
+    });
+
+    if (!checkSubCategory) {
+      throw new NotFoundException(`no Sub category with ${param.name}`);
+    }
+
+    try {
+      const allSubcategoryItems = await this.prisma.placeItem.findMany({
+        where: { subCategoryId: checkSubCategory.id },
+        include: {
+          savedItems: {
+            where: {
+              userId,
+            },
+          },
+          subCategory: {
+            include: {
+              _count: {
+                select: { placeItems: true },
+              },
+            },
+          },
+        },
+      });
+
+      return {
+        message: 'Place Items found successfully',
+        data: allSubcategoryItems,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
