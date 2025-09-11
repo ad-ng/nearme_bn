@@ -9,6 +9,7 @@ import {
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { DocItemDTO } from './dto';
+import { IdParamDTO } from 'src/location/dto';
 
 @Injectable()
 export class DocItemService {
@@ -132,6 +133,48 @@ export class DocItemService {
 
       return {
         message: 'DocItem Created Successfully',
+        data: newDocItem,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+  async updateDocItem(dto: DocItemDTO, param: IdParamDTO) {
+    const docItemId = param.id;
+    const checkDocItemId = await this.prisma.docItem.findUnique({
+      where: { id: docItemId },
+    });
+
+    if (!checkDocItemId) {
+      throw new NotFoundException('doc item not found');
+    }
+
+    const { categoryName, featuredImg, location, title, summary, description } =
+      dto;
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: categoryName },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException(` no ${categoryName} category found`);
+    }
+
+    try {
+      const newDocItem = await this.prisma.docItem.update({
+        where: { id: docItemId },
+        data: {
+          description,
+          summary,
+          featuredImg,
+          location,
+          title,
+          categoryId: checkCategory.id,
+        },
+      });
+
+      return {
+        message: 'DocItem updated Successfully',
         data: newDocItem,
       };
     } catch (error) {

@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -16,6 +17,7 @@ import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { DocItemDTO } from './dto';
+import { IdParamDTO } from 'src/location/dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -43,5 +45,10 @@ export class DocItemController {
   @Post()
   addDocItem(@Body() dto: DocItemDTO, @Req() req: Request) {
     return this.docItemService.createDocItem(dto, req.user);
+  }
+
+  @Patch(':id')
+  updateDocItem(@Body() dto: DocItemDTO, @Param() param: IdParamDTO) {
+    return this.docItemService.updateDocItem(dto, param);
   }
 }
