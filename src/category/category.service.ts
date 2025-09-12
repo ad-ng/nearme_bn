@@ -226,6 +226,29 @@ export class CategoryService {
     }
   }
 
+  async deleteSubCategory(param: IdParamDTO) {
+    const subCategoryId = param.id;
+    const checkSubCategory = await this.prisma.subCategory.findUnique({
+      where: { id: subCategoryId },
+    });
+
+    if (!checkSubCategory) {
+      throw new NotFoundException('subcategory not found');
+    }
+
+    try {
+      await this.prisma.subCategory.delete({
+        where: { id: subCategoryId },
+      });
+
+      return {
+        message: 'subcategory deleted successfully',
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
   async search(keyword: string, user) {
     const userId = user.id;
     const docItems = await this.prisma.docItem.findMany({

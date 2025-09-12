@@ -63,6 +63,12 @@ export class CategoryController {
     return this.categoryService.updateSubCategories(dto, param);
   }
 
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Delete('subcategory/:id')
+  deleteSubCategory(@Param() param: IdParamDTO) {
+    return this.categoryService.deleteSubCategory(param);
+  }
+
   @Get('search/all')
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);
