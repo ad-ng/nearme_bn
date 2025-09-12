@@ -75,10 +75,12 @@ model PlaceItem {
   description      String
   workingHours     String
   location         String
-  coords           Decimal[]
+  latitude         Float
+  longitude        Float
   placeImg         String[]
   businessEmail    String
   phoneNumber      String
+  bookLink         String?
   subCategoryId    Int
   subCategory      SubCategory        @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
   savedItems       Saved[]
@@ -123,8 +125,10 @@ model Locations {
   id               Int                @id @default(autoincrement())
   address          String
   title            String
-  image            String
-  coords           Decimal[]
+  image            String[]
+  description      String?
+  latitude         Float
+  longitude        Float
   provinceId       Int
   province         Provinces          @relation(fields: [provinceId], references: [id])
   InteractionEvent InteractionEvent[]

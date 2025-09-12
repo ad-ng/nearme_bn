@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   Req,
@@ -11,11 +13,12 @@ import {
 import { CategoryService } from './category.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { CategoryDto, DocItemDTO, PlaceItemDTO, SubCategoryDTO } from './dto';
+import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { Request } from 'express';
+import { IdParamDTO } from 'src/location/dto';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -33,6 +36,16 @@ export class CategoryController {
     return this.categoryService.createCategory(dto);
   }
 
+  @Patch(':id')
+  updateCategory(@Body() dto: CategoryDto, @Param() param: IdParamDTO) {
+    return this.categoryService.updateCategory(dto, param);
+  }
+
+  @Delete(':id')
+  deleteCategory(@Param() param: IdParamDTO) {
+    return this.categoryService.deleteCategory(param);
+  }
+
   @Get(':name')
   fetchSubcategories(@Param() Param: CategoryParamDTO) {
     return this.categoryService.fetchSubcategories(Param);
@@ -44,50 +57,20 @@ export class CategoryController {
     return this.categoryService.createSubCategories(dto);
   }
 
-  @Get('subcategory/:name')
-  fetchAllPlaceItems(@Param() param: CategoryParamDTO, @Req() req: Request) {
-    return this.categoryService.getSubCategoryItems(param, req);
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Patch('subcategory/:id')
+  updateSubCategory(@Body() dto: SubCategoryDTO, @Param() param: IdParamDTO) {
+    return this.categoryService.updateSubCategories(dto, param);
   }
 
-  @Post('placeitem')
-  addPlaceItem(@Body() dto: PlaceItemDTO) {
-    return this.categoryService.createPlaceItem(dto);
-  }
-
-  @Get('docitem/:name')
-  fetchAllDocItem(@Param() param: CategoryParamDTO, @Req() req: Request) {
-    return this.categoryService.fetchDocItems(param, req.user);
-  }
-
-  @Post('docitem')
-  addDocItem(@Body() dto: DocItemDTO, @Req() req: Request) {
-    return this.categoryService.createDocItem(dto, req.user);
-  }
-
-  @Get('/articles/all')
-  fetchAllCategories(@Req() req: Request) {
-    return this.categoryService.fetchAllArticle(req.user);
-  }
-
-  @Get('recommendation/all')
-  fetchRecommendation(@Req() req: Request) {
-    return this.categoryService.fetchRecommendedPlaces(req.user);
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Delete('subcategory/:id')
+  deleteSubCategory(@Param() param: IdParamDTO) {
+    return this.categoryService.deleteSubCategory(param);
   }
 
   @Get('search/all')
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);
-  }
-
-  @Roles(RoleStatus.admin, RoleStatus.moderator)
-  @Get('/adminfetchdocs/all')
-  gettingAllDocuments(@Query() query: any) {
-    return this.categoryService.adminFetchAllArticle(query);
-  }
-
-  @Roles(RoleStatus.admin, RoleStatus.moderator)
-  @Get('/adminfetchbuz/all')
-  gettingAllBuz(@Query() query: any) {
-    return this.categoryService.adminFetchAllBusiness(query);
   }
 }

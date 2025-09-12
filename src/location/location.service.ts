@@ -6,6 +6,7 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { AddLocationDTO, IdParamDTO } from './dto';
 
 @Injectable()
 export class LocationService {
@@ -66,13 +67,12 @@ export class LocationService {
 
     try {
       const [allLocations, totalCount] = await Promise.all([
-        this.prisma.placeItem.findMany({
+        this.prisma.locations.findMany({
           orderBy: [{ id: 'desc' }],
-          include: { subCategory: true },
           take: limit,
           skip: (page - 1) * limit,
         }),
-        this.prisma.placeItem.count(),
+        this.prisma.locations.count(),
       ]);
 
       return {
@@ -81,6 +81,117 @@ export class LocationService {
         total: totalCount,
         page,
         limit,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async addingLocation(dto: AddLocationDTO) {
+    const {
+      provinceName,
+      address,
+      description,
+      image,
+      latitude,
+      longitude,
+      title,
+    } = dto;
+
+    const checkProvince = await this.prisma.provinces.findFirst({
+      where: { name: provinceName },
+    });
+    if (!checkProvince) {
+      throw new NotFoundException('invalid province');
+    }
+    try {
+      const newLocation = await this.prisma.locations.create({
+        data: {
+          address,
+          description,
+          image,
+          latitude,
+          longitude,
+          title,
+          provinceId: checkProvince.id,
+        },
+      });
+      return {
+        message: 'location added successfully',
+        data: newLocation,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async updateLocation(dto: AddLocationDTO, param: IdParamDTO) {
+    const {
+      provinceName,
+      address,
+      description,
+      image,
+      latitude,
+      longitude,
+      title,
+    } = dto;
+
+    const locationId = param.id;
+    const CheckLocation = await this.prisma.locations.findUnique({
+      where: { id: locationId },
+    });
+
+    if (!CheckLocation) {
+      throw new NotFoundException('invalid location');
+    }
+
+    const checkProvince = await this.prisma.provinces.findFirst({
+      where: { name: provinceName },
+    });
+    if (!checkProvince) {
+      throw new NotFoundException('invalid province');
+    }
+
+    try {
+      const newLocation = await this.prisma.locations.update({
+        where: { id: locationId },
+        data: {
+          address,
+          description,
+          image,
+          latitude,
+          longitude,
+          title,
+          provinceId: checkProvince.id,
+        },
+      });
+
+      return {
+        message: 'location edited successfully',
+        data: newLocation,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
+  async deleteLocation(param: IdParamDTO) {
+    const locationId = param.id;
+    const CheckLocation = await this.prisma.locations.findUnique({
+      where: { id: locationId },
+    });
+
+    if (!CheckLocation) {
+      throw new NotFoundException('invalid location');
+    }
+
+    try {
+      await this.prisma.locations.delete({
+        where: { id: locationId },
+      });
+
+      return {
+        message: 'location deleted successfully',
       };
     } catch (error) {
       return new InternalServerErrorException(error);

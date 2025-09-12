@@ -3,6 +3,7 @@ import {
   IsArray,
   IsEmail,
   IsNotEmpty,
+  IsNumber,
   IsPhoneNumber,
   IsString,
 } from 'class-validator';
@@ -42,6 +43,16 @@ export class PlaceItemDTO {
   @IsNotEmpty()
   @IsPhoneNumber()
   phoneNumber: string;
+
+  @ApiProperty({ example: -1.08763737 })
+  @IsNotEmpty()
+  @IsNumber()
+  latitude: number;
+
+  @ApiProperty({ example: 30.89892888282 })
+  @IsNotEmpty()
+  @IsNumber()
+  longitude: number;
 
   @ApiProperty({ example: 'Private Transport' })
   @IsNotEmpty()

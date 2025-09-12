@@ -2,15 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
-  ForbiddenException,
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { CategoryDto, DocItemDTO, PlaceItemDTO, SubCategoryDTO } from './dto';
+import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
+import { IdParamDTO } from 'src/location/dto';
 
 @Injectable()
 export class CategoryService {
@@ -43,11 +42,17 @@ export class CategoryService {
   }
 
   async createCategory(dto: CategoryDto) {
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: dto.name },
+    });
+
+    if (checkCategory) {
+      throw new BadRequestException(`category already ${dto.name}`);
+    }
+
     try {
-      const addCategory = await this.prisma.category.upsert({
-        where: { name: dto.name, isDoc: dto.isDoc },
-        create: { name: dto.name, isDoc: dto.isDoc },
-        update: { name: dto.name, isDoc: dto.isDoc },
+      const addCategory = await this.prisma.category.create({
+        data: { name: dto.name, isDoc: dto.isDoc },
       });
 
       return {
@@ -56,6 +61,62 @@ export class CategoryService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async updateCategory(dto: CategoryDto, param: IdParamDTO) {
+    const categoryId = param.id;
+    const checkCategoryId = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!checkCategoryId) {
+      throw new NotFoundException('invalid category');
+    }
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: dto.name, isDoc: dto.isDoc },
+    });
+
+    if (checkCategory) {
+      throw new BadRequestException(`no change made`);
+    }
+
+    try {
+      const addCategory = await this.prisma.category.update({
+        where: { id: categoryId },
+        data: { name: dto.name, isDoc: dto.isDoc },
+      });
+
+      return {
+        message: 'category updated successfully',
+        data: addCategory,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async deleteCategory(param: IdParamDTO) {
+    const categoryId = param.id;
+    const checkCategory = await this.prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException('category not found');
+    }
+
+    try {
+      await this.prisma.category.delete({
+        where: { id: categoryId },
+      });
+
+      return {
+        message: 'category deleted successfully',
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
     }
   }
 
@@ -126,220 +187,62 @@ export class CategoryService {
     }
   }
 
-  async getSubCategoryItems(param: CategoryParamDTO, user) {
-    const userId = user.id;
-    const checkSubCategory = await this.prisma.subCategory.findFirst({
-      where: { name: param.name },
+  async updateSubCategories(dto: SubCategoryDTO, param: IdParamDTO) {
+    const subCategoryId = param.id;
+    const checkSubCategory = await this.prisma.subCategory.findUnique({
+      where: { id: subCategoryId },
     });
 
     if (!checkSubCategory) {
-      throw new NotFoundException(`no Sub category with ${param.name}`);
+      throw new NotFoundException('invalid subcategory');
     }
 
-    try {
-      const allSubcategoryItems = await this.prisma.placeItem.findMany({
-        where: { subCategoryId: checkSubCategory.id },
-        include: {
-          savedItems: {
-            where: {
-              userId,
-            },
-          },
-          subCategory: {
-            include: {
-              _count: {
-                select: { placeItems: true },
-              },
-            },
-          },
-        },
-      });
-
-      return {
-        message: 'Place Items found successfully',
-        data: allSubcategoryItems,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
-    }
-  }
-
-  async createPlaceItem(dto: PlaceItemDTO) {
-    const {
-      businessEmail,
-      description,
-      location,
-      phoneNumber,
-      placeImg,
-      subCategoryName,
-      title,
-      workingHours,
-    } = dto;
-
-    const checkSubCategory = await this.prisma.subCategory.findFirst({
-      where: { name: subCategoryName },
-    });
-
-    if (!checkSubCategory) {
-      throw new NotFoundException(`no subcategory ${subCategoryName} found`);
-    }
-
-    try {
-      const newPlaceItem = await this.prisma.placeItem.create({
-        data: {
-          businessEmail,
-          description,
-          location,
-          phoneNumber,
-          placeImg,
-          title,
-          workingHours,
-          subCategoryId: checkSubCategory.id,
-        },
-      });
-
-      return {
-        message: 'New Place Item Added Successfully',
-        data: newPlaceItem,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
-    }
-  }
-
-  async fetchDocItems(param: CategoryParamDTO, user) {
-    const { name } = param;
-    const userId = user.id;
-    const checkCategory = await this.prisma.category.findFirst({
-      where: { name },
-    });
-
-    if (!checkCategory) {
-      throw new NotFoundException(` no ${name} category found`);
-    }
-
-    try {
-      const allDocItems = await this.prisma.docItem.findMany({
-        where: { categoryId: checkCategory.id },
-        include: {
-          author: true,
-          savedItems: {
-            where: { userId },
-          },
-        },
-      });
-
-      return {
-        message: 'Documents Fetched Successfully',
-        data: allDocItems,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
-    }
-  }
-
-  async createDocItem(dto: DocItemDTO, user) {
-    const authorId: number = user.id;
-    const checkUser = await this.prisma.user.findUnique({
-      where: { id: authorId },
-    });
-
-    if (!checkUser || user.role == 'user') {
-      throw new UnauthorizedException();
-    }
-
-    const { categoryName, featuredImg, location, title, summary, description } =
-      dto;
+    const { categoryName, subCategoryName, featuredImage } = dto;
 
     const checkCategory = await this.prisma.category.findFirst({
       where: { name: categoryName },
     });
 
     if (!checkCategory) {
-      throw new NotFoundException(` no ${categoryName} category found`);
+      throw new NotFoundException(`no category with ${categoryName} found`);
     }
 
     try {
-      const newDocItem = await this.prisma.docItem.create({
+      const newSubCategory = await this.prisma.subCategory.update({
+        where: { id: subCategoryId },
         data: {
-          authorId,
-          description,
-          summary,
-          featuredImg,
-          location,
-          title,
+          name: subCategoryName,
+          featuredImage,
           categoryId: checkCategory.id,
         },
       });
 
       return {
-        message: 'DocItem Created Successfully',
-        data: newDocItem,
+        message: 'subcategory updated successfully',
+        data: newSubCategory,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
     }
   }
 
-  async fetchAllArticle(user) {
-    const userId = user.id;
-    try {
-      const allArticles = await this.prisma.docItem.findMany({
-        include: {
-          author: true,
-          savedItems: {
-            where: { userId },
-          },
-        },
-        orderBy: [{ id: 'desc' }],
-      });
+  async deleteSubCategory(param: IdParamDTO) {
+    const subCategoryId = param.id;
+    const checkSubCategory = await this.prisma.subCategory.findUnique({
+      where: { id: subCategoryId },
+    });
 
-      return {
-        message: 'Articles Are Fetched Successfully !',
-        data: allArticles,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
+    if (!checkSubCategory) {
+      throw new NotFoundException('subcategory not found');
     }
-  }
-
-  async fetchRecommendedPlaces(user) {
-    const userId = user.id;
-
-    const checkUser = await this.prisma.user.findUnique({
-      where: { id: userId },
-    });
-    if (!checkUser) throw new ForbiddenException();
-
-    const userInterest = await this.prisma.userInterests.findMany({
-      where: { userId },
-    });
-
-    const interestIds = userInterest.map((interest) => interest.categoryId);
 
     try {
-      const allRecommendations = await this.prisma.placeItem.findMany({
-        where: {
-          subCategory: { categoryId: { in: interestIds } },
-        },
-        include: {
-          savedItems: {
-            where: {
-              userId,
-            },
-          },
-          subCategory: {
-            include: {
-              _count: {
-                select: { placeItems: true },
-              },
-            },
-          },
-        },
+      await this.prisma.subCategory.delete({
+        where: { id: subCategoryId },
       });
+
       return {
-        message: 'Recommendations fetched successfully',
-        data: allRecommendations,
+        message: 'subcategory deleted successfully',
       };
     } catch (error) {
       return new InternalServerErrorException(error);
@@ -395,61 +298,5 @@ export class CategoryService {
         ...placeItems.map((item) => ({ type: 'place', data: item })),
       ],
     };
-  }
-
-  async adminFetchAllArticle(query) {
-    const page = parseInt(`${query.page}`, 10) || 1;
-    const limit = parseInt(`${query.limit}`) || 10;
-
-    try {
-      const [allArticles, totalCount] = await Promise.all([
-        this.prisma.docItem.findMany({
-          include: {
-            author: true,
-          },
-          orderBy: [{ id: 'desc' }],
-          take: limit,
-          skip: (page - 1) * limit,
-        }),
-        this.prisma.docItem.count(),
-      ]);
-
-      return {
-        message: 'Articles Are Fetched Successfully !',
-        data: allArticles,
-        total: totalCount,
-        page,
-        limit,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
-    }
-  }
-
-  async adminFetchAllBusiness(query) {
-    const page = parseInt(`${query.page}`, 10) || 1;
-    const limit = parseInt(`${query.limit}`) || 10;
-
-    try {
-      const [allBusinesses, totalCount] = await Promise.all([
-        this.prisma.placeItem.findMany({
-          orderBy: [{ id: 'desc' }],
-          include: { subCategory: true },
-          take: limit,
-          skip: (page - 1) * limit,
-        }),
-        this.prisma.placeItem.count(),
-      ]);
-
-      return {
-        message: 'Articles Are Fetched Successfully !',
-        data: allBusinesses,
-        total: totalCount,
-        page,
-        limit,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
-    }
   }
 }
