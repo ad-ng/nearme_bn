@@ -187,6 +187,45 @@ export class CategoryService {
     }
   }
 
+  async updateSubCategories(dto: SubCategoryDTO, param: IdParamDTO) {
+    const subCategoryId = param.id;
+    const checkSubCategory = await this.prisma.subCategory.findUnique({
+      where: { id: subCategoryId },
+    });
+
+    if (!checkSubCategory) {
+      throw new NotFoundException('invalid subcategory');
+    }
+
+    const { categoryName, subCategoryName, featuredImage } = dto;
+
+    const checkCategory = await this.prisma.category.findFirst({
+      where: { name: categoryName },
+    });
+
+    if (!checkCategory) {
+      throw new NotFoundException(`no category with ${categoryName} found`);
+    }
+
+    try {
+      const newSubCategory = await this.prisma.subCategory.update({
+        where: { id: subCategoryId },
+        data: {
+          name: subCategoryName,
+          featuredImage,
+          categoryId: checkCategory.id,
+        },
+      });
+
+      return {
+        message: 'subcategory updated successfully',
+        data: newSubCategory,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
+
   async search(keyword: string, user) {
     const userId = user.id;
     const docItems = await this.prisma.docItem.findMany({

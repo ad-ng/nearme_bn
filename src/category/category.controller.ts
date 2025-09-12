@@ -57,6 +57,12 @@ export class CategoryController {
     return this.categoryService.createSubCategories(dto);
   }
 
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Patch('subcategory/:id')
+  updateSubCategory(@Body() dto: SubCategoryDTO, @Param() param: IdParamDTO) {
+    return this.categoryService.updateSubCategories(dto, param);
+  }
+
   @Get('search/all')
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);
