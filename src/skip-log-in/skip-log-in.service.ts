@@ -29,4 +29,22 @@ export class SkipLogInService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async fetchAllArticle() {
+    try {
+      const allArticles = await this.prisma.docItem.findMany({
+        include: {
+          author: true,
+        },
+        orderBy: [{ id: 'desc' }],
+      });
+
+      return {
+        message: 'Articles Are Fetched Successfully !',
+        data: allArticles,
+      };
+    } catch (error) {
+      return new InternalServerErrorException(error);
+    }
+  }
 }

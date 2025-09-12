@@ -6,10 +6,15 @@ import { SkipLogInService } from './skip-log-in.service';
 export class SkipLogInController {
   constructor(private skipLogInService: SkipLogInService) {}
 
-  @Get(':provinceName')
+  @Get('location/:provinceName')
   fetchLocations(@Param() Param: string) {
     return this.skipLogInService.fetchLocationsInProvince(
       Param['provinceName'],
     );
+  }
+
+  @Get('articles/all')
+  fetchAllCategories() {
+    return this.skipLogInService.fetchAllArticle();
   }
 }
