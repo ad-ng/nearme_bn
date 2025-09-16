@@ -15,6 +15,7 @@ import { FirebaseModule } from './firebase/firebase.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { PlaceItemModule } from './place-item/place-item.module';
 import { DocItemModule } from './doc-item/doc-item.module';
+import { SkipLogInModule } from './skip-log-in/skip-log-in.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { DocItemModule } from './doc-item/doc-item.module';
     AnalyticsModule,
     PlaceItemModule,
     DocItemModule,
+    SkipLogInModule,
   ],
   controllers: [AppController],
   providers: [AppService],
