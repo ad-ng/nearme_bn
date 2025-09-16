@@ -31,10 +31,12 @@ export class UserService {
   ) {}
 
   async getCurrentUser(user) {
-    const { id } = user;
+    if (!user || !user.email) throw new UnauthorizedException();
+
+    const { email } = user;
 
     const checkUser = await this.prisma.user.findUnique({
-      where: { id },
+      where: { email },
       include: { userInterests: true },
     });
 
