@@ -129,6 +129,47 @@
 // }
 
 // auth/guards/auth.guard.ts
+// import {
+//   CanActivate,
+//   ExecutionContext,
+//   Injectable,
+//   UnauthorizedException,
+// } from '@nestjs/common';
+// import { JwtService } from '@nestjs/jwt';
+// import { Reflector } from '@nestjs/core';
+// import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+
+// @Injectable()
+// export class AuthGuard implements CanActivate {
+//   constructor(
+//     private jwtService: JwtService,
+//     private reflector: Reflector,
+//   ) {}
+
+//   async canActivate(context: ExecutionContext): Promise<boolean> {
+//     // Skip auth if route is marked @Public()
+//     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
+//       context.getHandler(),
+//       context.getClass(),
+//     ]);
+//     if (isPublic) return true;
+
+//     const request = context.switchToHttp().getRequest();
+//     const authHeader = request.headers.authorization;
+//     const token = authHeader?.split(' ')[1];
+
+//     if (!token) throw new UnauthorizedException('No token provided');
+
+//     try {
+//       const payload = await this.jwtService.verifyAsync(token);
+//       request.user = payload; // attach user info
+//       return true;
+//     } catch (err) {
+//       throw new UnauthorizedException(`Invalid or expired token: ${err}`);
+//     }
+//   }
+// }
+
 import {
   CanActivate,
   ExecutionContext,
@@ -137,6 +178,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { Reflector } from '@nestjs/core';
+import { AuthService } from '../auth.service';
 import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
 
 @Injectable()
@@ -144,6 +186,7 @@ export class AuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private reflector: Reflector,
+    private authService: AuthService,
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
@@ -158,14 +201,33 @@ export class AuthGuard implements CanActivate {
     const authHeader = request.headers.authorization;
     const token = authHeader?.split(' ')[1];
 
-    if (!token) throw new UnauthorizedException('No token provided');
+    if (!token) {
+      // No token provided, don't attach user
+      request.user = null;
+      throw new UnauthorizedException('No token provided');
+    }
 
     try {
-      const payload = await this.jwtService.verifyAsync(token);
-      request.user = payload; // attach user info
+      // Verify JWT
+      const payload: any = await this.jwtService.verifyAsync(token);
+
+      // ✅ Check user exists in DB
+      const user = await this.authService.fetchUserWithIdAndEmail(
+        payload.id,
+        payload.email,
+      );
+
+      if (!user) throw new UnauthorizedException('User no longer exists');
+
+      // Attach real user to request
+      request.user = user;
+
       return true;
     } catch (err) {
-      throw new UnauthorizedException(`Invalid or expired token: ${err}`);
+      request.user = null; // clear any attached user
+      throw new UnauthorizedException(
+        `Invalid or expired token: ${err.message}`,
+      );
     }
   }
 }
