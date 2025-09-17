@@ -8,9 +8,7 @@ import {
   Post,
   Query,
   Req,
-  UseGuards,
 } from '@nestjs/common';
-import { AuthGuard, RolesGuard } from 'src/auth/guards';
 import { UserService } from './user.service';
 import { Request } from 'express';
 import {
@@ -26,7 +24,6 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 
-@UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {

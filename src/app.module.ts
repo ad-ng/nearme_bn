@@ -16,6 +16,8 @@ import { AnalyticsModule } from './analytics/analytics.module';
 import { PlaceItemModule } from './place-item/place-item.module';
 import { DocItemModule } from './doc-item/doc-item.module';
 import { SkipLogInModule } from './skip-log-in/skip-log-in.module';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from './auth/guards';
 
 @Module({
   imports: [
@@ -36,6 +38,12 @@ import { SkipLogInModule } from './skip-log-in/skip-log-in.module';
     SkipLogInModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
