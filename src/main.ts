@@ -1,11 +1,16 @@
-import { NestFactory } from '@nestjs/core';
+import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import helmet from 'helmet';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { JwtService } from '@nestjs/jwt';
+import { AuthGuard, RolesGuard } from './auth/guards';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const reflector = app.get(Reflector);
+  const jwtService = app.get(JwtService);
 
   const config = new DocumentBuilder()
     .setTitle('Everything Near Me')
@@ -25,6 +30,10 @@ async function bootstrap() {
 
   app.use(helmet());
   app.enableCors({ origin: '*' });
+  app.useGlobalGuards(
+    new AuthGuard(jwtService, reflector),
+    new RolesGuard(reflector),
+  );
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(process.env.PORT ?? 3000);
 }

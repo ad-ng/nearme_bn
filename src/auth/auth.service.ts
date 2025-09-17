@@ -243,4 +243,8 @@ export class AuthService {
       );
     }
   }
+
+  async fetchUserWithIdAndEmail(email: string, id: number) {
+    return await this.prisma.user.findUnique({ where: { id, email } });
+  }
 }

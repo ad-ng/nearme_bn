@@ -14,6 +14,7 @@ import {
   ApiInternalServerErrorResponse,
   ApiOperation,
 } from '@nestjs/swagger';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -67,6 +68,7 @@ export class AuthController {
       },
     },
   })
+  @Public()
   @Post('login')
   login(@Body() dto: loginDTO) {
     return this.authService.signin(dto);
@@ -132,26 +134,31 @@ export class AuthController {
     },
   })
   @ApiInternalServerErrorResponse({ description: 'error from server' })
+  @Public()
   @Post('register')
   register(@Body() dto: RegisterDTO) {
     return this.authService.register(dto);
   }
 
+  @Public()
   @Post('email/verification')
   emailVerification(@Body() dto: EmailDTO) {
     return this.authService.sendEmailPasswordResetCode(dto);
   }
 
+  @Public()
   @Post('otp/verification')
   otpVerification(@Body() dto: OtpVerification) {
     return this.authService.verifyOtp(dto);
   }
 
+  @Public()
   @Post('password/reset')
   resetPassword(@Body() dto: ResetPasswordDTO) {
     return this.authService.resetPassword(dto);
   }
 
+  @Public()
   @Post('google')
   async googleLogin(@Body('idToken') idToken: string) {
     return this.authService.loginWithGoogle(idToken);
