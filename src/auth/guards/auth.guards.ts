@@ -213,8 +213,8 @@ export class AuthGuard implements CanActivate {
 
       // ✅ Check user exists in DB
       const user = await this.authService.fetchUserWithIdAndEmail(
-        payload.id,
         payload.email,
+        payload.id,
       );
 
       if (!user) throw new UnauthorizedException('User no longer exists');
