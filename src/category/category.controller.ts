@@ -73,4 +73,16 @@ export class CategoryController {
   searchEveryThing(@Query('query') query: string, @Req() req: Request) {
     return this.categoryService.search(query, req.user);
   }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('search/category/all')
+  searchCategories(@Query('query') query: string) {
+    return this.categoryService.searchCategories(query);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('search/subcategory/all')
+  searchSubCategories(@Query('query') query: string) {
+    return this.categoryService.searchSubCategories(query);
+  }
 }

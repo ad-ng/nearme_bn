@@ -197,4 +197,24 @@ export class LocationService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async search(keyword: string) {
+    try {
+      const allLocations = await this.prisma.locations.findMany({
+        where: {
+          OR: [
+            { title: { contains: keyword, mode: 'insensitive' } },
+            { address: { contains: keyword, mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      return {
+        message: 'locations fetched successfully',
+        data: allLocations,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
