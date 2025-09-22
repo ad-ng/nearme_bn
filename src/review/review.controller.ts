@@ -43,4 +43,10 @@ export class ReviewController {
   gettingAllBuz(@Query() query: any) {
     return this.reviewService.adminFetchAllReviews(query);
   }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('search/all')
+  searchUser(@Query('query') query: string) {
+    return this.reviewService.search(query);
+  }
 }
