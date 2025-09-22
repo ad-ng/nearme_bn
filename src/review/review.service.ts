@@ -112,4 +112,27 @@ export class ReviewService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async search(keyword: string) {
+    try {
+      const allReviews = await this.prisma.review.findMany({
+        where: {
+          OR: [
+            { content: { contains: keyword, mode: 'insensitive' } },
+            {
+              placeItem: { title: { contains: keyword, mode: 'insensitive' } },
+            },
+            { user: { email: { contains: keyword, mode: 'insensitive' } } },
+          ],
+        },
+      });
+
+      return {
+        message: 'reviews fetched successfully',
+        data: allReviews,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

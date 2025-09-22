@@ -249,4 +249,27 @@ export class PlaceItemService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async search(keyword: string) {
+    try {
+      const allBusinesses = await this.prisma.placeItem.findMany({
+        where: {
+          OR: [
+            { title: { contains: keyword, mode: 'insensitive' } },
+            { businessEmail: { contains: keyword, mode: 'insensitive' } },
+            {
+              subCategory: { name: { contains: keyword, mode: 'insensitive' } },
+            },
+          ],
+        },
+      });
+
+      return {
+        message: 'businesses fetched successfully',
+        data: allBusinesses,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

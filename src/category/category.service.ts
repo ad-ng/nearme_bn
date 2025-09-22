@@ -299,4 +299,38 @@ export class CategoryService {
       ],
     };
   }
+
+  async searchCategories(keyword: string) {
+    try {
+      const allCategories = await this.prisma.category.findMany({
+        where: {
+          OR: [{ name: { contains: keyword, mode: 'insensitive' } }],
+        },
+      });
+
+      return {
+        message: 'categories fetched successfully',
+        data: allCategories,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async searchSubCategories(keyword: string) {
+    try {
+      const allSubCategories = await this.prisma.subCategory.findMany({
+        where: {
+          OR: [{ name: { contains: keyword, mode: 'insensitive' } }],
+        },
+      });
+
+      return {
+        message: 'subcategories fetched successfully',
+        data: allSubCategories,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

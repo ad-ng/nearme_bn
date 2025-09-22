@@ -22,4 +22,34 @@ export class AnalyticsController {
   fetchPlaceItemData() {
     return this.analyticsService.mostVisitedPlaceItem();
   }
+
+  @Get('article')
+  fetchArticleData() {
+    return this.analyticsService.mostVisitedArticle();
+  }
+
+  @Get('location')
+  fetchLocationData() {
+    return this.analyticsService.mostVisitedLocationPlaces();
+  }
+
+  @Get('categories')
+  fetchCategoryData() {
+    return this.analyticsService.categoryAnalytics();
+  }
+
+  @Get('subcategories')
+  fetchSubCategoryData() {
+    return this.analyticsService.subCategoryAnalytics();
+  }
+
+  @Get('peak-time')
+  fetchPeakTimeData() {
+    return this.analyticsService.getUsageBy7Buckets();
+  }
+
+  @Get('user')
+  fetchUserData() {
+    return this.analyticsService.getRegistrationsLast7Days();
+  }
 }

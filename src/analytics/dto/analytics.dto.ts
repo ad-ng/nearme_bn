@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import { ApiProperty } from '@nestjs/swagger';
 import { EventType } from '@prisma/client';
 import { IsEnum, IsNotEmpty, IsNumber, IsOptional } from 'class-validator';
@@ -13,6 +12,11 @@ export class AnalyticsDTO {
   @IsOptional()
   @IsNumber()
   categoryId: number;
+
+  @ApiProperty({ example: 1 })
+  @IsOptional()
+  @IsNumber()
+  subCategoryId: number;
 
   @ApiProperty({ example: 1 })
   @IsOptional()

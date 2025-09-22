@@ -204,4 +204,24 @@ export class DocItemService {
       return new InternalServerErrorException(error);
     }
   }
+
+  async search(keyword: string) {
+    try {
+      const allArticles = await this.prisma.docItem.findMany({
+        where: {
+          OR: [
+            { title: { contains: keyword, mode: 'insensitive' } },
+            { author: { email: { contains: keyword, mode: 'insensitive' } } },
+          ],
+        },
+      });
+
+      return {
+        message: 'articles fetched successfully',
+        data: allArticles,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

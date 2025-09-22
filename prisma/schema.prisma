@@ -61,12 +61,13 @@ model UserInterests {
 }
 
 model SubCategory {
-  id            Int         @id @default(autoincrement())
-  name          String
-  categoryId    Int
-  featuredImage String
-  category      Category    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  placeItems    PlaceItem[]
+  id               Int                @id @default(autoincrement())
+  name             String
+  categoryId       Int
+  featuredImage    String
+  category         Category           @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  placeItems       PlaceItem[]
+  InteractionEvent InteractionEvent[]
 }
 
 model PlaceItem {
@@ -179,21 +180,23 @@ model Saved {
 }
 
 model InteractionEvent {
-  id          Int        @id @default(autoincrement())
-  type        EventType
-  userId      Int?
-  user        User?      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryId  Int?
-  category    Category?  @relation(fields: [categoryId], references: [id], onDelete: Cascade)
-  placeItemId Int?
-  placeItem   PlaceItem? @relation(fields: [placeItemId], references: [id], onDelete: Cascade)
-  locationId  Int?
-  location    Locations? @relation(fields: [locationId], references: [id])
-  docItemId   Int?
-  docItem     DocItem?   @relation(fields: [docItemId], references: [id], onDelete: Cascade)
-  provinceId  Int?
-  province    Provinces? @relation(fields: [provinceId], references: [id])
-  createdAt   DateTime   @default(now())
+  id            Int          @id @default(autoincrement())
+  type          EventType
+  userId        Int?
+  user          User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryId    Int?
+  category      Category?    @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  subCategoryId Int?
+  subCategory   SubCategory? @relation(fields: [subCategoryId], references: [id], onDelete: Cascade)
+  placeItemId   Int?
+  placeItem     PlaceItem?   @relation(fields: [placeItemId], references: [id], onDelete: Cascade)
+  locationId    Int?
+  location      Locations?   @relation(fields: [locationId], references: [id])
+  docItemId     Int?
+  docItem       DocItem?     @relation(fields: [docItemId], references: [id], onDelete: Cascade)
+  provinceId    Int?
+  province      Provinces?   @relation(fields: [provinceId], references: [id])
+  createdAt     DateTime     @default(now())
 
   @@index([type])
   @@index([createdAt])

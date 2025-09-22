@@ -62,4 +62,10 @@ export class LocationController {
   deleteLocation(@Param() param: IdParamDTO) {
     return this.locationService.deleteLocation(param);
   }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('search/all')
+  searchUser(@Query('query') query: string) {
+    return this.locationService.search(query);
+  }
 }
