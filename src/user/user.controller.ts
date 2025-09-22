@@ -25,6 +25,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
+import { EmailDTO } from './dtos/email.dto';
 
 @UseGuards(RolesGuard)
 @ApiBearerAuth()
@@ -98,5 +99,11 @@ export class UserController {
   @Get('search/all')
   searchUser(@Query('query') query: string) {
     return this.userService.search(query);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Delete(':email')
+  deleteUser(@Param() Param: EmailDTO) {
+    return this.userService.deleteUser(Param);
   }
 }

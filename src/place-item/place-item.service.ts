@@ -257,6 +257,9 @@ export class PlaceItemService {
           OR: [
             { title: { contains: keyword, mode: 'insensitive' } },
             { businessEmail: { contains: keyword, mode: 'insensitive' } },
+            {
+              subCategory: { name: { contains: keyword, mode: 'insensitive' } },
+            },
           ],
         },
       });

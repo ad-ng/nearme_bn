@@ -22,6 +22,7 @@ import {
 } from './dtos';
 import { MailService } from 'src/mail/mail.service';
 import { sendEmailConfirmationCode } from 'src/mail/templates/email_confirmation_template';
+import { EmailDTO } from 'src/auth/dtos';
 
 @Injectable()
 export class UserService {
@@ -355,6 +356,23 @@ export class UserService {
         message: 'user fetched successfully',
         data: allUsers,
       };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async deleteUser(param: EmailDTO) {
+    const checkUser = await this.prisma.user.findUnique({
+      where: { email: param.email },
+    });
+
+    if (!checkUser) {
+      throw new NotFoundException(`user not found`);
+    }
+
+    try {
+      await this.prisma.user.delete({ where: { email: param.email } });
+      return { message: 'user deleted successfully' };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
