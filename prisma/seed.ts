@@ -38,6 +38,28 @@ async function main() {
     ],
   });
 
+  for (let i = 1; i < 11; i++) {
+    const gender = i % 2 == 0 ? 'male' : 'female';
+    const role = i % 2 == 0 ? 'admin' : 'user';
+    const hashedPassword = await argon.hash('test@123');
+    await prisma.user.create({
+      data: {
+        email: `${i}${faker.internet.email()}`,
+        password: hashedPassword,
+        firstName: faker.person.firstName(),
+        lastName: faker.person.lastName(),
+        gender: gender,
+        dob: faker.date.birthdate(),
+        phoneNumber: faker.phone.number(),
+        role: role,
+        country: faker.location.country(),
+        profileImg:
+          'https://i.pinimg.com/236x/e0/80/0f/e0800f7b5c41163750fc80324116142a.jpg',
+        isVerified: faker.datatype.boolean(),
+      },
+    });
+  }
+
   console.log(' user seed added successfully');
   console.log('###########################################################');
 

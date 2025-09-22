@@ -164,6 +164,7 @@ CREATE TABLE "InteractionEvent" (
     "type" "EventType" NOT NULL,
     "userId" INTEGER,
     "categoryId" INTEGER,
+    "subCategoryId" INTEGER,
     "placeItemId" INTEGER,
     "locationId" INTEGER,
     "docItemId" INTEGER,
@@ -259,6 +260,9 @@ ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_userId_fkey" FOR
 
 -- AddForeignKey
 ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_subCategoryId_fkey" FOREIGN KEY ("subCategoryId") REFERENCES "SubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "InteractionEvent" ADD CONSTRAINT "InteractionEvent_placeItemId_fkey" FOREIGN KEY ("placeItemId") REFERENCES "PlaceItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
