@@ -8,6 +8,7 @@ import {
   Post,
   Query,
   Req,
+  UseGuards,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
@@ -23,7 +24,9 @@ import {
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
+import { RolesGuard } from 'src/auth/guards/roles.guards';
 
+@UseGuards(RolesGuard)
 @ApiBearerAuth()
 @Controller('user')
 export class UserController {
@@ -89,5 +92,11 @@ export class UserController {
     @Req() req: Request,
   ) {
     return this.userService.verifyOtp(dto, req.user);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('search/all')
+  searchUser(@Query('query') query: string) {
+    return this.userService.search(query);
   }
 }

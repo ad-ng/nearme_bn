@@ -338,4 +338,25 @@ export class UserService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async search(keyword: string) {
+    try {
+      const allUsers = await this.prisma.user.findMany({
+        where: {
+          OR: [
+            { email: { contains: keyword, mode: 'insensitive' } },
+            { firstName: { contains: keyword, mode: 'insensitive' } },
+            { lastName: { contains: keyword, mode: 'insensitive' } },
+          ],
+        },
+      });
+
+      return {
+        message: 'user fetched successfully',
+        data: allUsers,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
