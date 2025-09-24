@@ -207,7 +207,10 @@ export class PlaceItemService {
     }
   }
 
-  async fetchRecommendedPlaces(user) {
+  async fetchRecommendedPlaces(user, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     const userId = user.id;
 
     const checkUser = await this.prisma.user.findUnique({
@@ -240,6 +243,8 @@ export class PlaceItemService {
             },
           },
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
       return {
         message: 'Recommendations fetched successfully',
@@ -250,23 +255,31 @@ export class PlaceItemService {
     }
   }
 
-  async search(keyword: string) {
+  async search(allQuery) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     try {
       const allBusinesses = await this.prisma.placeItem.findMany({
         where: {
           OR: [
-            { title: { contains: keyword, mode: 'insensitive' } },
-            { businessEmail: { contains: keyword, mode: 'insensitive' } },
+            { title: { contains: query, mode: 'insensitive' } },
+            { businessEmail: { contains: query, mode: 'insensitive' } },
             {
-              subCategory: { name: { contains: keyword, mode: 'insensitive' } },
+              subCategory: { name: { contains: query, mode: 'insensitive' } },
             },
           ],
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'businesses fetched successfully',
         data: allBusinesses,
+        limit,
+        page,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

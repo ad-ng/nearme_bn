@@ -27,15 +27,23 @@ export class LocationController {
   constructor(private locationService: LocationService) {}
 
   @Get(':provinceName')
-  fetchLocations(@Param() Param: string) {
-    return this.locationService.fetchLocationsInProvince(Param['provinceName']);
+  fetchLocations(@Param() Param: string, @Query() query: any) {
+    return this.locationService.fetchLocationsInProvince(
+      Param['provinceName'],
+      query,
+    );
   }
 
   @Get('doc/:provinceName')
-  fetchDocItems(@Param() Param: string, @Req() req: Request) {
+  fetchDocItems(
+    @Param() Param: string,
+    @Req() req: Request,
+    @Query() query: any,
+  ) {
     return this.locationService.fetchDocItemsInProvince(
       Param['provinceName'],
       req.user,
+      query,
     );
   }
 

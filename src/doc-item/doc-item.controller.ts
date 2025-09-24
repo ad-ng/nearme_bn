@@ -27,8 +27,12 @@ export class DocItemController {
   constructor(private docItemService: DocItemService) {}
 
   @Get(':name')
-  fetchAllDocItem(@Param() param: CategoryParamDTO, @Req() req: Request) {
-    return this.docItemService.fetchDocItems(param, req.user);
+  fetchAllDocItem(
+    @Param() param: CategoryParamDTO,
+    @Req() req: Request,
+    @Query() query: any,
+  ) {
+    return this.docItemService.fetchDocItems(param, req.user, query);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
@@ -38,8 +42,8 @@ export class DocItemController {
   }
 
   @Get('user/all')
-  fetchAllCategories(@Req() req: Request) {
-    return this.docItemService.fetchAllArticle(req.user);
+  fetchAllCategories(@Req() req: Request, @Query() query: any) {
+    return this.docItemService.fetchAllArticle(req.user, query);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
@@ -62,7 +66,7 @@ export class DocItemController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Get('search/all')
-  searchUser(@Query('query') query: string) {
+  searchUser(@Query() query: any) {
     return this.docItemService.search(query);
   }
 }

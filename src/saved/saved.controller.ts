@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   Req,
 } from '@nestjs/common';
 import { SavedService } from './saved.service';
@@ -22,8 +23,9 @@ export class SavedController {
   fetchSavedItemsInCategory(
     @Param() param: CategoryParamDTO,
     @Req() req: Request,
+    @Query() query: any,
   ) {
-    return this.savedService.fetchSavedInCategory(param, req.user);
+    return this.savedService.fetchSavedInCategory(param, req.user, query);
   }
 
   @Post()

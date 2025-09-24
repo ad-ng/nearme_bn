@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -29,8 +30,8 @@ export class NotificationController {
   }
 
   @Get('all')
-  getAllNotifications(@Req() req: Request) {
-    return this.notificationService.fetchAllNNotifications(req.user);
+  getAllNotifications(@Req() req: Request, @Query() query: any) {
+    return this.notificationService.fetchAllNNotifications(req.user, query);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)

@@ -35,7 +35,9 @@ export class NotificationService {
     }
   }
 
-  async fetchAllNNotifications(user) {
+  async fetchAllNNotifications(user, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
     const userId: number = user.id;
 
     const checkUser = await this.prisma.user.findUnique({
@@ -47,10 +49,14 @@ export class NotificationService {
       const allNotifications = await this.prisma.userNotification.findMany({
         where: { userId },
         include: { notification: true },
+        take: limit,
+        skip: (page - 1) * limit,
       });
       return {
         message: 'notifications fetched successfully',
         data: allNotifications,
+        limit,
+        page,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

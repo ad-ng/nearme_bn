@@ -340,21 +340,29 @@ export class UserService {
     }
   }
 
-  async search(keyword: string) {
+  async search(allQuery) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     try {
       const allUsers = await this.prisma.user.findMany({
         where: {
           OR: [
-            { email: { contains: keyword, mode: 'insensitive' } },
-            { firstName: { contains: keyword, mode: 'insensitive' } },
-            { lastName: { contains: keyword, mode: 'insensitive' } },
+            { email: { contains: query, mode: 'insensitive' } },
+            { firstName: { contains: query, mode: 'insensitive' } },
+            { lastName: { contains: query, mode: 'insensitive' } },
           ],
         },
+        skip: (page - 1) * limit,
+        take: limit,
       });
 
       return {
         message: 'user fetched successfully',
         data: allUsers,
+        limit,
+        page,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
