@@ -29,8 +29,8 @@ export class ReviewController {
   }
 
   @Get(':placeItemId')
-  getAllReviews(@Param() Param: any) {
-    return this.reviewService.getAllReview(Param['placeItemId']);
+  getAllReviews(@Param() Param: any, @Query() query: any) {
+    return this.reviewService.getAllReview(Param['placeItemId'], query);
   }
 
   @Post()
@@ -46,7 +46,7 @@ export class ReviewController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Get('search/all')
-  searchUser(@Query('query') query: string) {
+  searchUser(@Query() query: any) {
     return this.reviewService.search(query);
   }
 }

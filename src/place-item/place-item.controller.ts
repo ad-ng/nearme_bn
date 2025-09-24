@@ -56,13 +56,13 @@ export class PlaceItemController {
   }
 
   @Get('recommended/all')
-  fetchRecommendation(@Req() req: Request) {
-    return this.placeItemService.fetchRecommendedPlaces(req.user);
+  fetchRecommendation(@Req() req: Request, @Query() query: any) {
+    return this.placeItemService.fetchRecommendedPlaces(req.user, query);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Get('search/all')
-  searchUser(@Query('query') query: string) {
+  searchUser(@Query() query: any) {
     return this.placeItemService.search(query);
   }
 }

@@ -12,7 +12,10 @@ import { AddLocationDTO, IdParamDTO } from './dto';
 export class LocationService {
   constructor(private prisma: PrismaService) {}
 
-  async fetchLocationsInProvince(provinceName: string) {
+  async fetchLocationsInProvince(provinceName: string, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     const checkProvince = await this.prisma.provinces.findFirst({
       where: { name: provinceName },
     });
@@ -23,6 +26,8 @@ export class LocationService {
     try {
       const allLocations = await this.prisma.locations.findMany({
         where: { provinceId: checkProvince.id },
+        take: limit,
+        skip: (page - 1) * limit,
       });
       return {
         message: 'Locations found successfully',
@@ -33,7 +38,10 @@ export class LocationService {
     }
   }
 
-  async fetchDocItemsInProvince(provinceName: string, user) {
+  async fetchDocItemsInProvince(provinceName: string, user, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     const userId = user.id;
     const checkProvince = await this.prisma.provinces.findFirst({
       where: { name: provinceName },
@@ -51,6 +59,8 @@ export class LocationService {
             where: { userId },
           },
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
       return {
         message: 'Doc Items found successfully',
@@ -198,20 +208,28 @@ export class LocationService {
     }
   }
 
-  async search(keyword: string) {
+  async search(allQuery: any) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     try {
       const allLocations = await this.prisma.locations.findMany({
         where: {
           OR: [
-            { title: { contains: keyword, mode: 'insensitive' } },
-            { address: { contains: keyword, mode: 'insensitive' } },
+            { title: { contains: query, mode: 'insensitive' } },
+            { address: { contains: query, mode: 'insensitive' } },
           ],
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'locations fetched successfully',
         data: allLocations,
+        limit,
+        page,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

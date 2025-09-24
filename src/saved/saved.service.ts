@@ -16,7 +16,10 @@ import { Prisma } from '@prisma/client';
 export class SavedService {
   constructor(private prisma: PrismaService) {}
 
-  async fetchSavedInCategory(param: CategoryParamDTO, user) {
+  async fetchSavedInCategory(param: CategoryParamDTO, user, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     const { name } = param;
 
     const checkCategory = await this.prisma.category.findFirst({
@@ -69,11 +72,15 @@ export class SavedService {
             },
           },
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'place items saved fetched successfully',
         data: allSavedPlaceItems,
+        limit,
+        page,
       };
     } catch (error) {
       return new InternalServerErrorException(error);

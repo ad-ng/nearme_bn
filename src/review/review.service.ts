@@ -38,7 +38,10 @@ export class ReviewService {
     }
   }
 
-  async getAllReview(placeItemIdParam) {
+  async getAllReview(placeItemIdParam, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     const placeItemId = parseInt(`${placeItemIdParam}`, 10);
     const checkPlaceItem = await this.prisma.placeItem.findUnique({
       where: { id: placeItemId },
@@ -49,6 +52,8 @@ export class ReviewService {
       const allReviews = await this.prisma.review.findMany({
         where: { placeItemId },
         include: { user: true },
+        take: limit,
+        skip: (page - 1) * limit,
       });
       return {
         message: 'reviews found successfully',
@@ -113,23 +118,31 @@ export class ReviewService {
     }
   }
 
-  async search(keyword: string) {
+  async search(allQuery) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     try {
       const allReviews = await this.prisma.review.findMany({
         where: {
           OR: [
-            { content: { contains: keyword, mode: 'insensitive' } },
+            { content: { contains: query, mode: 'insensitive' } },
             {
-              placeItem: { title: { contains: keyword, mode: 'insensitive' } },
+              placeItem: { title: { contains: query, mode: 'insensitive' } },
             },
-            { user: { email: { contains: keyword, mode: 'insensitive' } } },
+            { user: { email: { contains: query, mode: 'insensitive' } } },
           ],
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'reviews fetched successfully',
         data: allReviews,
+        limit,
+        page,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

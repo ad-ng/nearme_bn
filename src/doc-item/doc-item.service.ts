@@ -15,7 +15,10 @@ import { IdParamDTO } from 'src/location/dto';
 export class DocItemService {
   constructor(private prisma: PrismaService) {}
 
-  async fetchDocItems(param: CategoryParamDTO, user) {
+  async fetchDocItems(param: CategoryParamDTO, user, query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     const { name } = param;
     const userId = user.id;
     const checkCategory = await this.prisma.category.findFirst({
@@ -35,11 +38,15 @@ export class DocItemService {
             where: { userId },
           },
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'Documents Fetched Successfully',
         data: allDocItems,
+        limit,
+        page,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
@@ -75,8 +82,11 @@ export class DocItemService {
     }
   }
 
-  async fetchAllArticle(user) {
+  async fetchAllArticle(user, query) {
     const userId = user.id;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     try {
       const allArticles = await this.prisma.docItem.findMany({
         include: {
@@ -86,11 +96,15 @@ export class DocItemService {
           },
         },
         orderBy: [{ id: 'desc' }],
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'Articles Are Fetched Successfully !',
         data: allArticles,
+        limit,
+        page,
       };
     } catch (error) {
       return new InternalServerErrorException(error);
@@ -205,20 +219,28 @@ export class DocItemService {
     }
   }
 
-  async search(keyword: string) {
+  async search(allQuery: any) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
     try {
       const allArticles = await this.prisma.docItem.findMany({
         where: {
           OR: [
-            { title: { contains: keyword, mode: 'insensitive' } },
-            { author: { email: { contains: keyword, mode: 'insensitive' } } },
+            { title: { contains: query, mode: 'insensitive' } },
+            { author: { email: { contains: query, mode: 'insensitive' } } },
           ],
         },
+        take: limit,
+        skip: (page - 1) * limit,
       });
 
       return {
         message: 'articles fetched successfully',
         data: allArticles,
+        limit,
+        page,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
