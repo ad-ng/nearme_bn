@@ -73,7 +73,7 @@ export class LocationController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Get('search/all')
-  searchUser(@Query('query') query: string) {
+  searchUser(@Query() query: any) {
     return this.locationService.search(query);
   }
 }
