@@ -23,12 +23,14 @@ import {
 import { MailService } from 'src/mail/mail.service';
 import { sendEmailConfirmationCode } from 'src/mail/templates/email_confirmation_template';
 import { EmailDTO } from 'src/auth/dtos';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class UserService {
   constructor(
     private prisma: PrismaService,
     private mailService: MailService,
+    private imageService: ImagesService,
   ) {}
 
   async getCurrentUser(user) {
@@ -66,6 +68,33 @@ export class UserService {
       return {
         message: 'names updated successfully',
         data: updatedUser,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async uploadProfileImage(file: Express.Multer.File, user) {
+    const userId: number = user.id;
+    const { email } = user;
+
+    if (file == null) {
+      return 'no file added';
+    }
+    const fileName = `profiles/${email}`;
+
+    const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+
+    try {
+      await this.imageService.uploadSingleImage(file, fileName);
+
+      await this.prisma.user.update({
+        where: { id: userId },
+        data: { profileImg: imageUrl },
+      });
+
+      return {
+        message: 'profile image added successfully',
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
