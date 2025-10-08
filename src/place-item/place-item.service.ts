@@ -21,7 +21,6 @@ export class PlaceItemService {
       description,
       location,
       phoneNumber,
-      placeImg,
       subCategoryName,
       title,
       workingHours,
@@ -44,7 +43,6 @@ export class PlaceItemService {
           description,
           location,
           phoneNumber,
-          placeImg,
           title,
           latitude,
           longitude,
@@ -70,7 +68,7 @@ export class PlaceItemService {
       const [allBusinesses, totalCount] = await Promise.all([
         this.prisma.placeItem.findMany({
           orderBy: [{ id: 'desc' }],
-          include: { subCategory: true },
+          include: { subCategory: true, PlaceImage: true },
           take: limit,
           skip: (page - 1) * limit,
         }),
@@ -108,6 +106,7 @@ export class PlaceItemService {
               userId,
             },
           },
+          PlaceImage: true,
           subCategory: {
             include: {
               _count: {
@@ -133,7 +132,6 @@ export class PlaceItemService {
       description,
       location,
       phoneNumber,
-      placeImg,
       subCategoryName,
       title,
       workingHours,
@@ -166,7 +164,6 @@ export class PlaceItemService {
           description,
           location,
           phoneNumber,
-          placeImg,
           title,
           latitude,
           longitude,
@@ -230,6 +227,7 @@ export class PlaceItemService {
           subCategory: { categoryId: { in: interestIds } },
         },
         include: {
+          PlaceImage: true,
           savedItems: {
             where: {
               userId,

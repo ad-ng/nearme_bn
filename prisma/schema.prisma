@@ -78,7 +78,6 @@ model PlaceItem {
   location         String
   latitude         Float
   longitude        Float
-  placeImg         String[]
   businessEmail    String
   phoneNumber      String
   bookLink         String?
@@ -87,8 +86,16 @@ model PlaceItem {
   savedItems       Saved[]
   Review           Review[]
   InteractionEvent InteractionEvent[]
+  PlaceImage       PlaceImage[]
 
   @@index([subCategoryId])
+}
+
+model PlaceImage {
+  id      Int       @id @default(autoincrement())
+  url     String
+  placeId Int
+  place   PlaceItem @relation(fields: [placeId], references: [id], onDelete: Cascade)
 }
 
 model Review {
@@ -126,13 +133,20 @@ model Locations {
   id               Int                @id @default(autoincrement())
   address          String
   title            String
-  image            String[]
   description      String?
   latitude         Float
   longitude        Float
   provinceId       Int
   province         Provinces          @relation(fields: [provinceId], references: [id])
   InteractionEvent InteractionEvent[]
+  LocationImage    LocationImage[]
+}
+
+model LocationImage {
+  id         Int       @id @default(autoincrement())
+  url        String
+  locationId Int
+  place      Locations @relation(fields: [locationId], references: [id], onDelete: Cascade)
 }
 
 model Provinces {

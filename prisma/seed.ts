@@ -103,11 +103,6 @@ async function main() {
       {
         address: 'Kigali, Nyamirambo',
         title: 'Fazenda',
-        image: [
-          'https://tarama.ai/catalog/venues/66b333c12e2de_Fazenda-Sengha-horse-ride.jpg',
-          'https://joaodomingosadv.com/wp-content/uploads/2020/10/fazenda-em-leilao.jpg',
-          'https://fazendabananal.com.br/uploads/pagina/pagina/2023/09/Ek2jO74qlIWerFbj/fazenda-bananal-programe-sua-visita-principal-mob-v2.webp',
-        ],
         provinceId: 1,
         description: `Horse Ride in the Arena
 Try your horse riding skills on a horse in a safe and secure environment. Our monitors stay with you all the time.
@@ -142,13 +137,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
       {
         address: 'Kigali, Nyandungu',
         title: 'Nyandungu Park',
-        image: [
-          'https://gggi.org/wp-content/uploads/2022/02/Nyandungi-IMAGE-5.jpg',
-          'https://greenfund.rw/sites/default/files/2021-06/Nyandungu%20Wetland%20Graphic%20%281%29.jpg',
-          'https://ugandarwandagorillatours.com/wp-content/uploads/2024/03/the-park-boasts-of-walkways-and-cycling-lanes-stretching-for-over-eight-kilometres.-courtesy.jpg',
-          'https://www.rema.gov.rw/fileadmin/user_upload/FD0mpnRX0AQvxbG.jpg',
-          'https://cdn.prod.website-files.com/649d52c85c2b81b728d6bf89/6522c9a67b09c48d75e0d172_Nyandungu%20Exeprience-min.jpg',
-        ],
         provinceId: 1,
         description: `
         Nyandungu Urban Wetland Ecotourism park is a 120-hectare Rwandan tourism park located between Gasabo 
@@ -164,12 +152,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Kigali, Biryogo',
         provinceId: 1,
         title: 'Biryogo',
-        image: [
-          'https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2022/06/20/52158390613_6505a8875f_k.jpg',
-          'https://mobile.igihe.com/local/cache-vignettes/L1000xH667/fjskspbxwaa-pjy-f65ac.jpg',
-          'https://cirht.med.umich.edu/wp-content/uploads/2022/07/a-wide-picture-of-the-beautiful-biryogo_0.jpeg',
-          'https://mobile.igihe.com/local/cache-vignettes/L1000xH667/ubwo_hafungurwaga_byari_bigoye_kubona_n_aho_kwicara-f046e.jpg',
-        ],
         latitude: -1.964788,
         longitude: 30.060237,
       },
@@ -177,9 +159,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Kigali, Gisozi',
         provinceId: 1,
         title: 'Kigali Memorial',
-        image: [
-          'https://www.ahnasa.com/wp-content/uploads/2024/10/Kigali-Genocide-Memorial-800x600-1.jpg',
-        ],
         latitude: -1.930092,
         longitude: 30.061456,
       },
@@ -187,9 +166,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Musanze, Cyuve',
         provinceId: 2,
         title: 'Musanze Caves',
-        image: [
-          'https://www.explorerwandatours.com/wp-content/uploads/2024/10/Musanze_caves_tour-750x450.png',
-        ],
         latitude: -1.53481,
         longitude: 29.517136,
       },
@@ -197,9 +173,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Musanze, Kinigi',
         provinceId: 2,
         title: 'Hiking',
-        image: [
-          'https://dynamic-media-cdn.tripadvisor.com/media/photo-o/24/05/ed/4c/caption.jpg?w=500&h=400&s=1',
-        ],
         latitude: -1.452547,
         longitude: 29.586159,
       },
@@ -207,9 +180,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Burera',
         provinceId: 2,
         title: 'Twin Lakes: Burera & Ruhondo',
-        image: [
-          'https://ecoadventuresafaris.com/wp-content/uploads/2024/05/Visiting-the-Twin-Lakes-of-Ruhondo-and-Burera-in-Rwanda-1200x675.jpeg',
-        ],
         latitude: -1.495164,
         longitude: 29.717561,
       },
@@ -217,9 +187,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Rusizi, Nyungwe',
         provinceId: 3,
         title: 'Nyungwe Forest National Park',
-        image: [
-          'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
-        ],
         latitude: -2.522194,
         longitude: 29.437211,
       },
@@ -227,12 +194,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Nyabihu, Gishwati',
         provinceId: 3,
         title: 'Gishwati‑Mukura, National Park',
-        image: [
-          'https://www.arcadiasafaris.com/wp-content/uploads/2025/01/Gishwati-Makura-National-Park.jpg',
-          'https://visitrwanda.com/wp-content/uploads/fly-images/1336/Visit-Rwanda-NH_OO_Activities_Chimpanzee_Trek_6853_MASTER-1920x1280.jpg',
-          'https://www.ktpress.rw/wp-content/uploads/2021/05/Padock-.jpg',
-          'https://www.gishwatimukuranationalpark.com/wp-content/uploads/2023/03/gishwati-mukura-park.jpg',
-        ],
         latitude: -1.83188,
         longitude: 29.346321,
       },
@@ -240,10 +201,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Kibuye, Bisesero',
         provinceId: 3,
         title: 'Bisesero Genocide Memorial Centre',
-        image: [
-          'https://www.nyungweforestnationalpark.org/wp-content/uploads/2019/06/Bisesero-Genocide-Memorial-Centre-750x450.jpg',
-          'https://www.justiceinfo.net/wp-content/uploads/50460ac025dff4013cce037d1652b4e1.jpg',
-        ],
         latitude: -2.193085,
         longitude: 29.344883,
       },
@@ -251,13 +208,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Ruhango, Kibeho',
         provinceId: 4,
         title: 'Kibeho Holy Land',
-        image: [
-          'https://ikazerwandatours.com/wp-content/uploads/2023/03/Pilgrimage_to_Kibeho3-870x555.jpg',
-          'https://www.ktpress.rw/wp-content/uploads/2019/08/Kibeho-Land-.jpg',
-          'https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2017/09/09/1504990847catholics.jpg',
-          'https://wingetsafaris.com/wp-content/uploads/2024/12/kibeho1.jpg',
-          'https://www.ktpress.rw/wp-content/uploads/2024/02/Screenshot-from-2024-02-09-08-15-17-1.jpg',
-        ],
         latitude: -2.647632,
         longitude: 29.55404,
       },
@@ -265,12 +215,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Rusizi, Nyungwe',
         provinceId: 4,
         title: 'Nyungwe Forest National Park',
-        image: [
-          'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
-          'https://www.nyungweforestnationalpark.org/wp-content/uploads/2022/02/canopy-rwanda-nyungwe-forest-1-1-750x450.jpg',
-          'https://kigalicarrentals.com/wp-content/uploads/2021/02/Nyungwe-Forest-National-park.jpg',
-          'https://visitrwanda.com/wp-content/uploads/fly-images/1363/Visit-Rwanda-NH_OO_Activities_Waterfall_Trek_0224_MASTER-1920x1280.jpg',
-        ],
         latitude: -2.523566,
         longitude: 29.435838,
       },
@@ -278,11 +222,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Huye, Butare',
         provinceId: 4,
         title: 'Rwanda Museum',
-        image: [
-          'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
-          'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
-          'https://rentcarrwanda.com//storage/blog-content-dir/vF7SGc6KlyOsJWNJuidQtfpwwz7a89xwk3FrTNYH.png',
-        ],
         latitude: -2.587995,
         longitude: 29.744196,
       },
@@ -290,13 +229,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Nyagatare, Akagera',
         provinceId: 5,
         title: 'Akagera National Park',
-        image: [
-          'https://livinginkigali.com/wp-content/uploads/2016/08/Akagera-Hippos.jpg',
-          'https://www.africanparks.org/sites/default/files/2017-07/akagera.jpg',
-          'https://www.africanparks.org/sites/default/files/videos/akagera061021.jpg',
-          'https://www.rwandasafaritour.com/wp-content/uploads/2020/02/akagera-national-park-1.jpg',
-          'https://campandexplorer.com/wp-content/uploads/2024/06/Filming-in-Akagera-National-Park-e1597587467695-1200x600-750x450-1.jpg',
-        ],
         latitude: -1.897049,
         longitude: 30.685408,
       },
@@ -304,11 +236,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Rwamagana, Muhazi',
         provinceId: 5,
         title: 'Muhazi Lake',
-        image: [
-          'https://ugandarwandagorillatours.com/wp-content/uploads/2023/10/Lake-Muhazi-6.jpg',
-          'https://upload.wikimedia.org/wikipedia/commons/d/df/Muhazi_beach_Resort.jpg',
-          'https://www.africangorilla.com/wp-content/uploads/2022/08/Lake-Muhazi-Rwandas-Retreat-for-Fishing-Birding-Boating.jpg',
-        ],
         latitude: -1.874847,
         longitude: 30.372324,
       },
@@ -316,11 +243,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         address: 'Rwamagana, Rusumo',
         provinceId: 5,
         title: 'Rusumo Falls',
-        image: [
-          'https://www.explorerwandatours.com/wp-content/uploads/2022/09/rusumo-falls.jpg',
-          'https://beyondkigalitours.com/wp-content/uploads/2023/10/Rusumo-Falls.jpg',
-          'https://www.andritz.com/resource/blob/397404/9efebceaa297e40135c7f85c86d0b4be/12-rusumo-falls-img-20191109-132325-02-data.jpg',
-        ],
         latitude: -2.382219,
         longitude: 30.782931,
       },
@@ -328,6 +250,191 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
   });
   console.log(' Provinces seeds added successfully');
   console.log('###########################################################');
+
+  await prisma.locationImage.createMany({
+    data: [
+      {
+        locationId: 1,
+        url: 'https://tarama.ai/catalog/venues/66b333c12e2de_Fazenda-Sengha-horse-ride.jpg',
+      },
+      {
+        locationId: 1,
+        url: 'https://joaodomingosadv.com/wp-content/uploads/2020/10/fazenda-em-leilao.jpg',
+      },
+      {
+        locationId: 1,
+        url: 'https://fazendabananal.com.br/uploads/pagina/pagina/2023/09/Ek2jO74qlIWerFbj/fazenda-bananal-programe-sua-visita-principal-mob-v2.webp',
+      },
+      {
+        locationId: 2,
+        url: 'https://gggi.org/wp-content/uploads/2022/02/Nyandungi-IMAGE-5.jpg',
+      },
+      {
+        locationId: 2,
+        url: 'https://greenfund.rw/sites/default/files/2021-06/Nyandungu%20Wetland%20Graphic%20%281%29.jpg',
+      },
+      {
+        locationId: 2,
+        url: 'https://ugandarwandagorillatours.com/wp-content/uploads/2024/03/the-park-boasts-of-walkways-and-cycling-lanes-stretching-for-over-eight-kilometres.-courtesy.jpg',
+      },
+      {
+        locationId: 2,
+        url: 'https://www.rema.gov.rw/fileadmin/user_upload/FD0mpnRX0AQvxbG.jpg',
+      },
+      {
+        locationId: 2,
+        url: 'https://cdn.prod.website-files.com/649d52c85c2b81b728d6bf89/6522c9a67b09c48d75e0d172_Nyandungu%20Exeprience-min.jpg',
+      },
+      {
+        locationId: 3,
+        url: 'https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2022/06/20/52158390613_6505a8875f_k.jpg',
+      },
+      {
+        locationId: 3,
+        url: 'https://mobile.igihe.com/local/cache-vignettes/L1000xH667/fjskspbxwaa-pjy-f65ac.jpg',
+      },
+      {
+        locationId: 3,
+        url: 'https://cirht.med.umich.edu/wp-content/uploads/2022/07/a-wide-picture-of-the-beautiful-biryogo_0.jpeg',
+      },
+      {
+        locationId: 3,
+        url: 'https://mobile.igihe.com/local/cache-vignettes/L1000xH667/ubwo_hafungurwaga_byari_bigoye_kubona_n_aho_kwicara-f046e.jpg',
+      },
+      {
+        locationId: 4,
+        url: 'https://www.ahnasa.com/wp-content/uploads/2024/10/Kigali-Genocide-Memorial-800x600-1.jpg',
+      },
+      {
+        locationId: 5,
+        url: 'https://www.explorerwandatours.com/wp-content/uploads/2024/10/Musanze_caves_tour-750x450.png',
+      },
+      {
+        locationId: 7,
+        url: 'https://ecoadventuresafaris.com/wp-content/uploads/2024/05/Visiting-the-Twin-Lakes-of-Ruhondo-and-Burera-in-Rwanda-1200x675.jpeg',
+      },
+      {
+        locationId: 8,
+        url: 'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
+      },
+      {
+        locationId: 9,
+        url: 'https://www.arcadiasafaris.com/wp-content/uploads/2025/01/Gishwati-Makura-National-Park.jpg',
+      },
+      {
+        locationId: 9,
+        url: 'https://visitrwanda.com/wp-content/uploads/fly-images/1336/Visit-Rwanda-NH_OO_Activities_Chimpanzee_Trek_6853_MASTER-1920x1280.jpg',
+      },
+      {
+        locationId: 9,
+        url: 'https://www.ktpress.rw/wp-content/uploads/2021/05/Padock-.jpg',
+      },
+      {
+        locationId: 9,
+        url: 'https://www.gishwatimukuranationalpark.com/wp-content/uploads/2023/03/gishwati-mukura-park.jpg',
+      },
+      {
+        locationId: 10,
+        url: 'https://www.nyungweforestnationalpark.org/wp-content/uploads/2019/06/Bisesero-Genocide-Memorial-Centre-750x450.jpg',
+      },
+      {
+        locationId: 10,
+        url: 'https://www.justiceinfo.net/wp-content/uploads/50460ac025dff4013cce037d1652b4e1.jpg',
+      },
+      {
+        locationId: 11,
+        url: 'https://ikazerwandatours.com/wp-content/uploads/2023/03/Pilgrimage_to_Kibeho3-870x555.jpg',
+      },
+      {
+        locationId: 11,
+        url: 'https://www.ktpress.rw/wp-content/uploads/2019/08/Kibeho-Land-.jpg',
+      },
+      {
+        locationId: 11,
+        url: 'https://www.newtimes.co.rw/uploads/imported_images/files/main/articles/2017/09/09/1504990847catholics.jpg',
+      },
+      {
+        locationId: 11,
+        url: 'https://wingetsafaris.com/wp-content/uploads/2024/12/kibeho1.jpg',
+      },
+      {
+        locationId: 11,
+        url: 'https://www.ktpress.rw/wp-content/uploads/2024/02/Screenshot-from-2024-02-09-08-15-17-1.jpg',
+      },
+      {
+        locationId: 12,
+        url: 'https://www.insidenyungwenationalpark.com/wp-content/uploads/2022/07/chimpanzee-isumo-walk-tour-scaled.jpg',
+      },
+      {
+        locationId: 12,
+        url: 'https://www.nyungweforestnationalpark.org/wp-content/uploads/2022/02/canopy-rwanda-nyungwe-forest-1-1-750x450.jpg',
+      },
+      {
+        locationId: 12,
+        url: 'https://kigalicarrentals.com/wp-content/uploads/2021/02/Nyungwe-Forest-National-park.jpg',
+      },
+      {
+        locationId: 12,
+        url: 'https://visitrwanda.com/wp-content/uploads/fly-images/1363/Visit-Rwanda-NH_OO_Activities_Waterfall_Trek_0224_MASTER-1920x1280.jpg',
+      },
+      {
+        locationId: 13,
+        url: 'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
+      },
+      {
+        locationId: 13,
+        url: 'https://rwandainspirer.com/wp-content/uploads/2019/09/museum-1.jpg',
+      },
+      {
+        locationId: 13,
+        url: 'https://rentcarrwanda.com//storage/blog-content-dir/vF7SGc6KlyOsJWNJuidQtfpwwz7a89xwk3FrTNYH.png',
+      },
+      {
+        locationId: 14,
+        url: 'https://livinginkigali.com/wp-content/uploads/2016/08/Akagera-Hippos.jpg',
+      },
+      {
+        locationId: 14,
+        url: 'https://www.africanparks.org/sites/default/files/2017-07/akagera.jpg',
+      },
+      {
+        locationId: 14,
+        url: 'https://www.africanparks.org/sites/default/files/videos/akagera061021.jpg',
+      },
+      {
+        locationId: 14,
+        url: 'https://www.rwandasafaritour.com/wp-content/uploads/2020/02/akagera-national-park-1.jpg',
+      },
+      {
+        locationId: 14,
+        url: 'https://campandexplorer.com/wp-content/uploads/2024/06/Filming-in-Akagera-National-Park-e1597587467695-1200x600-750x450-1.jpg',
+      },
+      {
+        locationId: 15,
+        url: 'https://ugandarwandagorillatours.com/wp-content/uploads/2023/10/Lake-Muhazi-6.jpg',
+      },
+      {
+        locationId: 15,
+        url: 'https://upload.wikimedia.org/wikipedia/commons/d/df/Muhazi_beach_Resort.jpg',
+      },
+      {
+        locationId: 15,
+        url: 'https://www.africangorilla.com/wp-content/uploads/2022/08/Lake-Muhazi-Rwandas-Retreat-for-Fishing-Birding-Boating.jpg',
+      },
+      {
+        locationId: 16,
+        url: 'https://www.explorerwandatours.com/wp-content/uploads/2022/09/rusumo-falls.jpg',
+      },
+      {
+        locationId: 16,
+        url: 'https://beyondkigalitours.com/wp-content/uploads/2023/10/Rusumo-Falls.jpg',
+      },
+      {
+        locationId: 16,
+        url: 'https://www.andritz.com/resource/blob/397404/9efebceaa297e40135c7f85c86d0b4be/12-rusumo-falls-img-20191109-132325-02-data.jpg',
+      },
+    ],
+  });
 
   await prisma.category.createMany({
     data: [
@@ -462,11 +569,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         workingHours: `24 Hours`,
         latitude: -1.955762,
         longitude: 30.160187,
-        placeImg: [
-          'https://assets.volkswagen.com/is/image/volkswagenag/price-and-optionshb?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTE5MjAmaGVpPTEwODAmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmM2E1Nw==',
-          'https://assets.volkswagen.com/is/image/volkswagenag/Amarok_SSA_Mofa?Zml0PWNyb3AsMSZmbXQ9d2VicC1hbHBoYSZxbHQ9Nzkmd2lkPTEyODAmYmZjPW9mZiY4YTNi',
-          'https://assets.volkswagen.com/is/image/volkswagenag/safety-7?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTE5MjAmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmNzgwOQ==',
-        ],
       },
       {
         title: `YEGO MOTTO`,
@@ -478,12 +580,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         workingHours: `24 Hours`,
         latitude: -1.957277,
         longitude: 30.104758,
-        placeImg: [
-          'https://rba.co.rw/admin/media_data/cover_photo/IKORA29775.jpg',
-          'https://www.yegomoto.com/videos/vid_3.jpg',
-          'https://www.wearetech.africa/media/k2/items/cache/ca2d3b9781db35243fe5868c79aba4c0_XL.jpg',
-          'https://www.ktpress.rw/wp-content/uploads/2017/10/yego-moto-driver.jpg',
-        ],
       },
       {
         title: `KIGALI AIRPORT TRANSFERS`,
@@ -495,9 +591,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         workingHours: `24 Hours`,
         latitude: -1.944904,
         longitude: 30.058402,
-        placeImg: [
-          'https://kigaliairporttaxitransfers.com/wp-content/uploads/2025/02/IMG_20231208_111107_972-scaled.jpg',
-        ],
       },
       {
         title: `Rwanda Safari Tour`,
@@ -509,9 +602,6 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         workingHours: `24 Hours`,
         latitude: -1.959584,
         longitude: 30.081771,
-        placeImg: [
-          'https://kigaliairporttaxitransfers.com/wp-content/uploads/2025/02/IMG_20231208_111107_972-scaled.jpg',
-        ],
       },
       {
         title: `Rwanda Eco Company & Safaris.`,
@@ -523,14 +613,56 @@ Fans of motorsport can discover the Mount Kigali trails on their own ways.`,
         workingHours: `24 Hours`,
         latitude: -1.945182,
         longitude: 30.061229,
-        placeImg: [
-          'https://rwandaecocompany.com/wp-content/uploads/2022/09/akagera.jpg',
-        ],
       },
     ],
   });
   console.log(' place items seed added successfully');
   console.log('###########################################################');
+
+  await prisma.placeImage.createMany({
+    data: [
+      {
+        placeId: 1,
+        url: 'https://assets.volkswagen.com/is/image/volkswagenag/price-and-optionshb?Zml0PWNyb3AsMSZmbXQ9d2VicCZxbHQ9Nzkmd2lkPTE5MjAmaGVpPTEwODAmYWxpZ249MC4wMCwwLjAwJmJmYz1vZmYmM2E1Nw==',
+      },
+      {
+        placeId: 1,
+        url: 'https://assets.volkswagen.com/is/image/volkswagenag/Amarok_SSA_Mofa?Zml0PWNyb3AsMSZmbXQ9d2VicC1hbHBoYSZxbHQ9Nzkmd2lkPTEyODAmYmZjPW9mZiY4YTNi',
+      },
+      {
+        placeId: 1,
+        url: 'https://kigaliairporttaxitransfers.com/wp-content/uploads/2025/02/IMG_20231208_111107_972-scaled.jpg',
+      },
+      {
+        placeId: 2,
+        url: 'https://rba.co.rw/admin/media_data/cover_photo/IKORA29775.jpg',
+      },
+      {
+        placeId: 2,
+        url: 'https://www.yegomoto.com/videos/vid_3.jpg',
+      },
+      {
+        placeId: 2,
+        url: 'https://www.wearetech.africa/media/k2/items/cache/ca2d3b9781db35243fe5868c79aba4c0_XL.jpg',
+      },
+      {
+        placeId: 2,
+        url: 'https://www.ktpress.rw/wp-content/uploads/2017/10/yego-moto-driver.jpg',
+      },
+      {
+        placeId: 3,
+        url: 'https://www.ktpress.rw/wp-content/uploads/2017/10/yego-moto-driver.jpg',
+      },
+      {
+        placeId: 4,
+        url: 'https://kigaliairporttaxitransfers.com/wp-content/uploads/2025/02/IMG_20231208_111107_972-scaled.jpg',
+      },
+      {
+        placeId: 5,
+        url: 'https://rwandaecocompany.com/wp-content/uploads/2022/09/akagera.jpg',
+      },
+    ],
+  });
 
   await prisma.docItem.createMany({
     data: [

@@ -88,13 +88,14 @@ export class UserService {
     try {
       await this.imageService.uploadSingleImage(file, fileName);
 
-      await this.prisma.user.update({
+      const newUser = await this.prisma.user.update({
         where: { id: userId },
         data: { profileImg: imageUrl },
       });
 
       return {
         message: 'profile image added successfully',
+        data: newUser,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

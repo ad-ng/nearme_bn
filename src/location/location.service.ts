@@ -26,6 +26,7 @@ export class LocationService {
     try {
       const allLocations = await this.prisma.locations.findMany({
         where: { provinceId: checkProvince.id },
+        include: { LocationImage: true },
         take: limit,
         skip: (page - 1) * limit,
       });
@@ -79,6 +80,7 @@ export class LocationService {
       const [allLocations, totalCount] = await Promise.all([
         this.prisma.locations.findMany({
           orderBy: [{ id: 'desc' }],
+          include: { LocationImage: true },
           take: limit,
           skip: (page - 1) * limit,
         }),
@@ -98,15 +100,8 @@ export class LocationService {
   }
 
   async addingLocation(dto: AddLocationDTO) {
-    const {
-      provinceName,
-      address,
-      description,
-      image,
-      latitude,
-      longitude,
-      title,
-    } = dto;
+    const { provinceName, address, description, latitude, longitude, title } =
+      dto;
 
     const checkProvince = await this.prisma.provinces.findFirst({
       where: { name: provinceName },
@@ -119,7 +114,6 @@ export class LocationService {
         data: {
           address,
           description,
-          image,
           latitude,
           longitude,
           title,
@@ -136,15 +130,8 @@ export class LocationService {
   }
 
   async updateLocation(dto: AddLocationDTO, param: IdParamDTO) {
-    const {
-      provinceName,
-      address,
-      description,
-      image,
-      latitude,
-      longitude,
-      title,
-    } = dto;
+    const { provinceName, address, description, latitude, longitude, title } =
+      dto;
 
     const locationId = param.id;
     const CheckLocation = await this.prisma.locations.findUnique({
@@ -168,7 +155,6 @@ export class LocationService {
         data: {
           address,
           description,
-          image,
           latitude,
           longitude,
           title,
