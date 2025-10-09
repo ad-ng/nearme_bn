@@ -13,6 +13,7 @@ import { PlaceItemDTO } from './dtos';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { IdParamDTO } from 'src/location/dto';
 import { ImagesService } from 'src/images/images.service';
+import { PlaceImage } from '@prisma/client';
 
 @Injectable()
 export class PlaceItemService {
@@ -218,7 +219,24 @@ export class PlaceItemService {
       throw new NotFoundException('business not found');
     }
 
+    const allPlaceItemImages: PlaceImage[] =
+      await this.prisma.placeImage.findMany({
+        where: { placeId: placeItemId },
+      });
+
+    const allPlaceImagesFileNames: string[] = [];
+    allPlaceItemImages.map((placeItemImg) => {
+      const extractFilePath = (url: string): string => {
+        const base = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/`;
+        return url.replace(base, '');
+      };
+
+      const fileName = extractFilePath(placeItemImg.url);
+      allPlaceImagesFileNames.push(fileName);
+    });
+
     try {
+      await this.imageService.deleteManyImage(allPlaceImagesFileNames);
       await this.prisma.placeItem.delete({
         where: { id: placeItemId },
       });
