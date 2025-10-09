@@ -20,6 +20,7 @@ export class SkipLogInService {
     try {
       const allLocations = await this.prisma.locations.findMany({
         where: { provinceId: checkProvince.id },
+        include: { LocationImage: true },
       });
       return {
         message: 'Locations found successfully',

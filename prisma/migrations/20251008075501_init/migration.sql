@@ -65,13 +65,21 @@ CREATE TABLE "PlaceItem" (
     "location" TEXT NOT NULL,
     "latitude" DOUBLE PRECISION NOT NULL,
     "longitude" DOUBLE PRECISION NOT NULL,
-    "placeImg" TEXT[],
     "businessEmail" TEXT NOT NULL,
     "phoneNumber" TEXT NOT NULL,
     "bookLink" TEXT,
     "subCategoryId" INTEGER NOT NULL,
 
     CONSTRAINT "PlaceItem_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "PlaceImage" (
+    "id" SERIAL NOT NULL,
+    "url" TEXT NOT NULL,
+    "placeId" INTEGER NOT NULL,
+
+    CONSTRAINT "PlaceImage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -106,13 +114,21 @@ CREATE TABLE "Locations" (
     "id" SERIAL NOT NULL,
     "address" TEXT NOT NULL,
     "title" TEXT NOT NULL,
-    "image" TEXT[],
     "description" TEXT,
     "latitude" DOUBLE PRECISION NOT NULL,
     "longitude" DOUBLE PRECISION NOT NULL,
     "provinceId" INTEGER NOT NULL,
 
     CONSTRAINT "Locations_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "LocationImage" (
+    "id" SERIAL NOT NULL,
+    "url" TEXT NOT NULL,
+    "locationId" INTEGER NOT NULL,
+
+    CONSTRAINT "LocationImage_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -220,6 +236,9 @@ ALTER TABLE "SubCategory" ADD CONSTRAINT "SubCategory_categoryId_fkey" FOREIGN K
 ALTER TABLE "PlaceItem" ADD CONSTRAINT "PlaceItem_subCategoryId_fkey" FOREIGN KEY ("subCategoryId") REFERENCES "SubCategory"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "PlaceImage" ADD CONSTRAINT "PlaceImage_placeId_fkey" FOREIGN KEY ("placeId") REFERENCES "PlaceItem"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "Review" ADD CONSTRAINT "Review_userId_fkey" FOREIGN KEY ("userId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
@@ -236,6 +255,9 @@ ALTER TABLE "DocItem" ADD CONSTRAINT "DocItem_provinceId_fkey" FOREIGN KEY ("pro
 
 -- AddForeignKey
 ALTER TABLE "Locations" ADD CONSTRAINT "Locations_provinceId_fkey" FOREIGN KEY ("provinceId") REFERENCES "Provinces"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "LocationImage" ADD CONSTRAINT "LocationImage_locationId_fkey" FOREIGN KEY ("locationId") REFERENCES "Locations"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Notification" ADD CONSTRAINT "Notification_categoryId_fkey" FOREIGN KEY ("categoryId") REFERENCES "Category"("id") ON DELETE CASCADE ON UPDATE CASCADE;

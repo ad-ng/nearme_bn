@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { DocItemService } from './doc-item.service';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
@@ -19,6 +21,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { DocItemDTO } from './dto';
 import { IdParamDTO } from 'src/location/dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -48,14 +51,24 @@ export class DocItemController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Post()
-  addDocItem(@Body() dto: DocItemDTO, @Req() req: Request) {
-    return this.docItemService.createDocItem(dto, req.user);
+  @UseInterceptors(FileInterceptor('image'))
+  addDocItem(
+    @Body() dto: DocItemDTO,
+    @Req() req: Request,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.docItemService.createDocItem(dto, req.user, file);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Patch(':id')
-  updateDocItem(@Body() dto: DocItemDTO, @Param() param: IdParamDTO) {
-    return this.docItemService.updateDocItem(dto, param);
+  @UseInterceptors(FileInterceptor('image'))
+  updateDocItem(
+    @Body() dto: DocItemDTO,
+    @Param() param: IdParamDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.docItemService.updateDocItem(dto, param, file);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)

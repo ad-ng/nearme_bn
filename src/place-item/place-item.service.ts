@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
@@ -10,18 +11,21 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { PlaceItemDTO } from './dtos';
 import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { IdParamDTO } from 'src/location/dto';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class PlaceItemService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private imageService: ImagesService,
+  ) {}
 
-  async createPlaceItem(dto: PlaceItemDTO) {
+  async createPlaceItem(dto: any, files: Express.Multer.File[]) {
     const {
       businessEmail,
       description,
       location,
       phoneNumber,
-      placeImg,
       subCategoryName,
       title,
       workingHours,
@@ -29,37 +33,57 @@ export class PlaceItemService {
       longitude,
     } = dto;
 
+    // Check if the subcategory exists
     const checkSubCategory = await this.prisma.subCategory.findFirst({
       where: { name: subCategoryName },
     });
 
     if (!checkSubCategory) {
-      throw new NotFoundException(`no subcategory ${subCategoryName} found`);
+      throw new NotFoundException(`No subcategory "${subCategoryName}" found`);
     }
 
-    try {
-      const newPlaceItem = await this.prisma.placeItem.create({
-        data: {
-          businessEmail,
-          description,
-          location,
-          phoneNumber,
-          placeImg,
-          title,
-          latitude,
-          longitude,
-          workingHours,
-          subCategoryId: checkSubCategory.id,
-        },
-      });
+    // Upload images to Supabase storage
+    const uploadedImages: string[] = [];
 
-      return {
-        message: 'New Place Item Added Successfully',
-        data: newPlaceItem,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
+    for (const [index, file] of files.entries()) {
+      const fileName = `business/${title.trim().split(' ').join('-')}-${Date.now()}-${index + 1}.jpg`;
+
+      // upload to Supabase
+      await this.imageService.uploadSingleImage(file, fileName);
+
+      const imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+      uploadedImages.push(imageUrl);
     }
+
+    // Create the main place item record
+    const newPlaceItem = await this.prisma.placeItem.create({
+      data: {
+        businessEmail,
+        description,
+        location,
+        phoneNumber,
+        title,
+        latitude,
+        longitude,
+        workingHours,
+        subCategoryId: checkSubCategory.id,
+      },
+    });
+
+    // Save image URLs in the PlaceImage table
+    const placeImagesData = uploadedImages.map((url) => ({
+      url,
+      placeId: newPlaceItem.id,
+    }));
+
+    await this.prisma.placeImage.createMany({
+      data: placeImagesData,
+    });
+
+    return {
+      message: 'New Place Item Added Successfully',
+      data: newPlaceItem,
+    };
   }
 
   async adminFetchAllBusiness(query) {
@@ -70,7 +94,7 @@ export class PlaceItemService {
       const [allBusinesses, totalCount] = await Promise.all([
         this.prisma.placeItem.findMany({
           orderBy: [{ id: 'desc' }],
-          include: { subCategory: true },
+          include: { subCategory: true, PlaceImage: true },
           take: limit,
           skip: (page - 1) * limit,
         }),
@@ -108,6 +132,7 @@ export class PlaceItemService {
               userId,
             },
           },
+          PlaceImage: true,
           subCategory: {
             include: {
               _count: {
@@ -133,7 +158,6 @@ export class PlaceItemService {
       description,
       location,
       phoneNumber,
-      placeImg,
       subCategoryName,
       title,
       workingHours,
@@ -166,7 +190,6 @@ export class PlaceItemService {
           description,
           location,
           phoneNumber,
-          placeImg,
           title,
           latitude,
           longitude,
@@ -230,6 +253,7 @@ export class PlaceItemService {
           subCategory: { categoryId: { in: interestIds } },
         },
         include: {
+          PlaceImage: true,
           savedItems: {
             where: {
               userId,

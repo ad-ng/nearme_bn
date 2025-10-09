@@ -10,10 +10,14 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { CategoryDto, SubCategoryDTO } from './dto';
 import { CategoryParamDTO } from './dto/categoryParam.dto';
 import { IdParamDTO } from 'src/location/dto';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class CategoryService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private imageService: ImagesService,
+  ) {}
 
   async fetchAllCategories(query) {
     const page = parseInt(`${query.page}`, 10) || 1;
@@ -148,8 +152,12 @@ export class CategoryService {
     }
   }
 
-  async createSubCategories(dto: SubCategoryDTO) {
-    const { categoryName, subCategoryName, featuredImage } = dto;
+  async createSubCategories(dto: SubCategoryDTO, file: Express.Multer.File) {
+    const { categoryName, subCategoryName } = dto;
+
+    if (file == null) {
+      return 'no file added';
+    }
 
     const checkCategory = await this.prisma.category.findFirst({
       where: { name: categoryName },
@@ -170,10 +178,16 @@ export class CategoryService {
     }
 
     try {
+      const fileName = `subcategory/${subCategoryName.trim().split(' ').join('-')}`;
+
+      const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+
+      await this.imageService.uploadSingleImage(file, fileName);
+
       const newSubCategory = await this.prisma.subCategory.create({
         data: {
           name: subCategoryName,
-          featuredImage,
+          featuredImage: imageUrl,
           categoryId: checkCategory.id,
         },
       });
@@ -187,42 +201,78 @@ export class CategoryService {
     }
   }
 
-  async updateSubCategories(dto: SubCategoryDTO, param: IdParamDTO) {
+  async updateSubCategories(
+    dto: SubCategoryDTO,
+    param: IdParamDTO,
+    file?: Express.Multer.File,
+  ) {
     const subCategoryId = param.id;
-    const checkSubCategory = await this.prisma.subCategory.findUnique({
+
+    const existingSubCategory = await this.prisma.subCategory.findUnique({
       where: { id: subCategoryId },
     });
 
-    if (!checkSubCategory) {
-      throw new NotFoundException('invalid subcategory');
+    if (!existingSubCategory) {
+      throw new NotFoundException('Invalid subcategory');
     }
 
-    const { categoryName, subCategoryName, featuredImage } = dto;
+    const { categoryName, subCategoryName } = dto;
 
-    const checkCategory = await this.prisma.category.findFirst({
+    const category = await this.prisma.category.findFirst({
       where: { name: categoryName },
     });
 
-    if (!checkCategory) {
-      throw new NotFoundException(`no category with ${categoryName} found`);
+    if (!category) {
+      throw new NotFoundException(
+        `No category with name "${categoryName}" found`,
+      );
     }
 
     try {
-      const newSubCategory = await this.prisma.subCategory.update({
+      // Case 1: No new file
+      if (!file) {
+        const updated = await this.prisma.subCategory.update({
+          where: { id: subCategoryId },
+          data: {
+            name: subCategoryName,
+            categoryId: category.id,
+          },
+        });
+        return { message: 'Subcategory updated successfully', data: updated };
+      }
+
+      // Case 2: New file provided
+      let fileName: string;
+
+      if (existingSubCategory.featuredImage) {
+        // Extract old file name from URL
+        const extractFilePath = (url: string): string => {
+          const base = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/`;
+          return url.replace(base, '');
+        };
+
+        fileName = extractFilePath(existingSubCategory.featuredImage);
+      } else {
+        // New subcategory image
+        fileName = `subcategory/${subCategoryName.trim().split(' ').join('-')}`;
+      }
+
+      await this.imageService.uploadSingleImage(file, fileName);
+
+      const imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+
+      const updated = await this.prisma.subCategory.update({
         where: { id: subCategoryId },
         data: {
           name: subCategoryName,
-          featuredImage,
-          categoryId: checkCategory.id,
+          featuredImage: imageUrl,
+          categoryId: category.id,
         },
       });
 
-      return {
-        message: 'subcategory updated successfully',
-        data: newSubCategory,
-      };
+      return { message: 'Subcategory updated successfully', data: updated };
     } catch (error) {
-      return new InternalServerErrorException(error);
+      throw new InternalServerErrorException(error.message);
     }
   }
 
@@ -236,7 +286,15 @@ export class CategoryService {
       throw new NotFoundException('subcategory not found');
     }
 
+    const extractFilePath = (url: string): string => {
+      const base = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/`;
+      return url.replace(base, '');
+    };
+
+    const fileName = extractFilePath(checkSubCategory.featuredImage);
+
     try {
+      await this.imageService.deleteImage(fileName);
       await this.prisma.subCategory.delete({
         where: { id: subCategoryId },
       });

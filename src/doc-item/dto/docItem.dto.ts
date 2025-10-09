@@ -26,9 +26,4 @@ export class DocItemDTO {
   @IsNotEmpty()
   @IsString()
   summary: string;
-
-  @ApiProperty({ example: 'http://images.com' })
-  @IsNotEmpty()
-  @IsString()
-  featuredImg: string;
 }

@@ -18,6 +18,7 @@ import { DocItemModule } from './doc-item/doc-item.module';
 import { SkipLogInModule } from './skip-log-in/skip-log-in.module';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from './auth/guards';
+import { ImagesModule } from './images/images.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { AuthGuard } from './auth/guards';
     PlaceItemModule,
     DocItemModule,
     SkipLogInModule,
+    ImagesModule,
   ],
   controllers: [AppController],
   providers: [

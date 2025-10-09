@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { CategoryService } from './category.service';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
@@ -19,6 +21,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { Request } from 'express';
 import { IdParamDTO } from 'src/location/dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -53,14 +56,23 @@ export class CategoryController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Post('subcategory')
-  addSubCategory(@Body() dto: SubCategoryDTO) {
-    return this.categoryService.createSubCategories(dto);
+  @UseInterceptors(FileInterceptor('image'))
+  addSubCategory(
+    @Body() dto: SubCategoryDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.categoryService.createSubCategories(dto, file);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Patch('subcategory/:id')
-  updateSubCategory(@Body() dto: SubCategoryDTO, @Param() param: IdParamDTO) {
-    return this.categoryService.updateSubCategories(dto, param);
+  @UseInterceptors(FileInterceptor('image'))
+  updateSubCategory(
+    @Body() dto: SubCategoryDTO,
+    @Param() param: IdParamDTO,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    return this.categoryService.updateSubCategories(dto, param, file);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)

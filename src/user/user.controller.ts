@@ -8,7 +8,9 @@ import {
   Post,
   Query,
   Req,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { Request } from 'express';
@@ -26,6 +28,7 @@ import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { RolesGuard } from 'src/auth/guards/roles.guards';
 import { EmailDTO } from './dtos/email.dto';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(RolesGuard)
 @ApiBearerAuth()
@@ -105,5 +108,11 @@ export class UserController {
   @Delete(':email')
   deleteUser(@Param() Param: EmailDTO) {
     return this.userService.deleteUser(Param);
+  }
+
+  @Post('image')
+  @UseInterceptors(FileInterceptor('image'))
+  updatePP(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
+    return this.userService.uploadProfileImage(file, req.user);
   }
 }

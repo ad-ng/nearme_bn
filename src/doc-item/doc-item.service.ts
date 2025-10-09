@@ -10,10 +10,14 @@ import { CategoryParamDTO } from 'src/category/dto/categoryParam.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { DocItemDTO } from './dto';
 import { IdParamDTO } from 'src/location/dto';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class DocItemService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private imagesService: ImagesService,
+  ) {}
 
   async fetchDocItems(param: CategoryParamDTO, user, query) {
     const page = parseInt(`${query.page}`, 10) || 1;
@@ -111,7 +115,11 @@ export class DocItemService {
     }
   }
 
-  async createDocItem(dto: DocItemDTO, user) {
+  async createDocItem(dto: DocItemDTO, user, file: Express.Multer.File) {
+    if (file == null) {
+      return 'no file added';
+    }
+
     const authorId: number = user.id;
     const checkUser = await this.prisma.user.findUnique({
       where: { id: authorId },
@@ -121,8 +129,7 @@ export class DocItemService {
       throw new UnauthorizedException();
     }
 
-    const { categoryName, featuredImg, location, title, summary, description } =
-      dto;
+    const { categoryName, location, title, summary, description } = dto;
 
     const checkCategory = await this.prisma.category.findFirst({
       where: { name: categoryName },
@@ -133,12 +140,18 @@ export class DocItemService {
     }
 
     try {
+      const fileName = `article/${title.trim().split(' ').join('-')}`;
+
+      const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+
+      await this.imagesService.uploadSingleImage(file, fileName);
+
       const newDocItem = await this.prisma.docItem.create({
         data: {
           authorId,
           description,
           summary,
-          featuredImg,
+          featuredImg: imageUrl,
           location,
           title,
           categoryId: checkCategory.id,
@@ -153,7 +166,11 @@ export class DocItemService {
       return new InternalServerErrorException(error);
     }
   }
-  async updateDocItem(dto: DocItemDTO, param: IdParamDTO) {
+  async updateDocItem(
+    dto: DocItemDTO,
+    param: IdParamDTO,
+    file: Express.Multer.File,
+  ) {
     const docItemId = param.id;
     const checkDocItemId = await this.prisma.docItem.findUnique({
       where: { id: docItemId },
@@ -163,8 +180,7 @@ export class DocItemService {
       throw new NotFoundException('doc item not found');
     }
 
-    const { categoryName, featuredImg, location, title, summary, description } =
-      dto;
+    const { categoryName, location, title, summary, description } = dto;
 
     const checkCategory = await this.prisma.category.findFirst({
       where: { name: categoryName },
@@ -175,12 +191,51 @@ export class DocItemService {
     }
 
     try {
+      // Case 1: No new file
+      if (!file) {
+        const newDocItem = await this.prisma.docItem.update({
+          where: { id: docItemId },
+          data: {
+            description,
+            summary,
+            location,
+            title,
+            categoryId: checkCategory.id,
+          },
+        });
+
+        return {
+          message: 'DocItem updated Successfully',
+          data: newDocItem,
+        };
+      }
+
+      // Case 2: New file provided
+      let fileName: string;
+
+      if (checkDocItemId.featuredImg) {
+        // Extract old file name from URL
+        const extractFilePath = (url: string): string => {
+          const base = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/`;
+          return url.replace(base, '');
+        };
+
+        fileName = extractFilePath(checkDocItemId.featuredImg);
+      } else {
+        // New subcategory image
+        fileName = `article/${title.trim().split(' ').join('-')}`;
+      }
+
+      await this.imagesService.uploadSingleImage(file, fileName);
+
+      const imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+
       const newDocItem = await this.prisma.docItem.update({
         where: { id: docItemId },
         data: {
           description,
           summary,
-          featuredImg,
+          featuredImg: imageUrl,
           location,
           title,
           categoryId: checkCategory.id,
@@ -206,7 +261,15 @@ export class DocItemService {
       throw new NotFoundException('doc item not found');
     }
 
+    const extractFilePath = (url: string): string => {
+      const base = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/`;
+      return url.replace(base, '');
+    };
+
+    const fileName = extractFilePath(CheckDocItem.featuredImg);
+
     try {
+      await this.imagesService.deleteImage(fileName);
       await this.prisma.docItem.delete({
         where: { id: docItemId },
       });
