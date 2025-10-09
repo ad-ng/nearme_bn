@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
@@ -63,8 +64,8 @@ export class PlaceItemService {
         location,
         phoneNumber,
         title,
-        latitude,
-        longitude,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
         workingHours,
         subCategoryId: checkSubCategory.id,
       },
@@ -191,8 +192,8 @@ export class PlaceItemService {
           location,
           phoneNumber,
           title,
-          latitude,
-          longitude,
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
           workingHours,
           subCategoryId: checkSubCategory.id,
         },
