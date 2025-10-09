@@ -22,7 +22,7 @@ export class PlaceItemService {
     private imageService: ImagesService,
   ) {}
 
-  async createPlaceItem(dto: any, files: Express.Multer.File[]) {
+  async createPlaceItem(dto: PlaceItemDTO, files: Express.Multer.File[]) {
     const {
       businessEmail,
       description,
