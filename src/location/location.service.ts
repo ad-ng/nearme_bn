@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
@@ -9,6 +10,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AddLocationDTO, IdParamDTO } from './dto';
 import { ImagesService } from 'src/images/images.service';
+import { LocationImage } from '@prisma/client';
 
 @Injectable()
 export class LocationService {
@@ -103,36 +105,6 @@ export class LocationService {
       return new InternalServerErrorException(error);
     }
   }
-
-  // async addingLocation(dto: AddLocationDTO) {
-  //   const { provinceName, address, description, latitude, longitude, title } =
-  //     dto;
-
-  //   const checkProvince = await this.prisma.provinces.findFirst({
-  //     where: { name: provinceName },
-  //   });
-  //   if (!checkProvince) {
-  //     throw new NotFoundException('invalid province');
-  //   }
-  //   try {
-  //     const newLocation = await this.prisma.locations.create({
-  //       data: {
-  //         address,
-  //         description,
-  //         latitude: parseFloat(latitude),
-  //         longitude: parseFloat(longitude),
-  //         title,
-  //         provinceId: checkProvince.id,
-  //       },
-  //     });
-  //     return {
-  //       message: 'location added successfully',
-  //       data: newLocation,
-  //     };
-  //   } catch (error) {
-  //     return new InternalServerErrorException(error);
-  //   }
-  // }
 
   async addingLocation(dto: AddLocationDTO, files: Express.Multer.File[]) {
     const { provinceName, address, description, latitude, longitude, title } =
@@ -238,7 +210,24 @@ export class LocationService {
       throw new NotFoundException('invalid location');
     }
 
+    const allLocationImages: LocationImage[] =
+      await this.prisma.locationImage.findMany({
+        where: { locationId },
+      });
+
+    const allImagesFileNames: string[] = [];
+    allLocationImages.map((locationImg) => {
+      const extractFilePath = (url: string): string => {
+        const base = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/`;
+        return url.replace(base, '');
+      };
+
+      const fileName: string = extractFilePath(locationImg.url);
+      allImagesFileNames.push(fileName);
+    });
+
     try {
+      await this.imageService.deleteManyImage(allImagesFileNames);
       await this.prisma.locations.delete({
         where: { id: locationId },
       });
