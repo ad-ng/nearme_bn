@@ -1,6 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsArray,
   IsEmail,
   IsNotEmpty,
   IsNumber,
@@ -28,11 +27,6 @@ export class PlaceItemDTO {
   @IsNotEmpty()
   @IsString()
   location: string;
-
-  @ApiProperty({ example: 'https://img.com' })
-  @IsNotEmpty()
-  @IsArray()
-  placeImg: string[];
 
   @ApiProperty({ example: 'businessemail@gmail.com' })
   @IsNotEmpty()
