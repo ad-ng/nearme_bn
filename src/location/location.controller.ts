@@ -9,7 +9,9 @@ import {
   Post,
   Query,
   Req,
+  UploadedFiles,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
 import { LocationService } from './location.service';
 import { Request } from 'express';
@@ -19,6 +21,7 @@ import { RolesGuard } from 'src/auth/guards';
 import { Roles } from 'src/auth/decorators/role.decorator';
 import { RoleStatus } from '@prisma/client';
 import { AddLocationDTO, IdParamDTO } from './dto';
+import { FilesInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(AuthGuard, RolesGuard)
 @ApiBearerAuth()
@@ -55,8 +58,12 @@ export class LocationController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Post()
-  addLocation(@Body() dto: AddLocationDTO) {
-    return this.locationService.addingLocation(dto);
+  @UseInterceptors(FilesInterceptor('images'))
+  addLocation(
+    @Body() dto: AddLocationDTO,
+    @UploadedFiles() files: Express.Multer.File[],
+  ) {
+    return this.locationService.addingLocation(dto, files);
   }
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)

@@ -33,7 +33,7 @@ export class PlaceItemController {
   @Post()
   @UseInterceptors(FilesInterceptor('images'))
   addPlaceItem(
-    @Body() dto: any, // PlaceItemDTO,
+    @Body() dto: PlaceItemDTO,
     @UploadedFiles() files: Express.Multer.File[],
   ) {
     return this.placeItemService.createPlaceItem(dto, files);

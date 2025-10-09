@@ -53,4 +53,25 @@ export class ImagesService {
       fileName,
     };
   }
+
+  async deleteManyImage(fileName: string[]) {
+    if (!fileName) {
+      throw new BadRequestException('File name is required');
+    }
+
+    const bucketName = 'nearme';
+
+    const { error } = await this.supabase.storage
+      .from(bucketName)
+      .remove(fileName);
+
+    if (error) {
+      throw new BadRequestException(`Supabase delete failed: ${error.message}`);
+    }
+
+    return {
+      message: 'File deleted successfully',
+      fileName,
+    };
+  }
 }

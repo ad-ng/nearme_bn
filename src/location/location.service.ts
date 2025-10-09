@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
@@ -7,10 +8,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { AddLocationDTO, IdParamDTO } from './dto';
+import { ImagesService } from 'src/images/images.service';
 
 @Injectable()
 export class LocationService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private imageService: ImagesService,
+  ) {}
 
   async fetchLocationsInProvince(provinceName: string, query) {
     const page = parseInt(`${query.page}`, 10) || 1;
@@ -99,7 +104,37 @@ export class LocationService {
     }
   }
 
-  async addingLocation(dto: AddLocationDTO) {
+  // async addingLocation(dto: AddLocationDTO) {
+  //   const { provinceName, address, description, latitude, longitude, title } =
+  //     dto;
+
+  //   const checkProvince = await this.prisma.provinces.findFirst({
+  //     where: { name: provinceName },
+  //   });
+  //   if (!checkProvince) {
+  //     throw new NotFoundException('invalid province');
+  //   }
+  //   try {
+  //     const newLocation = await this.prisma.locations.create({
+  //       data: {
+  //         address,
+  //         description,
+  //         latitude: parseFloat(latitude),
+  //         longitude: parseFloat(longitude),
+  //         title,
+  //         provinceId: checkProvince.id,
+  //       },
+  //     });
+  //     return {
+  //       message: 'location added successfully',
+  //       data: newLocation,
+  //     };
+  //   } catch (error) {
+  //     return new InternalServerErrorException(error);
+  //   }
+  // }
+
+  async addingLocation(dto: AddLocationDTO, files: Express.Multer.File[]) {
     const { provinceName, address, description, latitude, longitude, title } =
       dto;
 
@@ -109,24 +144,46 @@ export class LocationService {
     if (!checkProvince) {
       throw new NotFoundException('invalid province');
     }
-    try {
-      const newLocation = await this.prisma.locations.create({
-        data: {
-          address,
-          description,
-          latitude,
-          longitude,
-          title,
-          provinceId: checkProvince.id,
-        },
-      });
-      return {
-        message: 'location added successfully',
-        data: newLocation,
-      };
-    } catch (error) {
-      return new InternalServerErrorException(error);
+
+    // Upload images to Supabase storage
+    const uploadedImages: string[] = [];
+
+    for (const [index, file] of files.entries()) {
+      const fileName = `location/${title.trim().split(' ').join('-')}-${Date.now()}-${index + 1}.jpg`;
+
+      // upload to Supabase
+      await this.imageService.uploadSingleImage(file, fileName);
+
+      const imageUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+      uploadedImages.push(imageUrl);
     }
+
+    // Create the main location record
+    const newLocation = await this.prisma.locations.create({
+      data: {
+        address,
+        description,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        title,
+        provinceId: checkProvince.id,
+      },
+    });
+
+    // Save image URLs in the LocationImage table
+    const locationImagesData = uploadedImages.map((url) => ({
+      url,
+      locationId: newLocation.id,
+    }));
+
+    await this.prisma.locationImage.createMany({
+      data: locationImagesData,
+    });
+
+    return {
+      message: 'location added successfully',
+      data: newLocation,
+    };
   }
 
   async updateLocation(dto: AddLocationDTO, param: IdParamDTO) {
@@ -155,8 +212,8 @@ export class LocationService {
         data: {
           address,
           description,
-          latitude,
-          longitude,
+          latitude: parseFloat(latitude),
+          longitude: parseFloat(longitude),
           title,
           provinceId: checkProvince.id,
         },
