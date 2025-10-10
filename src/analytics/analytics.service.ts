@@ -351,32 +351,75 @@ export class AnalyticsService {
     return { peak, data: distribution };
   }
 
-  async getRegistrationsLast7Days() {
-    const sevenDaysAgo = new Date();
-    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+  async getRegistrations(period: 'weekly' | 'monthly' | 'yearly') {
+    const now = new Date();
+    let startDate: Date = new Date();
+    let distribution: { label: string; count: number }[] = [];
+
+    if (period === 'weekly') {
+      startDate.setDate(now.getDate() - 7);
+      const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      distribution = days.map((day) => ({ label: day, count: 0 }));
+    } else if (period === 'monthly') {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+      const daysInMonth = new Date(
+        now.getFullYear(),
+        now.getMonth() + 1,
+        0,
+      ).getDate();
+
+      // Group by weeks instead of days
+      const numWeeks = Math.ceil(daysInMonth / 7);
+      distribution = Array.from({ length: numWeeks }, (_, i) => ({
+        label: `Week ${i + 1}`,
+        count: 0,
+      }));
+    } else if (period === 'yearly') {
+      startDate = new Date(now.getFullYear(), 0, 1);
+      const months = [
+        'Jan',
+        'Feb',
+        'Mar',
+        'Apr',
+        'May',
+        'Jun',
+        'Jul',
+        'Aug',
+        'Sep',
+        'Oct',
+        'Nov',
+        'Dec',
+      ];
+      distribution = months.map((month) => ({ label: month, count: 0 }));
+    }
 
     const users = await this.prisma.user.findMany({
       where: {
         createdAt: {
-          gte: sevenDaysAgo,
+          gte: startDate,
         },
       },
       select: { createdAt: true },
     });
 
-    // Days of week mapping (0 = Sunday, 6 = Saturday)
-    const days = ['Sun', 'Mon', 'Tues', 'Wed', 'Thur', 'Fri', 'Sat'];
-
-    // Initialize counts (to make sure all 7 days appear, even if 0 users)
-    const distribution = days.map((day) => ({ label: day, count: 0 }));
-
     for (const user of users) {
-      const dayIndex = user.createdAt.getDay(); // 0-6
-      distribution[dayIndex].count += 1;
+      const createdAt = user.createdAt;
+
+      if (period === 'weekly') {
+        const dayIndex = createdAt.getDay();
+        distribution[dayIndex].count += 1;
+      } else if (period === 'monthly') {
+        const dayOfMonth = createdAt.getDate();
+        const weekIndex = Math.floor((dayOfMonth - 1) / 7); // 0–3 or 0–4
+        distribution[weekIndex].count += 1;
+      } else if (period === 'yearly') {
+        const monthIndex = createdAt.getMonth();
+        distribution[monthIndex].count += 1;
+      }
     }
 
     return {
-      message: 'registered users fetched successfully',
+      message: `${period} registered users fetched successfully`,
       data: distribution,
     };
   }
