@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { AnalyticsService } from './analytics.service';
 import { AnalyticsDTO } from './dto';
 import { AuthGuard, RolesGuard } from 'src/auth/guards';
@@ -49,7 +57,9 @@ export class AnalyticsController {
   }
 
   @Get('user')
-  fetchUserData() {
-    return this.analyticsService.getRegistrationsLast7Days();
+  fetchUserData(
+    @Query('period') period: 'weekly' | 'monthly' | 'yearly' = 'weekly',
+  ) {
+    return this.analyticsService.getRegistrations(period);
   }
 }
