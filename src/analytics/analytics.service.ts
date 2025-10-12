@@ -128,6 +128,7 @@ export class AnalyticsService {
               },
             },
           },
+          PlaceImage: true,
         },
       });
 
@@ -207,6 +208,7 @@ export class AnalyticsService {
 
       const locationItems = await this.prisma.locations.findMany({
         where: { id: { in: locationIds } },
+        include: { LocationImage: true },
       });
 
       const result = mostVisitedLocation.map((p) => {
