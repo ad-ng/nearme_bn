@@ -329,4 +329,47 @@ export class PlaceItemService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async searchInSubCategory(subCategoryName: string, allQuery) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    const checkSubCategory = await this.prisma.subCategory.findFirst({
+      where: { name: subCategoryName },
+    });
+
+    if (!checkSubCategory) {
+      throw new NotFoundException();
+    }
+
+    try {
+      const allBusinesses = await this.prisma.placeItem.findMany({
+        where: {
+          OR: [
+            { title: { contains: query, mode: 'insensitive' } },
+            { businessEmail: { contains: query, mode: 'insensitive' } },
+          ],
+          AND: [
+            {
+              subCategory: {
+                name: { equals: subCategoryName },
+              },
+            },
+          ],
+        },
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+
+      return {
+        message: 'businesses fetched successfully',
+        data: allBusinesses,
+        limit,
+        page,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
