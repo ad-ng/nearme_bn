@@ -336,6 +336,7 @@ export class CategoryService {
       },
       take: 3,
       include: {
+        PlaceImage: true,
         savedItems: {
           where: {
             userId,
