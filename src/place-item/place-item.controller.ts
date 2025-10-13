@@ -69,7 +69,16 @@ export class PlaceItemController {
 
   @Roles(RoleStatus.admin, RoleStatus.moderator)
   @Get('search/all')
-  searchUser(@Query() query: any) {
+  searchBusiness(@Query() query: any) {
     return this.placeItemService.search(query);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Get('search/subcategory/:subcategory')
+  searchBusinessInCategory(
+    @Param('subcategory') param: string,
+    @Query() query: any,
+  ) {
+    return this.placeItemService.searchInSubCategory(param, query);
   }
 }
