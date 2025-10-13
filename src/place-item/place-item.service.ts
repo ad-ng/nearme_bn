@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
@@ -236,7 +234,10 @@ export class PlaceItemService {
     });
 
     try {
-      await this.imageService.deleteManyImage(allPlaceImagesFileNames);
+      if (allPlaceItemImages.length != 0) {
+        await this.imageService.deleteManyImage(allPlaceImagesFileNames);
+      }
+
       await this.prisma.placeItem.delete({
         where: { id: placeItemId },
       });
