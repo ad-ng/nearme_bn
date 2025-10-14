@@ -51,6 +51,7 @@ export class NotificationService {
         include: { notification: true },
         take: limit,
         skip: (page - 1) * limit,
+        orderBy: [{ id: 'desc' }],
       });
       return {
         message: 'notifications fetched successfully',
@@ -193,6 +194,7 @@ export class NotificationService {
         include: { category: true },
         take: limit,
         skip: (page - 1) * limit,
+        orderBy: [{ id: 'desc' }],
       });
       return {
         message: 'notifications fetched successfully',
@@ -225,6 +227,26 @@ export class NotificationService {
       return {
         message: 'notification updated successfully',
         data: updatedNotification,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async adminDeleteNotification(notificationId: number) {
+    const checkNotification = await this.prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
+    if (!checkNotification) {
+      throw new NotFoundException();
+    }
+
+    try {
+      await this.prisma.notification.delete({
+        where: { id: notificationId },
+      });
+      return {
+        message: 'notification deleted successfully',
       };
     } catch (error) {
       throw new InternalServerErrorException(error);

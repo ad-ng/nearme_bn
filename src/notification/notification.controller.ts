@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   ParseIntPipe,
@@ -57,5 +58,10 @@ export class NotificationController {
     @Param('id', ParseIntPipe) id: number,
   ) {
     return this.notificationService.adminUpdateNotification(id, dto);
+  }
+
+  @Delete('admin/:id')
+  adminDeleteNotification(@Param('id', ParseIntPipe) id: number) {
+    return this.notificationService.adminDeleteNotification(id);
   }
 }
