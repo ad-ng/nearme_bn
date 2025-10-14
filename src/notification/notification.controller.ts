@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -48,5 +49,13 @@ export class NotificationController {
   @Get('admin/all')
   adminGetAllNotifications(@Query() query: any) {
     return this.notificationService.adminFetchAllNNotifications(query);
+  }
+
+  @Patch(':id')
+  adminUpdateNotification(
+    @Body() dto: NotificationDTO,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.notificationService.adminUpdateNotification(id, dto);
   }
 }

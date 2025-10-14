@@ -204,4 +204,30 @@ export class NotificationService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async adminUpdateNotification(notificationId: number, dto: NotificationDTO) {
+    const checkNotification = await this.prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
+    if (!checkNotification) {
+      throw new NotFoundException();
+    }
+    try {
+      const updatedNotification = await this.prisma.notification.update({
+        where: { id: notificationId },
+        data: {
+          body: dto.body,
+          categoryId: dto.categoryId,
+          title: dto.title,
+          type: dto.type,
+        },
+      });
+      return {
+        message: 'notification updated successfully',
+        data: updatedNotification,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
