@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -15,6 +16,7 @@ import {
 import { UserService } from './user.service';
 import { Request } from 'express';
 import {
+  AdminUpdateUserDTO,
   ChangePasswordDTO,
   CountryDTO,
   EmailConfirmationDTO,
@@ -114,5 +116,15 @@ export class UserController {
   @UseInterceptors(FileInterceptor('image'))
   updatePP(@UploadedFile() file: Express.Multer.File, @Req() req: Request) {
     return this.userService.uploadProfileImage(file, req.user);
+  }
+
+  @Roles(RoleStatus.admin, RoleStatus.moderator)
+  @Patch('admin/:id')
+  adminUpdateUser(
+    @Req() req: Request,
+    @Body() dto: AdminUpdateUserDTO,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.userService.adminUpdateUser(dto, id);
   }
 }

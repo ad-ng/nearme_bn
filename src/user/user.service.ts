@@ -12,6 +12,7 @@ import {
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as argon from 'argon2';
 import {
+  AdminUpdateUserDTO,
   ChangePasswordDTO,
   CountryDTO,
   EmailConfirmationDTO,
@@ -411,6 +412,29 @@ export class UserService {
     try {
       await this.prisma.user.delete({ where: { email: param.email } });
       return { message: 'user deleted successfully' };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async adminUpdateUser(dto: AdminUpdateUserDTO, userId: number) {
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) {
+      throw new ForbiddenException('unregistered user');
+    }
+
+    try {
+      const newUser = await this.prisma.user.update({
+        where: { id: userId },
+        data: dto,
+      });
+
+      return {
+        message: 'user updated successfully',
+        data: newUser,
+      };
     } catch (error) {
       throw new InternalServerErrorException(error);
     }
