@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
@@ -51,6 +52,7 @@ export class NotificationService {
         include: { notification: true },
         take: limit,
         skip: (page - 1) * limit,
+        orderBy: [{ id: 'desc' }],
       });
       return {
         message: 'notifications fetched successfully',
@@ -181,6 +183,117 @@ export class NotificationService {
       });
     } catch (error) {
       console.error('Error sending push notification:', error);
+    }
+  }
+
+  async adminFetchAllNNotifications(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const allNotifications = await this.prisma.notification.findMany({
+        include: { category: true },
+        take: limit,
+        skip: (page - 1) * limit,
+        orderBy: [{ id: 'desc' }],
+      });
+      return {
+        message: 'notifications fetched successfully',
+        data: allNotifications,
+        limit,
+        page,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async adminUpdateNotification(notificationId: number, dto: NotificationDTO) {
+    const checkNotification = await this.prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
+    if (!checkNotification) {
+      throw new NotFoundException();
+    }
+    try {
+      const updatedNotification = await this.prisma.notification.update({
+        where: { id: notificationId },
+        data: {
+          body: dto.body,
+          categoryId: dto.categoryId,
+          title: dto.title,
+          type: dto.type,
+        },
+      });
+      return {
+        message: 'notification updated successfully',
+        data: updatedNotification,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async adminDeleteNotification(notificationId: number) {
+    const checkNotification = await this.prisma.notification.findUnique({
+      where: { id: notificationId },
+    });
+    if (!checkNotification) {
+      throw new NotFoundException();
+    }
+
+    try {
+      await this.prisma.notification.delete({
+        where: { id: notificationId },
+      });
+      return {
+        message: 'notification deleted successfully',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
+  async searchAndSortNotification(allQuery: any) {
+    const {
+      query = '',
+      category: categoryName = '',
+      type: notificationType = '',
+      page = '1',
+      limit = '10',
+    } = allQuery;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+
+    try {
+      const allNotification = await this.prisma.notification.findMany({
+        where: {
+          AND: [
+            {
+              OR: [
+                { title: { contains: query, mode: 'insensitive' } },
+                { body: { contains: query, mode: 'insensitive' } },
+              ],
+            },
+            categoryName ? { category: { name: categoryName } } : {},
+            notificationType ? { type: notificationType } : {},
+          ],
+        },
+        orderBy: { id: 'desc' },
+        skip: (pageNumber - 1) * limitNumber,
+        take: limitNumber,
+      });
+
+      return {
+        message: 'Notifications fetched successfully',
+        data: allNotification,
+        limit: limitNumber,
+        page: pageNumber,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }

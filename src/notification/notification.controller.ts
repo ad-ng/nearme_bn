@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -43,5 +45,28 @@ export class NotificationController {
   @Patch('read/:notificationId')
   readNotification(@Req() req: Request, @Param() param: any) {
     return this.notificationService.readNotification(req.user, param);
+  }
+
+  @Get('admin/all')
+  adminGetAllNotifications(@Query() query: any) {
+    return this.notificationService.adminFetchAllNNotifications(query);
+  }
+
+  @Patch(':id')
+  adminUpdateNotification(
+    @Body() dto: NotificationDTO,
+    @Param('id', ParseIntPipe) id: number,
+  ) {
+    return this.notificationService.adminUpdateNotification(id, dto);
+  }
+
+  @Delete('admin/:id')
+  adminDeleteNotification(@Param('id', ParseIntPipe) id: number) {
+    return this.notificationService.adminDeleteNotification(id);
+  }
+
+  @Get('search')
+  adminSearchNotification(@Query() query: any) {
+    return this.notificationService.searchAndSortNotification(query);
   }
 }
