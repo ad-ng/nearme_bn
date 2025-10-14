@@ -183,4 +183,25 @@ export class NotificationService {
       console.error('Error sending push notification:', error);
     }
   }
+
+  async adminFetchAllNNotifications(query) {
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    try {
+      const allNotifications = await this.prisma.notification.findMany({
+        include: { category: true },
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+      return {
+        message: 'notifications fetched successfully',
+        data: allNotifications,
+        limit,
+        page,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }

@@ -44,4 +44,9 @@ export class NotificationController {
   readNotification(@Req() req: Request, @Param() param: any) {
     return this.notificationService.readNotification(req.user, param);
   }
+
+  @Get('admin/all')
+  adminGetAllNotifications(@Query() query: any) {
+    return this.notificationService.adminFetchAllNNotifications(query);
+  }
 }
