@@ -285,7 +285,7 @@ export class UserService {
   async fetchAllUser(query) {
     const page = parseInt(`${query.page}`, 10) || 1;
     const limit = parseInt(`${query.limit}`) || 10;
-    const order = query.order || 'asc';
+    const order = query.order || 'desc';
     const role = query.role;
 
     try {
@@ -387,6 +387,7 @@ export class UserService {
         },
         skip: (page - 1) * limit,
         take: limit,
+        orderBy: [{ id: 'desc' }],
       });
 
       return {
