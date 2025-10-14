@@ -64,4 +64,9 @@ export class NotificationController {
   adminDeleteNotification(@Param('id', ParseIntPipe) id: number) {
     return this.notificationService.adminDeleteNotification(id);
   }
+
+  @Get('search')
+  adminSearchNotification(@Query() query: any) {
+    return this.notificationService.searchAndSortNotification(query);
+  }
 }

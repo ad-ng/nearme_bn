@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
@@ -250,6 +251,49 @@ export class NotificationService {
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
+    }
+  }
+
+  async searchAndSortNotification(allQuery: any) {
+    const {
+      query = '',
+      category: categoryName = '',
+      type: notificationType = '',
+      page = '1',
+      limit = '10',
+    } = allQuery;
+
+    const pageNumber = parseInt(page, 10) || 1;
+    const limitNumber = parseInt(limit, 10) || 10;
+
+    try {
+      const allNotification = await this.prisma.notification.findMany({
+        where: {
+          AND: [
+            {
+              OR: [
+                { title: { contains: query, mode: 'insensitive' } },
+                { body: { contains: query, mode: 'insensitive' } },
+              ],
+            },
+            categoryName ? { category: { name: categoryName } } : {},
+            notificationType ? { type: notificationType } : {},
+          ],
+        },
+        orderBy: { id: 'desc' },
+        skip: (pageNumber - 1) * limitNumber,
+        take: limitNumber,
+      });
+
+      return {
+        message: 'Notifications fetched successfully',
+        data: allNotification,
+        limit: limitNumber,
+        page: pageNumber,
+      };
+    } catch (error) {
+      console.error(error);
+      throw new InternalServerErrorException(error.message);
     }
   }
 }
