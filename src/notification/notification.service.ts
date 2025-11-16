@@ -91,6 +91,31 @@ export class NotificationService {
     }
   }
 
+  async deleteNotification(user, param) {
+    const userId: number = user.id;
+    const notificationId = parseInt(`${param.notificationId}`, 10);
+
+    const checkUser = await this.prisma.user.findUnique({
+      where: { id: userId },
+    });
+    if (!checkUser) throw new UnauthorizedException();
+
+    const checkNotification = await this.prisma.userNotification.findUnique({
+      where: { id: notificationId },
+    });
+    if (!checkNotification) throw new NotFoundException();
+    try {
+      await this.prisma.userNotification.delete({
+        where: { id: notificationId, userId },
+      });
+      return {
+        message: 'notification deleted successfully',
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
+
   async createNotification(dto: NotificationDTO) {
     if (dto.categoryId) {
       const checkCategory = await this.prisma.category.findUnique({

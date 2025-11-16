@@ -47,6 +47,11 @@ export class NotificationController {
     return this.notificationService.readNotification(req.user, param);
   }
 
+  @Patch('delete/:notificationId')
+  deleteNotification(@Req() req: Request, @Param() param: any) {
+    return this.notificationService.deleteNotification(req.user, param);
+  }
+
   @Get('admin/all')
   adminGetAllNotifications(@Query() query: any) {
     return this.notificationService.adminFetchAllNNotifications(query);

@@ -62,6 +62,7 @@ export class SavedService {
                   userId,
                 },
               },
+              PlaceImage: true,
               subCategory: {
                 include: {
                   _count: {
@@ -226,6 +227,43 @@ export class SavedService {
     } catch (error) {
       return new InternalServerErrorException(error);
     }
+  }
+
+  async getSavedImage(user, param) {
+    const { name } = param;
+
+    const savedImages = await this.prisma.saved.findMany({
+      where: {
+        OR: [
+          { docItem: { category: { name } } },
+          { placeItem: { subCategory: { category: { name } } } },
+        ],
+      },
+      include: {
+        docItem: { select: { featuredImg: true } },
+        placeItem: {
+          select: { PlaceImage: { select: { url: true }, take: 1 } },
+        },
+      },
+      omit: { id: true, docItemId: true, placeItemId: true, userId: true },
+      take: 4,
+    });
+
+    const images = savedImages
+      .map((item) => {
+        if (item.docItem?.featuredImg) {
+          return item.docItem.featuredImg;
+        }
+
+        if (item.placeItem?.PlaceImage?.[0]?.url) {
+          return item.placeItem.PlaceImage[0].url;
+        }
+
+        return null;
+      })
+      .filter(Boolean); // removes nulls
+
+    return { message: 'saved images fetched successfully', data: images };
   }
 
   async getCategoriesWithSavedCounts(user) {
