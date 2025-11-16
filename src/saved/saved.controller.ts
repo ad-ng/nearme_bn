@@ -50,4 +50,9 @@ export class SavedController {
   fetchCategories(@Req() req: Request) {
     return this.savedService.getCategoriesWithSavedCounts(req.user);
   }
+
+  @Get('images/:name')
+  fetchSavedImage(@Req() req: Request, @Param() param: CategoryParamDTO) {
+    return this.savedService.getSavedImage(req.user, param);
+  }
 }
