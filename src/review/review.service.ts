@@ -14,24 +14,58 @@ export class ReviewService {
 
   async getTotalReviews(placeItemIdParam) {
     const placeItemId = parseInt(`${placeItemIdParam}`, 10);
+
     const checkPlaceItem = await this.prisma.placeItem.findUnique({
       where: { id: placeItemId },
     });
+
     if (!checkPlaceItem) throw new NotFoundException('no place item found');
 
     try {
       const totalReviews = await this.prisma.review.count({
         where: { placeItemId },
       });
+
       const avgRates = await this.prisma.review.aggregate({
-        _avg: {
-          rates: true,
-        },
+        where: { placeItemId },
+        _avg: { rates: true },
       });
+
+      const distribution = await this.prisma.review.groupBy({
+        by: ['rates'],
+        where: { placeItemId },
+        _count: { rates: true },
+      });
+
+      // Internal numeric distribution
+      const fullDistribution = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+      distribution.forEach((d) => {
+        fullDistribution[d.rates] = d._count.rates;
+      });
+
+      // Convert numeric -> word keys
+      const numberToWord = {
+        1: 'one',
+        2: 'two',
+        3: 'three',
+        4: 'four',
+        5: 'five',
+      };
+
+      const wordDistribution = {};
+
+      for (const star of Object.keys(fullDistribution)) {
+        const key = numberToWord[star];
+        wordDistribution[key] =
+          totalReviews === 0 ? 0 : fullDistribution[star] / totalReviews;
+      }
+
       return {
-        message: 'Total Reviews found successfully',
-        totalReviews,
+        message: 'Review stats fetched successfully',
+        total: totalReviews,
         avgRates: avgRates._avg.rates,
+        distribution: wordDistribution,
       };
     } catch (error) {
       throw new InternalServerErrorException(error);
