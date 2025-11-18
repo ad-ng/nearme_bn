@@ -82,4 +82,9 @@ export class DocItemController {
   searchUser(@Query() query: any) {
     return this.docItemService.search(query);
   }
+
+  @Get('user/search/all')
+  userSearchAll(@Query() query: any, @Req() req: Request) {
+    return this.docItemService.userSearchAll(query, req.user);
+  }
 }

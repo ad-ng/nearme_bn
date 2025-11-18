@@ -309,4 +309,38 @@ export class DocItemService {
       throw new InternalServerErrorException(error);
     }
   }
+
+  async userSearchAll(allQuery: any, user) {
+    const { query } = allQuery;
+    const page = parseInt(`${query.page}`, 10) || 1;
+    const limit = parseInt(`${query.limit}`) || 10;
+
+    const userId = user.id;
+
+    try {
+      const allArticles = await this.prisma.docItem.findMany({
+        where: {
+          OR: [{ title: { contains: query, mode: 'insensitive' } }],
+        },
+        include: {
+          author: true,
+          savedItems: {
+            where: { userId },
+          },
+        },
+        orderBy: [{ id: 'desc' }],
+        take: limit,
+        skip: (page - 1) * limit,
+      });
+
+      return {
+        message: 'articles fetched successfully',
+        data: allArticles,
+        limit,
+        page,
+      };
+    } catch (error) {
+      throw new InternalServerErrorException(error);
+    }
+  }
 }
