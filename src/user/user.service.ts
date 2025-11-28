@@ -84,7 +84,7 @@ export class UserService {
     }
     const fileName = `profiles/${email}`;
 
-    const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
+    const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}.${file.mimetype.split('/')[1]}`;
 
     try {
       await this.imageService.uploadSingleImage(file, fileName);
