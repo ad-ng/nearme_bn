@@ -77,14 +77,14 @@ export class UserService {
 
   async uploadProfileImage(file: Express.Multer.File, user) {
     const userId: number = user.id;
-    const { email } = user;
+    const { firstName } = user;
 
     if (file == null) {
       return 'no file added';
     }
-    const fileName = `profiles/${email}`;
+    const fileName = `profiles/${firstName}-${userId}.${file.mimetype.split('/')[1]}`;
 
-    const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}.${file.mimetype.split('/')[1]}`;
+    const imageUrl: string = `${process.env.SUPABASE_URL}/storage/v1/object/public/nearme/${fileName}`;
 
     try {
       await this.imageService.uploadSingleImage(file, fileName);
