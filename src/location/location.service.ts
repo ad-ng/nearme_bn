@@ -30,6 +30,7 @@ export class LocationService {
 
     try {
       const allLocations = await this.prisma.locations.findMany({
+        orderBy: [{ id: 'desc' }],
         where: { provinceId: checkProvince.id },
         include: { LocationImage: true },
         take: limit,

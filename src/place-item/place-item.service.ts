@@ -125,6 +125,7 @@ export class PlaceItemService {
 
     try {
       const allSubcategoryItems = await this.prisma.placeItem.findMany({
+        orderBy: [{ id: 'desc' }],
         where: { subCategoryId: checkSubCategory.id },
         include: {
           savedItems: {
