@@ -269,6 +269,7 @@ export class PlaceItemService {
 
     try {
       const allRecommendations = await this.prisma.placeItem.findMany({
+        orderBy: [{ id: 'desc' }],
         where: {
           subCategory: { categoryId: { in: interestIds } },
         },
